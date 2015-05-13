@@ -1,6 +1,6 @@
 # pygeotess
 
-PyGeoTess is a Python interface module to the
+PyGeoTess is a Jython interface module to the
 [GeoTess](http://www.sandia.gov/geotess) gridding and earth model library from
 Sandia National Laboratories.  It is a [Jython](http://jython.org) wrapper to
 the Java GeoTess library.
