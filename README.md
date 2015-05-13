@@ -5,10 +5,12 @@ PyGeoTess is a Jython interface module to the
 Sandia National Laboratories.  It is a [Jython](http://jython.org) wrapper to
 the Java GeoTess library.
 
-The goal of of PyGeoTess is to provide simplified access to the GeoTess Java
-library and its documentation, particularly for for Python programmers.
-PyGeoTess is a subset of the GeoTess Java API, with inline documentation.
-
+## Goals
+1. Povide *simplified* access to a *subset* of the GeoTess Java library.
+2. Make the exposed classes and methods accessible using Python's excellent 
+   inline documentation system.
+3. Allow for interactive use of the GeoTess library via Jython's interactive
+   interpretor.
 
 
 ## Dependencies
