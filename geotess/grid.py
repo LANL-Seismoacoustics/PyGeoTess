@@ -54,12 +54,15 @@ class Grid(object):
     def __str__(self):
         return str(self.grid)
 
+    def __repr__(self):
+        return str(self.grid)
+
     # PROPERTIES
     # Properties are like getters.  Here, they're being used to create public
     # attributes from a subset of the underlying GeoTessGrid instance attributes.
     @property
-    def tesselations(self):
-        return self.grid.tesselations
+    def tessellations(self):
+        return self.grid.tessellations
 
     @property
     def levels(self):
@@ -74,11 +77,12 @@ class Grid(object):
         return self.grid.vertices
 
 
-    @staticmethod
-    def from_grid(grid):
-        """
-        Return a copy of a Grid object.
+    #@staticmethod
+    #def from_grid(grid):
+    #    """
+    #    Return a copy of a Grid object.
 
-        """
-        return GeoTessGrid(grid.tesselations, grid.levels, grid.triangles, grid.vertices)
+    #    """
+    #    return GeoTessGrid(grid.grid.tessellations, grid.grid.levels, 
+    #                       grid.grid.triangles, grid.grid.vertices)
 
