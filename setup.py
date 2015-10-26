@@ -49,5 +49,6 @@ setup(name = 'pygeotess',
       #                  'obspy>=0.8', 'sqlalchemy>=0.7'],
       packages = ['geotess'],
       py_modules = ['geotess.grid', 'geotess.exc'],
+      package_data = {'geotess.data': glob('geotess/src/GeoTessModels/*')},
       )
 
