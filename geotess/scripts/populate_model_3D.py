@@ -1,10 +1,10 @@
-from geotess.model import Layer, Attribute, GeoTessModel
+from geotess.model import Layer, Attribute, Model
 from geotess.position import GeoTessPosition
 
 def ak135_interp(layer):
     # do some stuff
     radii = attrib_values = None
-    return radii, attrib_values)
+    return radii, attrib_values
 
 dscr = """
 Simple example of populating a 3D GeoTess model
@@ -12,6 +12,9 @@ comprised of 3 multi-level tessellations
 author: Sandy Ballard
 contact: sballar@sandia.gov"""
 
+# Layer and Attribute are named tuples, which means they are two-tuples of 
+# (name, tess_id) or (name, unit), the contents of which can be accessed 
+# using names, like: inner_core.tess_id or rho.name
 layers = [Layer(name='INNER_CORE', tess_id=0),
           Layer('OUTER_CORE', 0),
           Layer('LOWER_MANTLE', 1),

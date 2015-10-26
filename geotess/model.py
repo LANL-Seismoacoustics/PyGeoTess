@@ -11,6 +11,9 @@ from collections import namedtuple
 
 from geotess.grid import Grid
 
+from gov.sandia.geotess import GeoTessModel
+
+# These namedtuple are lightweight readable containers for Layer/Attribute info
 Layer = namedtuple('Layer', ['name', 'tess_id'])
 Attribute = namedtuple('Attribute', ['name', 'unit'])
 
@@ -46,7 +49,7 @@ class MetaData(object):
         pass
 
 
-class GeoTessModel(object):
+class Model(object):
     def __init__(self, gridfile, layers=None, attributes=None, dtype=None, description=None):
         """
         Initialize a GeoTessModel using a gridfile and optional metadata information.
@@ -72,7 +75,7 @@ class GeoTessModel(object):
         description : str
 
         """
-        grid = Grid.read(gridfile)
+        grid = Grid(gridfile)
         metadata = MetaData(layers, attributes, dtype, description)
 
         self.grid = grid
@@ -85,7 +88,8 @@ class GeoTessModel(object):
         Construct a GeoTessModel instance from an existing model file.
 
         """
-        pass
+        # XXX
+        model = GeoTessModel(modelfile)
 
     @property
     def layers(self):
