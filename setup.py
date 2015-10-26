@@ -1,35 +1,53 @@
-try:
-    import setuptools
-except:
-    pass
-
-import os
-import os.path
-import sys
 from glob import glob
 
-waveforms = glob.glob('ndb/data/wf/E*')
+from distutils.core import setup
+from distutils.extension import Extension
+from distutils.command.sdist import sdist as _sdist
+
+# see http://stackoverflow.com/a/4515279/745557
+# and http://stackoverflow.com/a/18418524/745557
+
+CPPFILES = glob('geotess/src/GeoTessCPP/src/*.cc')
+HDRFILES = glob('geotess/src/GeoTessCPP/include/*.h')
+PYXFILES = glob('geotess/*.pyx')
+
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    use_cython = False
+else:
+    use_cython = True
+
+cmdclass = {}
+ext_modules = []
+
+if use_cython:
+    class sdist(_sdist):
+        def run(self):
+            # Make sure the compiled Cython files in the distribution are up-to-date
+            from Cython.Build import cythonize
+            cythonize(['geotess/GeoTessGrid.pyx'])
+            _sdist.run(self)
+
+    ext_modules += [
+        Extension("geotess.libgeotesscpp", CPPFILES + HDRFILES + PYXFILES),
+    ]
+    cmdclass.update({ 'build_ext': build_ext })
+else:
+    ext_modules += [
+        Extension("geotess.libgeotesscpp", CPPFILES + HDRFILES),
+    ]
+
+cmdclass['sdist'] = sdist
 
 setup(name = 'pygeotess',
       version = '0.1',
-      description = 'GeoTess access for Python programmers.',
+      description = 'GeoTess access from Python.',
       author = 'Jonathan K. MacCarthy',
       author_email = 'jkmacc@lanl.gov',
       #install_requires=['pisces-db', 'numpy', 'matplotlib', 'basemap',
       #                  'obspy>=0.8', 'sqlalchemy>=0.7'],
       packages = ['geotess'],
-      py_modules = ['geotess.utils', 'geotess.grid', 'geotess.model', 
-                    'geotess.position', 'geotess.exc', 'geotess.data.models',
-                    'geotess.data.grids'],
-      data_files=[('geotess/lib', ['geotess/src/GeoTess.2.2.0.Java/geotess.jar'])],
-      #entry_points = {
-      #      'console_scripts': ['ndb_getstations': 'ndb.cli:ndb_getstations',
-      #                          'ndb_getevents': 'ndb.cli:ndb_getevents',
-      #                          'ndb_getwaveforms': 'ndb.cli:ndb_getwaveforms',
-      #                          'ndb_plotstations': 'ndb.cli:ndb_plotstations',
-      #                          'ndb_plotevents': 'ndb.cli:ndb_plotevents',
-      #                          'ndb_plotwaveforms': 'ndb.cli:ndb_plotwaveforms',
-      #                          ]
-      #               }
+      py_modules = ['geotess.grid', 'geotess.exc'],
       )
 

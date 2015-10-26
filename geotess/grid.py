@@ -1,16 +1,8 @@
 """
+GeoTessGrid Python definitions.
 
 """
-from gov.sandia.geotess import GeoTessGrid
-
-class Vector(object):
-    @classmethod
-    def from_coords(cls, lat, lon, depth):
-        pass
-
-class Triangle(object):
-    pass
-
+import geotess.libgeotesscpp as cpp
 
 class Grid(object):
     """
@@ -45,44 +37,33 @@ class Grid(object):
         vertices
 
         """
-        grid = GeoTessGrid(gridfile)
-        self.grid = grid
+        self.gridfile = gridfile
+        #self.grid = cpp.GeoTessGrid.loadGrid(gridfile)
 
-    def __eq__(self, value):
-        return self.grid == value
+    # def __eq__(self, value):
+    #     return self.grid == value
 
-    def __str__(self):
-        return str(self.grid)
+    # def __str__(self):
+    #     return str(self.grid)
 
-    def __repr__(self):
-        return str(self.grid)
+    # def __repr__(self):
+    #     return str(self.grid)
 
     # PROPERTIES
     # Properties are like getters.  Here, they're being used to create public
     # attributes from a subset of the underlying GeoTessGrid instance attributes.
-    @property
-    def tessellations(self):
-        return self.grid.tessellations
+    # @property
+    # def tessellations(self):
+    #     return self.grid.tessellations
 
-    @property
-    def levels(self):
-        return self.grid.levels
+    # @property
+    # def levels(self):
+    #     return self.grid.levels
 
-    @property
-    def triangles(self):
-        return self.grid.triangles
+    # @property
+    # def triangles(self):
+    #     return self.grid.triangles
 
-    @property
-    def vertices(self):
-        return self.grid.vertices
-
-
-    #@staticmethod
-    #def from_grid(grid):
-    #    """
-    #    Return a copy of a Grid object.
-
-    #    """
-    #    return GeoTessGrid(grid.grid.tessellations, grid.grid.levels, 
-    #                       grid.grid.triangles, grid.grid.vertices)
-
+    # @property
+    # def vertices(self):
+    #     return self.grid.vertices
