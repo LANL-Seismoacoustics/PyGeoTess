@@ -3,7 +3,8 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": []
+        "depends": [], 
+        "language": "c++"
     }
 }
 END: Cython Metadata */
@@ -257,8 +258,8 @@ class __Pyx_FakeReference {
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#define __PYX_HAVE__geotess__GeoTessGrid
-#define __PYX_HAVE_API__geotess__GeoTessGrid
+#define __PYX_HAVE__cyGeoTessGrid
+#define __PYX_HAVE_API__cyGeoTessGrid
 #include "GeoTessGrid.h"
 #include "ios"
 #include "new"
@@ -453,7 +454,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "geotess/GeoTessGrid.pyx",
+  "cyGeoTessGrid.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -549,11 +550,11 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'geotess.GeoTessGrid' */
-#define __Pyx_MODULE_NAME "geotess.GeoTessGrid"
-int __pyx_module_is_main_geotess__GeoTessGrid = 0;
+/* Module declarations from 'cyGeoTessGrid' */
+#define __Pyx_MODULE_NAME "cyGeoTessGrid"
+int __pyx_module_is_main_cyGeoTessGrid = 0;
 
-/* Implementation of 'geotess.GeoTessGrid' */
+/* Implementation of 'cyGeoTessGrid' */
 static char __pyx_k_main[] = "__main__";
 static char __pyx_k_test[] = "__test__";
 static char __pyx_k_GeoTessGrid_Cython_definitions[] = "\nGeoTessGrid Cython definitions.\n\nThe Cython definitions here are meant to expose direct functionality from the\nunderlying C++ classes.  Not all methods/constructors are exposed, only the\nones that are used in the pure Python wrapper class.  For example, the Python\nGrid class has a constructor just uses the c++ loadGrid method, not any actual\nc++ GeoTessGrid constructor, so no c++ constructor is exposed.\n\n";
@@ -571,7 +572,7 @@ static struct PyModuleDef __pyx_moduledef = {
   #else
     PyModuleDef_HEAD_INIT,
   #endif
-    "GeoTessGrid",
+    "cyGeoTessGrid",
     __pyx_k_GeoTessGrid_Cython_definitions, /* m_doc */
     -1, /* m_size */
     __pyx_methods /* m_methods */,
@@ -606,11 +607,11 @@ static int __Pyx_InitGlobals(void) {
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initGeoTessGrid(void); /*proto*/
-PyMODINIT_FUNC initGeoTessGrid(void)
+PyMODINIT_FUNC initcyGeoTessGrid(void); /*proto*/
+PyMODINIT_FUNC initcyGeoTessGrid(void)
 #else
-PyMODINIT_FUNC PyInit_GeoTessGrid(void); /*proto*/
-PyMODINIT_FUNC PyInit_GeoTessGrid(void)
+PyMODINIT_FUNC PyInit_cyGeoTessGrid(void); /*proto*/
+PyMODINIT_FUNC PyInit_cyGeoTessGrid(void)
 #endif
 {
   PyObject *__pyx_t_1 = NULL;
@@ -627,7 +628,7 @@ PyMODINIT_FUNC PyInit_GeoTessGrid(void)
           Py_FatalError("failed to import 'refnanny' module");
   }
   #endif
-  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_GeoTessGrid(void)", 0);
+  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_cyGeoTessGrid(void)", 0);
   if ( __Pyx_check_binary_version() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -649,7 +650,7 @@ PyMODINIT_FUNC PyInit_GeoTessGrid(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("GeoTessGrid", __pyx_methods, __pyx_k_GeoTessGrid_Cython_definitions, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("cyGeoTessGrid", __pyx_methods, __pyx_k_GeoTessGrid_Cython_definitions, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -666,14 +667,14 @@ PyMODINIT_FUNC PyInit_GeoTessGrid(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_geotess__GeoTessGrid) {
+  if (__pyx_module_is_main_cyGeoTessGrid) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "geotess.GeoTessGrid")) {
-      if (unlikely(PyDict_SetItemString(modules, "geotess.GeoTessGrid", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "cyGeoTessGrid")) {
+      if (unlikely(PyDict_SetItemString(modules, "cyGeoTessGrid", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -690,7 +691,7 @@ PyMODINIT_FUNC PyInit_GeoTessGrid(void)
   /*--- Function import code ---*/
   /*--- Execution code ---*/
 
-  /* "geotess/GeoTessGrid.pyx":1
+  /* "cyGeoTessGrid.pyx":1
  * """             # <<<<<<<<<<<<<<
  * GeoTessGrid Cython definitions.
  * 
@@ -707,11 +708,11 @@ PyMODINIT_FUNC PyInit_GeoTessGrid(void)
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init geotess.GeoTessGrid", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init cyGeoTessGrid", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init geotess.GeoTessGrid");
+    PyErr_SetString(PyExc_ImportError, "init cyGeoTessGrid");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
