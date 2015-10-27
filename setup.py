@@ -30,12 +30,12 @@ if use_cython:
             _sdist.run(self)
 
     ext_modules += [
-        Extension("geotess.libgeotesscpp", CPPFILES + HDRFILES + PYXFILES),
+        Extension("geotess.libgeotess", CPPFILES + HDRFILES + PYXFILES),
     ]
     cmdclass.update({ 'build_ext': build_ext })
 else:
     ext_modules += [
-        Extension("geotess.libgeotesscpp", CPPFILES + HDRFILES),
+        Extension("geotess.libgeotess", CPPFILES + HDRFILES),
     ]
 
 cmdclass['sdist'] = sdist
@@ -45,11 +45,8 @@ setup(name = 'pygeotess',
       description = 'GeoTess access from Python.',
       author = 'Jonathan K. MacCarthy',
       author_email = 'jkmacc@lanl.gov',
-      #install_requires=['pisces-db', 'numpy', 'matplotlib', 'basemap',
-      #                  'obspy>=0.8', 'sqlalchemy>=0.7'],
       packages = ['geotess'],
       py_modules = ['geotess.grid', 'geotess.exc'],
       data_files = [ ('geotess/data', glob('geotess/src/GeoTessModels/*')) ],
-      package_data = {'geotess.data': 
       )
 
