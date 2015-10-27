@@ -1,3 +1,4 @@
+import platform
 from glob import glob
 
 from distutils.core import setup
@@ -7,9 +8,14 @@ from distutils.command.sdist import sdist as _sdist
 # see http://stackoverflow.com/a/4515279/745557
 # and http://stackoverflow.com/a/18418524/745557
 
-CPPFILES = glob('geotess/src/GeoTessCPP/src/*.cc')
-HDRFILES = glob('geotess/src/GeoTessCPP/include/*.h')
-PYXFILES = glob('geotess/*.pyx')
+if platform.python_implementation() == 'CPython':
+    CPPFILES = glob('geotess/src/GeoTessCPP/src/*.cc')
+    PYXFILES = glob('geotess/*.pyx')
+else:
+    # Jython
+    # in here will go code that deals with the GeoTess jar file
+    CPPFILES = []
+    PYXFILES = []
 
 try:
     from Cython.Distutils import build_ext
@@ -22,6 +28,7 @@ cmdclass = {}
 ext_modules = []
 
 if use_cython:
+    print("Cython detected.")
     class sdist(_sdist):
         def run(self):
             # Make sure the compiled Cython files in the distribution are up-to-date
@@ -30,15 +37,17 @@ if use_cython:
             _sdist.run(self)
 
     ext_modules += [
-        Extension("geotess.libgeotess", CPPFILES + HDRFILES + PYXFILES),
+        Extension(name='geotess.libgeotess', sources=CPPFILES+PYXFILES,
+                  include_dirs=['geotess/src/GeoTessCPP/include']),
     ]
-    cmdclass.update({ 'build_ext': build_ext })
+    cmdclass['build_ext'] = build_ext
+    cmdclass['sdist'] = sdist
 else:
     ext_modules += [
-        Extension("geotess.libgeotess", CPPFILES + HDRFILES),
+        Extension(name='geotess.libgeotess', sources=CPPFILES,
+                  include_dirs=['geotess/src/GeoTessCPP/include']),
     ]
 
-cmdclass['sdist'] = sdist
 
 setup(name = 'pygeotess',
       version = '0.1',
@@ -47,6 +56,7 @@ setup(name = 'pygeotess',
       author_email = 'jkmacc@lanl.gov',
       packages = ['geotess'],
       py_modules = ['geotess.grid', 'geotess.exc'],
+      ext_modules = ext_modules,
       data_files = [ ('geotess/data', glob('geotess/src/GeoTessModels/*')) ],
       )
 
