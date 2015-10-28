@@ -1,13 +1,14 @@
 """
 This module exposes Cython GeoTess functionality from the pxd file into Python.
 
+The class definitions here are Python-visible, and are simply wrappers that 
+forward the Python-exposed methods directly to their Cython-exposed c++
+counterparts, which have been exposed in the imported pxd file.
+
 Using both a pxd and a pyx file is done, partly, so that we can keep the
 exposed c++ GeoTess functionality together in one namespace using "cimport",
 and we can name the classes exposed to Python the same as those in the
 GeoTess c++.
-
-The Python-visible definitions here are just wrapper classes that map directly
-to their Cython-exposed c++ counterparts in the corresponding pxd file.
 
 """
 from libcpp.string cimport string
@@ -25,6 +26,9 @@ cdef class GeoTessGrid:
 
     def loadGrid(self, const string& inputFile):
         self.thisptr.loadGrid(inputFile)
+
+    def writeGrid(self, const string& fileName):
+        self.thisptr.writeGrid(fileName)
 
     def getNLevels(self):
         return self.thisptr.getNLevels()

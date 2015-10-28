@@ -13,6 +13,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         # string value inputFile is turned into a pointer, that can't be used to
         # modify the thing it points to, and returns a pointer to a GeoTessGrid.
         GeoTessGrid* loadGrid(const string& inputFile)
+        void writeGrid(const string& fileName)
         int getNLevels()
         int getNTriangles()
         int getNTessellations()
