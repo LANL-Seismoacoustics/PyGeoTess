@@ -11,7 +11,6 @@ if platform.python_implementation() == 'CPython':
     CPPFILES = glob('geotess/src/*.cc') # GeoTess c++ source
     # PYXFILES = glob('geotess/src/*.pyx') # Cython source files
     # CYFILES = glob('geotess/*.cpp') # cythonized c++ source files
-    # CPPFILES = ['geotess/src/GeoTessGrid.cc'] # GeoTess c++ source
     PYXFILES = ['geotess/src/libgeotess.pyx']
     CYFILES = glob('geotess/src/libgeotess.cpp') # cythonized c++ source files
 else:
