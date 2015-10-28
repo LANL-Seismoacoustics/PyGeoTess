@@ -3,9 +3,7 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [
-            "GeoTessGrid.h"
-        ], 
+        "depends": [], 
         "language": "c++"
     }
 }
@@ -262,11 +260,13 @@ class __Pyx_FakeReference {
 #include <math.h>
 #define __PYX_HAVE__libgeotess
 #define __PYX_HAVE_API__libgeotess
-#include "GeoTessGrid.h"
+#include "string.h"
+#include <string>
 #include "ios"
 #include "new"
 #include "stdexcept"
 #include "typeinfo"
+#include "GeoTessGrid.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -456,18 +456,19 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "libgeotess.pyx",
+  "geotess/src/libgeotess.pyx",
+  "stringsource",
 };
 
 /*--- Type declarations ---*/
 struct __pyx_obj_10libgeotess_GeoTessGrid;
 
-/* "libgeotess.pyx":15
+/* "libgeotess.pyx":17
  * cimport clibgeotess as clib
  * 
  * cdef class GeoTessGrid:             # <<<<<<<<<<<<<<
  *     cdef clib.GeoTessGrid *thisptr
- *     def __cinit__(self):
+ * 
  */
 struct __pyx_obj_10libgeotess_GeoTessGrid {
   PyObject_HEAD
@@ -612,19 +613,31 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
+/* Module declarations from 'libc.string' */
+
+/* Module declarations from 'libcpp.string' */
+
 /* Module declarations from 'clibgeotess' */
 
 /* Module declarations from 'libgeotess' */
 static PyTypeObject *__pyx_ptype_10libgeotess_GeoTessGrid = 0;
+static std::string __pyx_convert_string_from_py_std__in_string(PyObject *); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_convert_PyObject_string_to_py_std__in_string(std::string const &); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_convert_PyUnicode_string_to_py_std__in_string(std::string const &); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_convert_PyStr_string_to_py_std__in_string(std::string const &); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_convert_PyBytes_string_to_py_std__in_string(std::string const &); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_convert_PyByteArray_string_to_py_std__in_string(std::string const &); /*proto*/
 #define __Pyx_MODULE_NAME "libgeotess"
 int __pyx_module_is_main_libgeotess = 0;
 
 /* Implementation of 'libgeotess' */
 static int __pyx_pf_10libgeotess_11GeoTessGrid___cinit__(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
 static void __pyx_pf_10libgeotess_11GeoTessGrid_2__dealloc__(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_4getNLevels(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_6getNTriangles(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_8getNTessellations(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_4loadGrid(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self, std::string __pyx_v_inputFile); /* proto */
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_6getNLevels(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_8getNTriangles(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_10getNTessellations(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_12toString(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_10libgeotess_GeoTessGrid(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static char __pyx_k_main[] = "__main__";
 static char __pyx_k_test[] = "__test__";
@@ -632,12 +645,12 @@ static char __pyx_k_This_module_exposes_Cython_GeoT[] = "\nThis module exposes C
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_test;
 
-/* "libgeotess.pyx":17
- * cdef class GeoTessGrid:
+/* "libgeotess.pyx":20
  *     cdef clib.GeoTessGrid *thisptr
+ * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self.thisptr = new clib.GeoTessGrid()
- *     def __dealloc__(self):
+ * 
  */
 
 /* Python wrapper */
@@ -665,27 +678,27 @@ static int __pyx_pf_10libgeotess_11GeoTessGrid___cinit__(struct __pyx_obj_10libg
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "libgeotess.pyx":18
- *     cdef clib.GeoTessGrid *thisptr
+  /* "libgeotess.pyx":21
+ * 
  *     def __cinit__(self):
  *         self.thisptr = new clib.GeoTessGrid()             # <<<<<<<<<<<<<<
+ * 
  *     def __dealloc__(self):
- *         del self.thisptr
  */
   try {
     __pyx_t_1 = new geotess::GeoTessGrid();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 18; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "libgeotess.pyx":17
- * cdef class GeoTessGrid:
+  /* "libgeotess.pyx":20
  *     cdef clib.GeoTessGrid *thisptr
+ * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self.thisptr = new clib.GeoTessGrid()
- *     def __dealloc__(self):
+ * 
  */
 
   /* function exit code */
@@ -699,12 +712,12 @@ static int __pyx_pf_10libgeotess_11GeoTessGrid___cinit__(struct __pyx_obj_10libg
   return __pyx_r;
 }
 
-/* "libgeotess.pyx":19
- *     def __cinit__(self):
+/* "libgeotess.pyx":23
  *         self.thisptr = new clib.GeoTessGrid()
+ * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         del self.thisptr
- *     def getNLevels(self):
+ * 
  */
 
 /* Python wrapper */
@@ -722,49 +735,112 @@ static void __pyx_pf_10libgeotess_11GeoTessGrid_2__dealloc__(struct __pyx_obj_10
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "libgeotess.pyx":20
- *         self.thisptr = new clib.GeoTessGrid()
+  /* "libgeotess.pyx":24
+ * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
- *     def getNLevels(self):
- *         return self.thisptr.getNLevels()
+ * 
+ *     def loadGrid(self, const string& inputFile):
  */
   delete __pyx_v_self->thisptr;
 
-  /* "libgeotess.pyx":19
- *     def __cinit__(self):
+  /* "libgeotess.pyx":23
  *         self.thisptr = new clib.GeoTessGrid()
+ * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         del self.thisptr
- *     def getNLevels(self):
+ * 
  */
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
 
-/* "libgeotess.pyx":21
- *     def __dealloc__(self):
+/* "libgeotess.pyx":26
  *         del self.thisptr
- *     def getNLevels(self):             # <<<<<<<<<<<<<<
- *         return self.thisptr.getNLevels()
- *     def getNTriangles(self):
+ * 
+ *     def loadGrid(self, const string& inputFile):             # <<<<<<<<<<<<<<
+ *         self.thisptr.loadGrid(inputFile)
+ * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_5getNLevels(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_5getNLevels(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_5loadGrid(PyObject *__pyx_v_self, PyObject *__pyx_arg_inputFile); /*proto*/
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_5loadGrid(PyObject *__pyx_v_self, PyObject *__pyx_arg_inputFile) {
+  std::string __pyx_v_inputFile;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("getNLevels (wrapper)", 0);
-  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_4getNLevels(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("loadGrid (wrapper)", 0);
+  assert(__pyx_arg_inputFile); {
+    __pyx_v_inputFile = __pyx_convert_string_from_py_std__in_string(__pyx_arg_inputFile); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("libgeotess.GeoTessGrid.loadGrid", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_4loadGrid(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self), ((std::string)__pyx_v_inputFile));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_4getNLevels(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self) {
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_4loadGrid(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self, std::string __pyx_v_inputFile) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("loadGrid", 0);
+
+  /* "libgeotess.pyx":27
+ * 
+ *     def loadGrid(self, const string& inputFile):
+ *         self.thisptr.loadGrid(inputFile)             # <<<<<<<<<<<<<<
+ * 
+ *     def getNLevels(self):
+ */
+  __pyx_v_self->thisptr->loadGrid(__pyx_v_inputFile);
+
+  /* "libgeotess.pyx":26
+ *         del self.thisptr
+ * 
+ *     def loadGrid(self, const string& inputFile):             # <<<<<<<<<<<<<<
+ *         self.thisptr.loadGrid(inputFile)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "libgeotess.pyx":29
+ *         self.thisptr.loadGrid(inputFile)
+ * 
+ *     def getNLevels(self):             # <<<<<<<<<<<<<<
+ *         return self.thisptr.getNLevels()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_7getNLevels(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_7getNLevels(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getNLevels (wrapper)", 0);
+  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_6getNLevels(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_6getNLevels(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -773,26 +849,26 @@ static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_4getNLevels(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getNLevels", 0);
 
-  /* "libgeotess.pyx":22
- *         del self.thisptr
+  /* "libgeotess.pyx":30
+ * 
  *     def getNLevels(self):
  *         return self.thisptr.getNLevels()             # <<<<<<<<<<<<<<
+ * 
  *     def getNTriangles(self):
- *         return self.thisptr.getNTriangles()
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNLevels()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNLevels()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "libgeotess.pyx":21
- *     def __dealloc__(self):
- *         del self.thisptr
+  /* "libgeotess.pyx":29
+ *         self.thisptr.loadGrid(inputFile)
+ * 
  *     def getNLevels(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getNLevels()
- *     def getNTriangles(self):
+ * 
  */
 
   /* function exit code */
@@ -806,28 +882,28 @@ static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_4getNLevels(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "libgeotess.pyx":23
- *     def getNLevels(self):
+/* "libgeotess.pyx":32
  *         return self.thisptr.getNLevels()
+ * 
  *     def getNTriangles(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getNTriangles()
- *     def getNTessellations(self):
+ * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_7getNTriangles(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_7getNTriangles(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_9getNTriangles(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_9getNTriangles(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("getNTriangles (wrapper)", 0);
-  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_6getNTriangles(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_8getNTriangles(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_6getNTriangles(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self) {
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_8getNTriangles(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -836,26 +912,26 @@ static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_6getNTriangles(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getNTriangles", 0);
 
-  /* "libgeotess.pyx":24
- *         return self.thisptr.getNLevels()
+  /* "libgeotess.pyx":33
+ * 
  *     def getNTriangles(self):
  *         return self.thisptr.getNTriangles()             # <<<<<<<<<<<<<<
+ * 
  *     def getNTessellations(self):
- *         return self.thisptr.getNTessellations()
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNTriangles()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNTriangles()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "libgeotess.pyx":23
- *     def getNLevels(self):
+  /* "libgeotess.pyx":32
  *         return self.thisptr.getNLevels()
+ * 
  *     def getNTriangles(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getNTriangles()
- *     def getNTessellations(self):
+ * 
  */
 
   /* function exit code */
@@ -869,27 +945,28 @@ static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_6getNTriangles(struct __pyx
   return __pyx_r;
 }
 
-/* "libgeotess.pyx":25
- *     def getNTriangles(self):
+/* "libgeotess.pyx":35
  *         return self.thisptr.getNTriangles()
+ * 
  *     def getNTessellations(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getNTessellations()
+ * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_9getNTessellations(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_9getNTessellations(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_11getNTessellations(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_11getNTessellations(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("getNTessellations (wrapper)", 0);
-  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_8getNTessellations(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_10getNTessellations(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_8getNTessellations(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self) {
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_10getNTessellations(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -898,23 +975,26 @@ static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_8getNTessellations(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getNTessellations", 0);
 
-  /* "libgeotess.pyx":26
- *         return self.thisptr.getNTriangles()
+  /* "libgeotess.pyx":36
+ * 
  *     def getNTessellations(self):
  *         return self.thisptr.getNTessellations()             # <<<<<<<<<<<<<<
+ * 
+ *     def toString(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNTessellations()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNTessellations()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "libgeotess.pyx":25
- *     def getNTriangles(self):
+  /* "libgeotess.pyx":35
  *         return self.thisptr.getNTriangles()
+ * 
  *     def getNTessellations(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getNTessellations()
+ * 
  */
 
   /* function exit code */
@@ -922,6 +1002,371 @@ static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_8getNTessellations(struct _
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("libgeotess.GeoTessGrid.getNTessellations", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "libgeotess.pyx":38
+ *         return self.thisptr.getNTessellations()
+ * 
+ *     def toString(self):             # <<<<<<<<<<<<<<
+ *         # XXX: doesn't work, don't know why
+ *         return self.thisptr.toString()
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_13toString(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10libgeotess_11GeoTessGrid_13toString(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("toString (wrapper)", 0);
+  __pyx_r = __pyx_pf_10libgeotess_11GeoTessGrid_12toString(((struct __pyx_obj_10libgeotess_GeoTessGrid *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10libgeotess_11GeoTessGrid_12toString(struct __pyx_obj_10libgeotess_GeoTessGrid *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("toString", 0);
+
+  /* "libgeotess.pyx":40
+ *     def toString(self):
+ *         # XXX: doesn't work, don't know why
+ *         return self.thisptr.toString()             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_self->thisptr->toString()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "libgeotess.pyx":38
+ *         return self.thisptr.getNTessellations()
+ * 
+ *     def toString(self):             # <<<<<<<<<<<<<<
+ *         # XXX: doesn't work, don't know why
+ *         return self.thisptr.toString()
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("libgeotess.GeoTessGrid.toString", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "string.from_py":13
+ * 
+ * @cname("__pyx_convert_string_from_py_std__in_string")
+ * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
+ */
+
+static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v_o) {
+  Py_ssize_t __pyx_v_length;
+  char *__pyx_v_data;
+  std::string __pyx_r;
+  __Pyx_RefNannyDeclarations
+  char *__pyx_t_1;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_string_from_py_std__in_string", 0);
+
+  /* "string.from_py":15
+ * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)             # <<<<<<<<<<<<<<
+ *     return string(data, length)
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyObject_AsStringAndSize(__pyx_v_o, (&__pyx_v_length)); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_data = __pyx_t_1;
+
+  /* "string.from_py":16
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
+ *     return string(data, length)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = std::string(__pyx_v_data, __pyx_v_length);
+  goto __pyx_L0;
+
+  /* "string.from_py":13
+ * 
+ * @cname("__pyx_convert_string_from_py_std__in_string")
+ * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("string.from_py.__pyx_convert_string_from_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "string.to_py":31
+ * 
+ * @cname("__pyx_convert_PyObject_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyObject_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyObject_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+static CYTHON_INLINE PyObject *__pyx_convert_PyObject_string_to_py_std__in_string(std::string const &__pyx_v_s) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_PyObject_string_to_py_std__in_string", 0);
+
+  /* "string.to_py":32
+ * @cname("__pyx_convert_PyObject_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyObject_string_to_py_std__in_string(const string& s):
+ *     return __Pyx_PyObject_FromStringAndSize(s.data(), s.size())             # <<<<<<<<<<<<<<
+ * cdef extern from *:
+ *     cdef object __Pyx_PyUnicode_FromStringAndSize(char*, size_t)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_FromStringAndSize(__pyx_v_s.data(), __pyx_v_s.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "string.to_py":31
+ * 
+ * @cname("__pyx_convert_PyObject_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyObject_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyObject_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("string.to_py.__pyx_convert_PyObject_string_to_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "string.to_py":37
+ * 
+ * @cname("__pyx_convert_PyUnicode_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyUnicode_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyUnicode_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+static CYTHON_INLINE PyObject *__pyx_convert_PyUnicode_string_to_py_std__in_string(std::string const &__pyx_v_s) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_PyUnicode_string_to_py_std__in_string", 0);
+
+  /* "string.to_py":38
+ * @cname("__pyx_convert_PyUnicode_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyUnicode_string_to_py_std__in_string(const string& s):
+ *     return __Pyx_PyUnicode_FromStringAndSize(s.data(), s.size())             # <<<<<<<<<<<<<<
+ * cdef extern from *:
+ *     cdef object __Pyx_PyStr_FromStringAndSize(char*, size_t)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyUnicode_FromStringAndSize(__pyx_v_s.data(), __pyx_v_s.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "string.to_py":37
+ * 
+ * @cname("__pyx_convert_PyUnicode_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyUnicode_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyUnicode_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("string.to_py.__pyx_convert_PyUnicode_string_to_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "string.to_py":43
+ * 
+ * @cname("__pyx_convert_PyStr_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyStr_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyStr_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+static CYTHON_INLINE PyObject *__pyx_convert_PyStr_string_to_py_std__in_string(std::string const &__pyx_v_s) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_PyStr_string_to_py_std__in_string", 0);
+
+  /* "string.to_py":44
+ * @cname("__pyx_convert_PyStr_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyStr_string_to_py_std__in_string(const string& s):
+ *     return __Pyx_PyStr_FromStringAndSize(s.data(), s.size())             # <<<<<<<<<<<<<<
+ * cdef extern from *:
+ *     cdef object __Pyx_PyBytes_FromStringAndSize(char*, size_t)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyStr_FromStringAndSize(__pyx_v_s.data(), __pyx_v_s.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "string.to_py":43
+ * 
+ * @cname("__pyx_convert_PyStr_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyStr_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyStr_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("string.to_py.__pyx_convert_PyStr_string_to_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "string.to_py":49
+ * 
+ * @cname("__pyx_convert_PyBytes_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyBytes_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyBytes_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+static CYTHON_INLINE PyObject *__pyx_convert_PyBytes_string_to_py_std__in_string(std::string const &__pyx_v_s) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_PyBytes_string_to_py_std__in_string", 0);
+
+  /* "string.to_py":50
+ * @cname("__pyx_convert_PyBytes_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyBytes_string_to_py_std__in_string(const string& s):
+ *     return __Pyx_PyBytes_FromStringAndSize(s.data(), s.size())             # <<<<<<<<<<<<<<
+ * cdef extern from *:
+ *     cdef object __Pyx_PyByteArray_FromStringAndSize(char*, size_t)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyBytes_FromStringAndSize(__pyx_v_s.data(), __pyx_v_s.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "string.to_py":49
+ * 
+ * @cname("__pyx_convert_PyBytes_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyBytes_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyBytes_FromStringAndSize(s.data(), s.size())
+ * cdef extern from *:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("string.to_py.__pyx_convert_PyBytes_string_to_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "string.to_py":55
+ * 
+ * @cname("__pyx_convert_PyByteArray_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyByteArray_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyByteArray_FromStringAndSize(s.data(), s.size())
+ * 
+ */
+
+static CYTHON_INLINE PyObject *__pyx_convert_PyByteArray_string_to_py_std__in_string(std::string const &__pyx_v_s) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_PyByteArray_string_to_py_std__in_string", 0);
+
+  /* "string.to_py":56
+ * @cname("__pyx_convert_PyByteArray_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyByteArray_string_to_py_std__in_string(const string& s):
+ *     return __Pyx_PyByteArray_FromStringAndSize(s.data(), s.size())             # <<<<<<<<<<<<<<
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyByteArray_FromStringAndSize(__pyx_v_s.data(), __pyx_v_s.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "string.to_py":55
+ * 
+ * @cname("__pyx_convert_PyByteArray_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyByteArray_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyByteArray_FromStringAndSize(s.data(), s.size())
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("string.to_py.__pyx_convert_PyByteArray_string_to_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -960,9 +1405,11 @@ static void __pyx_tp_dealloc_10libgeotess_GeoTessGrid(PyObject *o) {
 }
 
 static PyMethodDef __pyx_methods_10libgeotess_GeoTessGrid[] = {
-  {"getNLevels", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_5getNLevels, METH_NOARGS, 0},
-  {"getNTriangles", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_7getNTriangles, METH_NOARGS, 0},
-  {"getNTessellations", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_9getNTessellations, METH_NOARGS, 0},
+  {"loadGrid", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_5loadGrid, METH_O, 0},
+  {"getNLevels", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_7getNLevels, METH_NOARGS, 0},
+  {"getNTriangles", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_9getNTriangles, METH_NOARGS, 0},
+  {"getNTessellations", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_11getNTessellations, METH_NOARGS, 0},
+  {"toString", (PyCFunction)__pyx_pw_10libgeotess_11GeoTessGrid_13toString, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
@@ -1148,9 +1595,9 @@ PyMODINIT_FUNC PyInit_libgeotess(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_10libgeotess_GeoTessGrid) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_10libgeotess_GeoTessGrid) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_10libgeotess_GeoTessGrid.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "GeoTessGrid", (PyObject *)&__pyx_type_10libgeotess_GeoTessGrid) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "GeoTessGrid", (PyObject *)&__pyx_type_10libgeotess_GeoTessGrid) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_10libgeotess_GeoTessGrid = &__pyx_type_10libgeotess_GeoTessGrid;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -1166,6 +1613,14 @@ PyMODINIT_FUNC PyInit_libgeotess(void)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "string.to_py":55
+ * 
+ * @cname("__pyx_convert_PyByteArray_string_to_py_std__in_string")
+ * cdef inline object __pyx_convert_PyByteArray_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
+ *     return __Pyx_PyByteArray_FromStringAndSize(s.data(), s.size())
+ * 
+ */
 
   /*--- Wrapped vars code ---*/
 

@@ -10,17 +10,31 @@ The Python-visible definitions here are just wrapper classes that map directly
 to their Cython-exposed c++ counterparts in the corresponding pxd file.
 
 """
+from libcpp.string cimport string
+
 cimport clibgeotess as clib
 
 cdef class GeoTessGrid:
     cdef clib.GeoTessGrid *thisptr
+
     def __cinit__(self):
         self.thisptr = new clib.GeoTessGrid()
+
     def __dealloc__(self):
         del self.thisptr
+
+    def loadGrid(self, const string& inputFile):
+        self.thisptr.loadGrid(inputFile)
+
     def getNLevels(self):
         return self.thisptr.getNLevels()
+ 
     def getNTriangles(self):
         return self.thisptr.getNTriangles()
+
     def getNTessellations(self):
         return self.thisptr.getNTessellations()
+
+    def toString(self):
+        # XXX: doesn't work, don't know why
+        return self.thisptr.toString()
