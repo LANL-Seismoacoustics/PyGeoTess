@@ -12,10 +12,10 @@ to their Cython-exposed c++ counterparts in the corresponding pxd file.
 """
 cimport clibgeotess as clib
 
-cdef class Grid:
-    cdef GeoTessGrid *thisptr
-    def _cinit__(self):
-        self.thisptr = new GeoTessGrid
+cdef class GeoTessGrid:
+    cdef clib.GeoTessGrid *thisptr
+    def __cinit__(self):
+        self.thisptr = new clib.GeoTessGrid()
     def __dealloc__(self):
         del self.thisptr
     def getNLevels(self):
