@@ -40,12 +40,11 @@ cdef class GeoTessGrid:
         return self.thisptr.getNTessellations()
 
     def toString(self):
-        # XXX: doesn't work, don't know why
         return self.thisptr.toString()
 
 
 cdef class GeoTessModel:
-    cdef clib.GeoTessModel *thiptr
+    cdef clib.GeoTessModel *thisptr
 
     def __cinit__(self):
         self.thisptr = new clib.GeoTessModel()
@@ -53,8 +52,11 @@ cdef class GeoTessModel:
     def __dealloc__(self):
         del self.thisptr
 
-    def loadModel(self, const string &inputFile, const string &relGridFilePath=""):
-        self.thisptr.loadModel(inputFile, relGridFilePath)
+    # def loadModel(self, const string &inputFile, const string &relGridFilePath=""):
+    #     self.thisptr.loadModel(inputFile, relGridFilePath)
 
-    def writeModel(const string &outputFile):
+    def writeModel(self, const string &outputFile):
         self.thisptr.writeModel(outputFile)
+
+    def toString(self):
+        return self.thisptr.toString()
