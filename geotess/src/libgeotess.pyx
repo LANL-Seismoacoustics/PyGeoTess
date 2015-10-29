@@ -42,3 +42,19 @@ cdef class GeoTessGrid:
     def toString(self):
         # XXX: doesn't work, don't know why
         return self.thisptr.toString()
+
+
+cdef class GeoTessModel:
+    cdef clib.GeoTessModel *thiptr
+
+    def __cinit__(self):
+        self.thisptr = new clib.GeoTessModel()
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    def loadModel(self, const string &inputFile, const string &relGridFilePath=""):
+        self.thisptr.loadModel(inputFile, relGridFilePath)
+
+    def writeModel(const string &outputFile):
+        self.thisptr.writeModel(outputFile)

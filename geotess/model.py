@@ -1,5 +1,5 @@
 """
-Home of GeoTessModel and MetaData.
+Home of GeoTessModel.
 
 GeoTessModel is the main user-facing class.  GeoTessGrids are build by 
 geotessbuilder, and rarely (never) directly manipulated.  (GeoTess)MetaData
@@ -16,38 +16,6 @@ from gov.sandia.geotess import GeoTessModel
 # These namedtuple are lightweight readable containers for Layer/Attribute info
 Layer = namedtuple('Layer', ['name', 'tess_id'])
 Attribute = namedtuple('Attribute', ['name', 'unit'])
-
-
-class MetaData(object):
-    """
-    The MetaData object contains ancillary information about a GeoTessModel.
-
-    """
-    def __init__(self, layers, attributes, dtype, description=None):
-        """
-        Initialize a MetaData object.
-
-        Parameters
-        ----------
-        layers : sequence of Layer tuples
-            A sequence Layer named tuples describing model layers and tess_ids.
-        attributes : sequence of Attribute tuples
-            A sequence of Attribute name tuples describing model attributes and units.
-        dtype : {float, int}
-            Data type used to store attribute values.
-        description : str, optional
-            Plain english description of the model.
-
-        Attributes
-        ----------
-        metadata : geotess.MetaData instance
-        layers : list of Layers
-        description : str
-        dtype : {float, int}
-
-        """
-        pass
-
 
 class Model(object):
     def __init__(self, gridfile, layers=None, attributes=None, dtype=None, description=None):

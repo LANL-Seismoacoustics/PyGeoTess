@@ -6,7 +6,7 @@ def ak135_interp(layer):
     radii = attrib_values = None
     return radii, attrib_values
 
-dscr = """
+descr = """
 Simple example of populating a 3D GeoTess model
 comprised of 3 multi-level tessellations
 author: Sandy Ballard
@@ -29,7 +29,7 @@ attributes = [Attribute(name='Vp', unit='km/sec'),
               Attribute('rho', 'g/cc')]
 
 # Initialize the model.  It is full of null data.
-model = GeoTessModel(gridfile='path/to/gridfile.ascii', description=dscr, 
+model = GeoTessModel(gridfile='path/to/gridfile.ascii', description=descr, 
                      layers=layers, attributes=attributes, dtype=float)
 
 # populate the model from ak135

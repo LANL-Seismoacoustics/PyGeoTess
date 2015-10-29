@@ -19,3 +19,8 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getNTessellations()
         string toString()
 
+cdef extern from "GeoTessModel.h" namespace "geotess":
+    cdef cppclass GeoTessModel:
+        GeoTessModel() except +
+        GeoTessModel* loadModel(const string &inputFile, const string &relGridFilePath="")
+        void writeModel(const string &outputFile)
