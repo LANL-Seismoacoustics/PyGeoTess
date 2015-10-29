@@ -52,10 +52,13 @@ cdef class GeoTessModel:
     def __dealloc__(self):
         del self.thisptr
 
-    # def loadModel(self, const string &inputFile, const string &relGridFilePath=""):
-    #     self.thisptr.loadModel(inputFile, relGridFilePath)
+    def loadModel(self, const string& inputFile, const string& relGridFilePath):
+        self.thisptr.loadModel(inputFile, relGridFilePath)
 
-    def writeModel(self, const string &outputFile):
+    def writeModel(self, const string& outputFile=""):
+        # http://grokbase.com/t/gg/cython-users/128gqk22kb/default-arguments-when-wrapping-c
+        # http://stackoverflow.com/questions/5081678/handling-default-parameters-in-cython
+        # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
         self.thisptr.writeModel(outputFile)
 
     def toString(self):
