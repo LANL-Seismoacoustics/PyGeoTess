@@ -11,6 +11,11 @@ exposed c++ GeoTess functionality together in one namespace using "cimport",
 and we can name the classes exposed to Python the same as those in the
 GeoTess c++.
 
+GeoTess functionality is intentionally a one-to-one translation into Python so
+that any modifications to the way models and grids are used can be developed
+and tested in in pure Python modules.  This makes it easier to try different
+Python approaches to working with GeoTess.
+
 """
 
 from libcpp.string cimport string
@@ -57,23 +62,26 @@ cdef class GeoTessMetaData:
     def setEarthShape(self, const string& earthShapeName):
         self.thisptr.setEarthShape(earthShapeName)
 
-    # def setDescription(self, const string& dscr):
-    #     self.thisptr.setDescription(dscr)
+    def setDescription(self, const string& dscr):
+        self.thisptr.setDescription(dscr)
 
-    # def setLayerNames(self, const string& lyrNms):
-    #     self.thisptr.setLayerNames(lyrNms)
+    def setLayerNames(self, const string& lyrNms):
+        self.thisptr.setLayerNames(lyrNms)
 
-    # def setAttributes(self, const string& nms, const string& unts):
-    #     self.thisptr.setAttributes(nms, unts)
+    def setAttributes(self, const string& nms, const string& unts):
+        self.thisptr.setAttributes(nms, unts)
 
-    # def setDataType(self, const string& dt):
-    #     self.thisptr.setDataType(dt)
+    def setDataType(self, const string& dt):
+        self.thisptr.setDataType(dt)
 
-    # def setModelSoftwareVersion(self, const string& swVersion):
-    #     self.thisptr.setModelSoftwareVersion(swVersion)
+    def setModelSoftwareVersion(self, const string& swVersion):
+        self.thisptr.setModelSoftwareVersion(swVersion)
 
-    # def setModelGenerationDate(self, const string& genDate):
-    #     self.thisptr.setModelGenerationDate(genDate)
+    def setModelGenerationDate(self, const string& genDate):
+        self.thisptr.setModelGenerationDate(genDate)
+
+    def toString(self):
+        return self.thisptr.toString()
 
 
 cdef class GeoTessModel:
