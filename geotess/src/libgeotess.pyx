@@ -14,7 +14,7 @@ GeoTess c++.
 GeoTess functionality is intentionally a one-to-one translation into Python so
 that any modifications to the way models and grids are used can be developed
 and tested in in pure Python modules.  This makes it easier to try different
-Python approaches to working with GeoTess.
+Python approaches to working with the underlying GeoTess library.
 
 """
 
@@ -87,8 +87,14 @@ cdef class GeoTessMetaData:
 cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
 
-    def __cinit__(self):
-        self.thisptr = new clib.GeoTessModel()
+    def __cinit__(self, const string &gridFileName, metaData):
+        # I don't expose the null constructor, it's too much of a hassle to
+        # support both that and this two-argument constructor.
+        # https://groups.google.com/forum/#!topic/cython-users/nXsytgkTbGg
+        # http://stackoverflow.com/questions/13669961/convert-python-object-to-cython-pointer
+        #   apparently, this is casting the metaData python object from __cinit__ to a GeoGessMetaData
+        #   object from this module, and feeding its pointer to the C++ library constructor
+        self.thisptr = new clib.GeoTessModel(gridFileName, (<GeoTessMetaData?>metaData).thisptr)
 
     def __dealloc__(self):
         del self.thisptr

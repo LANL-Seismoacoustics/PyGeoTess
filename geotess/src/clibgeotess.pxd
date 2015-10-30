@@ -29,10 +29,12 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         void setDataType(const string& dt)
         void setModelSoftwareVersion(const string& swVersion)
         void setModelGenerationDate(const string& genDate)
+        string toString() const
 
 cdef extern from "GeoTessModel.h" namespace "geotess":
     cdef cppclass GeoTessModel:
         GeoTessModel() except +
+        GeoTessModel(const string &gridFileName, GeoTessMetaData *metaData) except +
         # methods with default must be declared multiple times with explicit
         # params, and routed in the Python-exposed pyx file.
         GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath)
