@@ -23,6 +23,12 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
         GeoTessMetaData() except +
         void setEarthShape(const string& earthShapeName)
+        void setDescription(const string& dscr)
+        void setLayerNames(const string& lyrNms)
+        void setAttributes(const string& nms, const string& unts)
+        void setDataType(const string& dt)
+        void setModelSoftwareVersion(const string& swVersion)
+        void setModelGenerationDate(const string& genDate)
 
 cdef extern from "GeoTessModel.h" namespace "geotess":
     cdef cppclass GeoTessModel:
