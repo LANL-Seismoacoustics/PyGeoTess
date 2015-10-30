@@ -25,6 +25,7 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         void setEarthShape(const string& earthShapeName)
         void setDescription(const string& dscr)
         void setLayerNames(const string& lyrNms)
+        void setLayerTessIds(int layrTsIds[])
         void setAttributes(const string& nms, const string& unts)
         void setDataType(const string& dt)
         void setModelSoftwareVersion(const string& swVersion)
