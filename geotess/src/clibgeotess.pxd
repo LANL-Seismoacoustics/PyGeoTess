@@ -19,9 +19,16 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getNTessellations()
         string toString()
 
+cdef extern from "GeoTessMetaData.h" namespace "geotess":
+    cdef cppclass GeoTessMetaData:
+        GeoTessMetaData() except +
+        void setEarthShape(const string& earthShapeName)
+
 cdef extern from "GeoTessModel.h" namespace "geotess":
     cdef cppclass GeoTessModel:
         GeoTessModel() except +
-        GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath="")
+        # methods with default must be declared multiple times with explicit
+        # params, and routed in the Python-exposed pyx file.
+        GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath)
         void writeModel(const string &outputFile)
         string toString()

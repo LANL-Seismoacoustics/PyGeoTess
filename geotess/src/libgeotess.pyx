@@ -1,3 +1,4 @@
+#cython: embedsignature=True
 """
 This module exposes Cython GeoTess functionality from the pxd file into Python.
 
@@ -11,6 +12,7 @@ and we can name the classes exposed to Python the same as those in the
 GeoTess c++.
 
 """
+
 from libcpp.string cimport string
 
 cimport clibgeotess as clib
@@ -43,6 +45,37 @@ cdef class GeoTessGrid:
         return self.thisptr.toString()
 
 
+cdef class GeoTessMetaData:
+    cdef clib.GeoTessMetaData *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new clib.GeoTessMetaData()
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    def setEarthShape(self, const string& earthShapeName):
+        self.thisptr.setEarthShape(earthShapeName)
+
+    # def setDescription(self, const string& dscr):
+    #     self.thisptr.setDescription(dscr)
+
+    # def setLayerNames(self, const string& lyrNms):
+    #     self.thisptr.setLayerNames(lyrNms)
+
+    # def setAttributes(self, const string& nms, const string& unts):
+    #     self.thisptr.setAttributes(nms, unts)
+
+    # def setDataType(self, const string& dt):
+    #     self.thisptr.setDataType(dt)
+
+    # def setModelSoftwareVersion(self, const string& swVersion):
+    #     self.thisptr.setModelSoftwareVersion(swVersion)
+
+    # def setModelGenerationDate(self, const string& genDate):
+    #     self.thisptr.setModelGenerationDate(genDate)
+
+
 cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
 
@@ -52,13 +85,19 @@ cdef class GeoTessModel:
     def __dealloc__(self):
         del self.thisptr
 
-    def loadModel(self, const string& inputFile, const string& relGridFilePath):
-        self.thisptr.loadModel(inputFile, relGridFilePath)
+    def loadModel(self, const string& inputFile, relGridFilePath=None):
+        """
+        If relGridFilePath is omitted, "" is used.
 
-    def writeModel(self, const string& outputFile=""):
+        """
         # http://grokbase.com/t/gg/cython-users/128gqk22kb/default-arguments-when-wrapping-c
         # http://stackoverflow.com/questions/5081678/handling-default-parameters-in-cython
         # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
+        if relGridFilePath is None:
+            relGridFilePath = ""
+        self.thisptr.loadModel(inputFile, relGridFilePath)
+
+    def writeModel(self, const string& outputFile):
         self.thisptr.writeModel(outputFile)
 
     def toString(self):
