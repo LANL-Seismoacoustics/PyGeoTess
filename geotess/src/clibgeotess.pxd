@@ -6,6 +6,7 @@ methods, and functions.  Declarations are unchanged from the original.
 
 """
 from libcpp.string cimport string
+from libcpp.vector cimport vector
 
 cdef extern from "GeoTessGrid.h" namespace "geotess":
     cdef cppclass GeoTessGrid:
@@ -25,7 +26,8 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         void setEarthShape(const string& earthShapeName)
         void setDescription(const string& dscr)
         void setLayerNames(const string& lyrNms)
-        void setLayerTessIds(int layrTsIds[])
+        void setLayerTessIds(vector[int]& layrTsIds)
+        # apparently, vector<int> in c++ is vector[int] here
         void setAttributes(const string& nms, const string& unts)
         void setDataType(const string& dt)
         void setModelSoftwareVersion(const string& swVersion)

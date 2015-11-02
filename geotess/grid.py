@@ -2,7 +2,7 @@
 GeoTessGrid Python definitions.
 
 """
-import geotess.libgeotesscpp as cpp
+import geotess.libgeotess as lib
 
 class Grid(object):
     """
@@ -38,7 +38,7 @@ class Grid(object):
 
         """
         self.gridfile = gridfile
-        #self.grid = cpp.GeoTessGrid.loadGrid(gridfile)
+        #self.grid = lib.GeoTessGrid.loadGrid(gridfile)
 
     # def __eq__(self, value):
     #     return self.grid == value
