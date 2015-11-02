@@ -6,6 +6,15 @@ The class definitions here are Python-visible, and are simply wrappers that
 forward the Python-exposed methods directly to their Cython-exposed c++
 counterparts, which have been exposed in the imported pxd file.
 
+This module is also responsible for converting between Python types and c++
+types.  For simple numerical types, this conversion is automatically done in
+the calling signature of a "def" method.  Complex c++ class types, however,
+can't be accepted in a Python-visable "def" method because they can't be
+automatically cast from Python to c++.  For these cases, sneaky factory
+functions that can accept the complex types must do the work.  Unfortunately,
+this means that any constructor or method that accepts complex c++ can't be
+"directly" exposed to Python.
+
 Using both a pxd and a pyx file is done, partly, so that we can keep the
 exposed c++ GeoTess functionality together in one namespace using "cimport",
 and we can name the classes exposed to Python the same as those in the
@@ -68,9 +77,9 @@ cdef class GeoTessMetaData:
     def setLayerNames(self, const string& lyrNms):
         self.thisptr.setLayerNames(lyrNms)
 
-    def setLayerTessIds(self, list layrTsIds):
-        # http://stackoverflow.com/questions/28550511/apply-a-python-function-to-an-stdvector-via-cython-callback
-        self.thisptr.setLayerTessIds(layrTsIds)
+    # def setLayerTessIds(self, list layrTsIds):
+    #     # http://stackoverflow.com/questions/28550511/apply-a-python-function-to-an-stdvector-via-cython-callback
+    #     self.thisptr.setLayerTessIds(layrTsIds)
 
     def setAttributes(self, const string& nms, const string& unts):
         self.thisptr.setAttributes(nms, unts)
@@ -91,20 +100,28 @@ cdef class GeoTessMetaData:
 cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
 
-    def __cinit__(self):
-        self.thisptr = new clib.GeoTessModel()
+    def __cinit__(self, gridFileName=None, metaData=None):
+        if gridFileName is None and metaData is None:
+            self.thisptr = new clib.GeoTessModel()
+        else:
+            self = GeoTessModel.create(gridFileName, metaData)
+            # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
 
-    def __init__(self, const string &gridFileName, GeoTessMetaData metaData):
-        # I don't expose the null constructor, it's too much of a hassle to
-        # support both that and this two-argument constructor.
         # https://groups.google.com/forum/#!topic/cython-users/nXsytgkTbGg
         # http://stackoverflow.com/questions/13669961/convert-python-object-to-cython-pointer
         #   apparently, this is casting the metaData python object from __cinit__ to a GeoGessMetaData
         #   object from this module, and feeding its pointer to the C++ library constructor
-        self.thisptr = new clib.GeoTessModel(gridFileName, metaData.thisptr)
 
     def __dealloc__(self):
         del self.thisptr
+
+    @staticmethod
+    cdef GeoTessModel create(const string &gridFileName, clib.GeoTessMetaData *metaData):
+        # This method is just the two-argument constructor.
+        # cdef GeoTessModel model = GeoTessModel()
+        cdef GeoTessModel model = GeoTessModel()
+        model.thisptr = new clib.GeoTessModel(gridFileName, metaData)
+        return model 
 
     def loadModel(self, const string& inputFile, relGridFilePath=None):
         """
