@@ -1,3 +1,4 @@
+#distutils: language = c++
 #cython: embedsignature=True
 """
 This module exposes Cython GeoTess functionality from the pxd file into Python.
@@ -38,7 +39,8 @@ cdef class GeoTessGrid:
         self.thisptr = new clib.GeoTessGrid()
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr != NULL:
+            del self.thisptr
 
     def loadGrid(self, const string& inputFile):
         self.thisptr.loadGrid(inputFile)
@@ -103,14 +105,14 @@ cdef class GeoTessMetaData:
 cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
 
-    def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
-        if gridFileName is None and metaData is None:
+    def __cinit__(self, GeoTessGrid grid=None, GeoTessMetaData metaData=None):
+        if grid is None and metaData is None:
             self.thisptr = new clib.GeoTessModel()
         else:
-            if sum((gridFileName is None, metaData is None)) == 1:
-                raise ValueError("Must provide both gridFileName and metaData")
+            if sum((grid is None, metaData is None)) == 1:
+                raise ValueError("Must provide both grid and metaData")
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-            self.thisptr = new clib.GeoTessModel(gridFileName, metaData.thisptr)
+            self.thisptr = new clib.GeoTessModel(grid.thisptr, metaData.thisptr)
 
     def __dealloc__(self):
         del self.thisptr
