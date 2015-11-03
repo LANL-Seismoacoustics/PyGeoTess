@@ -1,8 +1,11 @@
 """
-This module pulls GeoTess c++ functionality into Cython (not Python yet).
+This module pulls GeoTess c++ functionality into Cython (not in Python yet).
+
+A pxd file is just a header file, mirroring that of c++.  It's necessary
+because Cython doesn't have a C header parser.
 
 We pull from all of GeoTess into this one place, and only the desired classes,
-methods, and functions.  Declarations are unchanged from the original.
+methods, and functions.  Declarations are mostly unchanged from the original.
 
 """
 from libcpp.string cimport string
@@ -27,7 +30,7 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         void setDescription(const string& dscr)
         void setLayerNames(const string& lyrNms)
         void setLayerTessIds(vector[int]& layrTsIds)
-        # apparently, vector<int> in c++ is vector[int] here
+        # apparently, vector<int> in c++ is vector[int] in Cython
         void setAttributes(const string& nms, const string& unts)
         void setDataType(const string& dt)
         void setModelSoftwareVersion(const string& swVersion)
@@ -37,7 +40,8 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
 cdef extern from "GeoTessModel.h" namespace "geotess":
     cdef cppclass GeoTessModel:
         GeoTessModel() except +
-        GeoTessModel(const string &gridFileName, GeoTessMetaData *metaData) except +
+        # GeoTessModel(const string &gridFileName, GeoTessMetaData *metaData) except +
+        GeoTessModel(GeoTessGrid* grid, GeoTessMetaData* metaData) except +
         # methods with default must be declared multiple times with explicit
         # params, and routed in the Python-exposed pyx file.
         GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath)

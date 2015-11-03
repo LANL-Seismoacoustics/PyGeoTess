@@ -103,14 +103,14 @@ cdef class GeoTessMetaData:
 cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
 
-    def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
+    def __cinit__(self, GeoTessGrid gridFileName=None, GeoTessMetaData metaData=None):
         if gridFileName is None and metaData is None:
             self.thisptr = new clib.GeoTessModel()
         else:
             if sum((gridFileName is None, metaData is None)) == 1:
                 raise ValueError("Must provide both gridFileName and metaData")
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-            self.thisptr = new clib.GeoTessModel(gridFileName, metaData.thisptr)
+            self.thisptr = new clib.GeoTessModel(gridFileName.thisptr, metaData.thisptr)
 
     def __dealloc__(self):
         del self.thisptr
