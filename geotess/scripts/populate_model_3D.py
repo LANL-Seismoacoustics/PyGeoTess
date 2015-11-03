@@ -1,5 +1,4 @@
 from geotess.model import Layer, Attribute, Model
-from geotess.position import GeoTessPosition
 
 def ak135_interp(layer):
     # do some stuff
@@ -29,8 +28,8 @@ attributes = [Attribute(name='Vp', unit='km/sec'),
               Attribute('rho', 'g/cc')]
 
 # Initialize the model.  It is full of null data.
-model = GeoTessModel(gridfile='path/to/gridfile.ascii', description=descr, 
-                     layers=layers, attributes=attributes, dtype=float)
+model = Model(gridfile='path/to/gridfile.ascii', description=descr,
+              layers=layers, attributes=attributes, dtype=float)
 
 # populate the model from ak135
 for layer in model.layers:

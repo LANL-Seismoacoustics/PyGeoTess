@@ -11,7 +11,7 @@ from collections import namedtuple
 
 from geotess.grid import Grid
 
-from gov.sandia.geotess import GeoTessModel
+from geotess.libgeotess import GeoTessModel
 
 # These namedtuple are lightweight readable containers for Layer/Attribute info
 Layer = namedtuple('Layer', ['name', 'tess_id'])
