@@ -28,6 +28,10 @@ Python approaches to working with the underlying GeoTess library.
 
 """
 import os
+
+from cpython cimport array
+import array
+
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
@@ -148,50 +152,67 @@ cdef class EarthShape:
     Parameters
     ----------
     earthShape : str
-    SPHERE - Geocentric and geographic latitudes are identical and conversion
-        between depth and radius assume the Earth is a sphere with constant
-        radius of 6371 km.
-    GRS80 - Conversion between geographic and geocentric latitudes, and between
-        depth and radius are performed using the parameters of the GRS80
-        ellipsoid.
-    GRS80_RCONST - Conversion between geographic and geocentric latitudes are
-        performed using the parameters of the GRS80 ellipsoid. Conversions
-        between depth and radius assume the Earth is a sphere with radius 6371.
-    WGS84 - Conversion between geographic and geocentric latitudes, and between
-        depth and radius are performed using the parameters of the WGS84
-        ellipsoid.
-    WGS84_RCONST - Conversion between geographic and geocentric latitudes are
-        performed using the parameters of the WGS84 ellipsoid. Conversions
-        between depth and radius assume the Earth is a sphere with radius 6371.
+        SPHERE - Geocentric and geographic latitudes are identical and
+            conversion between depth and radius assume the Earth is a sphere
+            with constant radius of 6371 km.
+        GRS80 - Conversion between geographic and geocentric latitudes, and
+            between depth and radius are performed using the parameters of the
+            GRS80 ellipsoid.
+        GRS80_RCONST - Conversion between geographic and geocentric latitudes
+            are performed using the parameters of the GRS80 ellipsoid.
+            Conversions between depth and radius assume the Earth is a sphere
+            with radius 6371.
+        WGS84 - Conversion between geographic and geocentric latitudes, and
+            between depth and radius are performed using the parameters of the
+            WGS84 ellipsoid.
+        WGS84_RCONST - Conversion between geographic and geocentric latitudes
+            are performed using the parameters of the WGS84 ellipsoid.
+            Conversions between depth and radius assume the Earth is a sphere
+            with radius 6371.
 
     """
     cdef clib.EarthShape *thisptr
 
     def __cinit__(self, earthShape="WGS84"):
-        self.thisptr = new clib.EarthShape(const string &earthShape)
+        self.thisptr = new clib.EarthShape(earthShape)
 
     def __dealloc__(self):
         del self.thisptr
 
-    def getLonDegrees(self, const double *const v):
+    def getLonDegrees(self, double[:] v):
         """
         Convert a 3-component unit vector to a longitude, in degrees.
 
         """
-        return self.thisptr.getLonDegrees(v)
+        # v is a 1D typed memoryview on an iterable.
+        # thispt.getLonDegrees expects a pointer
+        # do this by passing the address of the first element, following
+        # http://stackoverflow.com/a/14585530/745557
 
-    def getLatDegrees(self, const double *const v):
+        return self.thisptr.getLonDegrees(&v[0])
+
+    def getLatDegrees(self, double[:] v):
         """
         Convert a 3-component unit vector to a latitude, in degrees.
 
         """
-        return self.thisptr.getLatDegrees(v)
+        # see above
 
-    def getVectorDegrees(self):
+        return self.thisptr.getLatDegrees(&v[0])
+
+    def getVectorDegrees(self, double lat, double lon):
         """
         Convert geographic lat, lon into a geocentric unit vector. The
         x-component points toward lat,lon = 0, 0. The y-component points toward
         lat,lon = 0, 90. The z-component points toward north pole.
+
         """
-        pass
-        
+        # thisptr.getVectorDegrees wants two doubles and an array pointer to fill.
+        # we must create a Python object inside here (so that Python can manage
+        # its memory) that can be filled in c++ by passing its pointer, following
+        # http://docs.cython.org/src/tutorial/array.html#zero-overhead-unsafe-access-to-raw-c-pointer
+        cdef array.array v = array.array('d', [0.0, 0.0, 0.0])
+        self.thisptr.getVectorDegrees(lat, lon, &v.data.as_doubles[0])
+
+        return v
+
