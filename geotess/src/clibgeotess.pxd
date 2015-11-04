@@ -42,7 +42,6 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         GeoTessModel() except +
         # GeoTessModel(const string &gridFileName, GeoTessMetaData *metaData) except +
         GeoTessModel(GeoTessGrid *grid, GeoTessMetaData *metaData) except +
-        GeoTessModel(GeoTessGrid* grid, GeoTessMetaData* metaData) except +
         # methods with default must be declared multiple times with explicit
         # params, and routed in the Python-exposed pyx file.
         GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath)

@@ -1,6 +1,5 @@
 from datetime import datetime
-import geotess.lib as lib
-
+import geotess.libgeotess as lib
 
 md =  lib.GeoTessMetaData()
 md.setEarthShape("WGS84")
@@ -18,9 +17,9 @@ md.setLayerTessIds([0, 0, 1, 1, 1, 2, 2])
 md.setAttributes("Vp; Vs; rho", "km/sec; km/sec; g/cc")
 md.setDataType('FLOAT')
 md.setModelSoftwareVersion("GeoTessCPPExamples.PopulateModel3D 1.0.0")
-md.setModelGenerateDate(str(datetime.now()))
+md.setModelGenerationDate(str(datetime.now()))
 
-grid = lib.Grid.loadGrid('../data/small_model_grid.ascii')
+grid = lib.GeoTessGrid.loadGrid('../data/small_model_grid.ascii')
 
 # Initialize the model.  It is full of null data.
 model = lib.GeoTessModel(grid, md)

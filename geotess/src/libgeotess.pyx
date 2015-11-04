@@ -117,23 +117,12 @@ cdef class GeoTessModel:
     def __dealloc__(self):
         del self.thisptr
 
-    #@staticmethod
-    #cdef clib.GeoTessModel create(const string &gridFileName, clib.GeoTessMetaData *metaData):
-    #    # This method is just the two-argument constructor that can accept C++ arguments
-    #    cdef GeoTessModel model = GeoTessModel()
-    #    model.thisptr = new clib.GeoTessModel(gridFileName, metaData)
-    #    return model 
+    # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
 
-    def loadModel(self, const string& inputFile, relGridFilePath=None):
-        """
-        If relGridFilePath is omitted, "" is used.
-
-        """
+    def loadModel(self, const string& inputFile, relGridFilePath=""):
         # http://grokbase.com/t/gg/cython-users/128gqk22kb/default-arguments-when-wrapping-c
         # http://stackoverflow.com/questions/5081678/handling-default-parameters-in-cython
         # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
-        if relGridFilePath is None:
-            relGridFilePath = ""
         self.thisptr.loadModel(inputFile, relGridFilePath)
 
     def writeModel(self, const string& outputFile):
