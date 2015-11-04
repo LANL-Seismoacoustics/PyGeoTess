@@ -27,10 +27,12 @@ and tested in in pure Python modules.  This makes it easier to try different
 Python approaches to working with the underlying GeoTess library.
 
 """
+import os
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 cimport clibgeotess as clib
+import geotess.exc as exc
 
 cdef class GeoTessGrid:
     cdef clib.GeoTessGrid *thisptr
@@ -43,7 +45,10 @@ cdef class GeoTessGrid:
             del self.thisptr
 
     def loadGrid(self, const string& inputFile):
-        self.thisptr.loadGrid(inputFile)
+        if os.path.exists(inputFile):
+            self.thisptr.loadGrid(inputFile)
+        else:
+            raise exc.GeoTessFileError("File not found.")
 
     def writeGrid(self, const string& fileName):
         self.thisptr.writeGrid(fileName)
@@ -113,6 +118,9 @@ cdef class GeoTessModel:
                 raise ValueError("Must provide both grid and metaData")
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
             self.thisptr = new clib.GeoTessModel(grid.thisptr, metaData.thisptr)
+            # keep grid and metaData alive, so they don't get collected?
+            self.grid = grid
+            self.metadata = metaData
 
     def __dealloc__(self):
         del self.thisptr
@@ -123,10 +131,67 @@ cdef class GeoTessModel:
         # http://grokbase.com/t/gg/cython-users/128gqk22kb/default-arguments-when-wrapping-c
         # http://stackoverflow.com/questions/5081678/handling-default-parameters-in-cython
         # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
-        self.thisptr.loadModel(inputFile, relGridFilePath)
+        if os.path.exists(inputFile):
+            self.thisptr.loadModel(inputFile, relGridFilePath)
+        else:
+            raise exc.GeoTessFileError("Model file not found.")
 
     def writeModel(self, const string& outputFile):
         self.thisptr.writeModel(outputFile)
 
     def toString(self):
         return self.thisptr.toString()
+
+
+cdef class EarthShape:
+    """
+    Parameters
+    ----------
+    earthShape : str
+    SPHERE - Geocentric and geographic latitudes are identical and conversion
+        between depth and radius assume the Earth is a sphere with constant
+        radius of 6371 km.
+    GRS80 - Conversion between geographic and geocentric latitudes, and between
+        depth and radius are performed using the parameters of the GRS80
+        ellipsoid.
+    GRS80_RCONST - Conversion between geographic and geocentric latitudes are
+        performed using the parameters of the GRS80 ellipsoid. Conversions
+        between depth and radius assume the Earth is a sphere with radius 6371.
+    WGS84 - Conversion between geographic and geocentric latitudes, and between
+        depth and radius are performed using the parameters of the WGS84
+        ellipsoid.
+    WGS84_RCONST - Conversion between geographic and geocentric latitudes are
+        performed using the parameters of the WGS84 ellipsoid. Conversions
+        between depth and radius assume the Earth is a sphere with radius 6371.
+
+    """
+    cdef clib.EarthShape *thisptr
+
+    def __cinit__(self, earthShape="WGS84"):
+        self.thisptr = new clib.EarthShape(const string &earthShape)
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    def getLonDegrees(self, const double *const v):
+        """
+        Convert a 3-component unit vector to a longitude, in degrees.
+
+        """
+        return self.thisptr.getLonDegrees(v)
+
+    def getLatDegrees(self, const double *const v):
+        """
+        Convert a 3-component unit vector to a latitude, in degrees.
+
+        """
+        return self.thisptr.getLatDegrees(v)
+
+    def getVectorDegrees(self):
+        """
+        Convert geographic lat, lon into a geocentric unit vector. The
+        x-component points toward lat,lon = 0, 0. The y-component points toward
+        lat,lon = 0, 90. The z-component points toward north pole.
+        """
+        pass
+        
