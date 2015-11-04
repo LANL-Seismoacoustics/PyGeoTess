@@ -16,6 +16,10 @@ cases, sneaky factory functions that can accept the complex types must do the
 work.  Unfortunately, this means that any constructor or method that accepts
 complex c++ can't be "directly" exposed to Python.
 
+Other hassles include:
+* c++ methods take pointers, but many Python objects don't expose those
+* memory/pointer ownership and garbage collection
+
 Using both a pxd and a pyx file is done, partly, so that we can keep the
 exposed c++ GeoTess functionality together in one namespace using "cimport",
 and we can name the classes exposed to Python the same as those in the
@@ -25,6 +29,17 @@ GeoTess functionality is intentionally a one-to-one translation into Python so
 that any modifications to the way models and grids are used can be developed
 and tested in in pure Python modules.  This makes it easier to try different
 Python approaches to working with the underlying GeoTess library.
+
+## Current conversion conventions
+
+* GeoTess unit vectors are returned as 3-tuples of doubles, but internally
+  managed with array.array.  This is because array.arrays exposes its pointer
+  easily.
+
+
+## Current headaches
+
+* 
 
 """
 import os
@@ -111,41 +126,6 @@ cdef class GeoTessMetaData:
         return self.thisptr.toString()
 
 
-cdef class GeoTessModel:
-    cdef clib.GeoTessModel *thisptr
-
-    def __cinit__(self, GeoTessGrid grid=None, GeoTessMetaData metaData=None):
-        if grid is None and metaData is None:
-            self.thisptr = new clib.GeoTessModel()
-        else:
-            if sum((grid is None, metaData is None)) == 1:
-                raise ValueError("Must provide both grid and metaData")
-            # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-            self.thisptr = new clib.GeoTessModel(grid.thisptr, metaData.thisptr)
-            # keep grid and metaData alive, so they don't get collected?
-            self.grid = grid
-            self.metadata = metaData
-
-    def __dealloc__(self):
-        del self.thisptr
-
-    # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-
-    def loadModel(self, const string& inputFile, relGridFilePath=""):
-        # http://grokbase.com/t/gg/cython-users/128gqk22kb/default-arguments-when-wrapping-c
-        # http://stackoverflow.com/questions/5081678/handling-default-parameters-in-cython
-        # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
-        if os.path.exists(inputFile):
-            self.thisptr.loadModel(inputFile, relGridFilePath)
-        else:
-            raise exc.GeoTessFileError("Model file not found.")
-
-    def writeModel(self, const string& outputFile):
-        self.thisptr.writeModel(outputFile)
-
-    def toString(self):
-        return self.thisptr.toString()
-
 
 cdef class EarthShape:
     """
@@ -214,5 +194,44 @@ cdef class EarthShape:
         cdef array.array v = array.array('d', [0.0, 0.0, 0.0])
         self.thisptr.getVectorDegrees(lat, lon, &v.data.as_doubles[0])
 
-        return v
+        return tuple(v.tolist())
 
+
+cdef class GeoTessModel:
+    cdef clib.GeoTessModel *thisptr
+
+    def __cinit__(self, GeoTessGrid grid=None, GeoTessMetaData metaData=None):
+        if grid is None and metaData is None:
+            self.thisptr = new clib.GeoTessModel()
+        else:
+            if sum((grid is None, metaData is None)) == 1:
+                raise ValueError("Must provide both grid and metaData")
+            # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
+            self.thisptr = new clib.GeoTessModel(grid.thisptr, metaData.thisptr)
+            # keep grid and metaData alive, so they don't get collected?
+            self.grid = grid
+            self.metadata = metaData
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
+
+    def loadModel(self, const string& inputFile, relGridFilePath=""):
+        # http://grokbase.com/t/gg/cython-users/128gqk22kb/default-arguments-when-wrapping-c
+        # http://stackoverflow.com/questions/5081678/handling-default-parameters-in-cython
+        # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
+        if os.path.exists(inputFile):
+            self.thisptr.loadModel(inputFile, relGridFilePath)
+        else:
+            raise exc.GeoTessFileError("Model file not found.")
+
+    def writeModel(self, const string& outputFile):
+        self.thisptr.writeModel(outputFile)
+
+    def toString(self):
+        return self.thisptr.toString()
+
+    def getEarthShape(self):
+        cdef EarthShape shp self.thisptr.getEarthShape()
+        return shp
