@@ -19,10 +19,13 @@ md.setDataType('FLOAT')
 md.setModelSoftwareVersion("GeoTessCPPExamples.PopulateModel3D 1.0.0")
 md.setModelGenerationDate(str(datetime.now()))
 
-grid = lib.GeoTessGrid.loadGrid('../data/small_model_grid.ascii')
+grid = lib.GeoTessGrid()
+grid.loadGrid('../data/small_model_grid.ascii')
 
 # Initialize the model.  It is full of null data.
 model = lib.GeoTessModel(grid, md)
 
 # a helpful human-readable form of model info
 print(model.toString())
+
+ellipsoid = model.getEarthShape()

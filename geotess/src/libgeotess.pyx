@@ -233,5 +233,5 @@ cdef class GeoTessModel:
         return self.thisptr.toString()
 
     def getEarthShape(self):
-        cdef EarthShape shp self.thisptr.getEarthShape()
+        cdef EarthShape shp = self.thisptr.getEarthShape()
         return shp

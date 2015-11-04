@@ -22,6 +22,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getNTriangles()
         int getNTessellations()
         string toString()
+        const double* getVertex(int vertex) const
 
 cdef extern from "GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
@@ -37,6 +38,13 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         void setModelGenerationDate(const string& genDate)
         string toString() const
 
+cdef extern from "EarthShape.h" namespace "geotess":
+    cdef cppclass EarthShape:
+        EarthShape(const string &earthShape) except +
+        double getLonDegrees(const double *const v)
+        double getLatDegrees(const double *const v)
+        void getVectorDegrees(const double &lat, const double &lon, double *v)
+
 cdef extern from "GeoTessModel.h" namespace "geotess":
     cdef cppclass GeoTessModel:
         GeoTessModel() except +
@@ -46,10 +54,4 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath)
         void writeModel(const string &outputFile)
         string toString()
-
-cdef extern from "EarthShape.h" namespace "geotess":
-    cdef cppclass EarthShape:
-        EarthShape(const string &earthShape) except +
-        double getLonDegrees(const double *const v)
-        double getLatDegrees(const double *const v)
-        void getVectorDegrees(const double &lat, const double &lon, double *v)
+        EarthShape& getEarthShape()
