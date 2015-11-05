@@ -126,7 +126,6 @@ cdef class GeoTessMetaData:
         return self.thisptr.toString()
 
 
-
 cdef class EarthShape:
     """
     Parameters
@@ -153,11 +152,16 @@ cdef class EarthShape:
     """
     cdef clib.EarthShape *thisptr
 
-    def __cinit__(self, earthShape="WGS84"):
-        self.thisptr = new clib.EarthShape(earthShape)
+    def __cinit__(self, earthShape="WGS84", raw=False):
+        # raw=True means "just give me the wrapper class, I don't want it to
+        # initialize a c++ pointer".  This is useful when you'll be using the
+        # "wrap" method to capture a pointer something else generated.
+        if not raw:
+            self.thisptr = new clib.EarthShape(earthShape)
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr:
+            del self.thisptr
 
     def getLonDegrees(self, double[:] v):
         """
@@ -196,6 +200,12 @@ cdef class EarthShape:
 
         return tuple(v.tolist())
 
+    @staticmethod
+    cdef EarthShape wrap(clib.EarthShape *cptr):
+        cdef EarthShape inst = EarthShape(raw=True)
+        inst.thisptr = cptr
+        return inst
+
 
 cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
@@ -209,8 +219,8 @@ cdef class GeoTessModel:
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
             self.thisptr = new clib.GeoTessModel(grid.thisptr, metaData.thisptr)
             # keep grid and metaData alive, so they don't get collected?
-            self.grid = grid
-            self.metadata = metaData
+            # self.grid = grid
+            # self.metadata = metaData
 
     def __dealloc__(self):
         del self.thisptr
@@ -218,8 +228,6 @@ cdef class GeoTessModel:
     # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
 
     def loadModel(self, const string& inputFile, relGridFilePath=""):
-        # http://grokbase.com/t/gg/cython-users/128gqk22kb/default-arguments-when-wrapping-c
-        # http://stackoverflow.com/questions/5081678/handling-default-parameters-in-cython
         # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
         if os.path.exists(inputFile):
             self.thisptr.loadModel(inputFile, relGridFilePath)
@@ -233,5 +241,4 @@ cdef class GeoTessModel:
         return self.thisptr.toString()
 
     def getEarthShape(self):
-        cdef EarthShape shp = self.thisptr.getEarthShape()
-        return shp
+        return EarthShape.wrap(&self.thisptr.getEarthShape())
