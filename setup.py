@@ -4,6 +4,8 @@ from glob import glob
 from distutils.core import setup
 from distutils.extension import Extension
 
+import numpy as np
+
 # see http://stackoverflow.com/a/4515279/745557
 # and http://stackoverflow.com/a/18418524/745557
 
@@ -30,11 +32,13 @@ else:
 
 if use_cython:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=CPPFILES+PYXFILES, language='c++')]
+                  sources=CPPFILES+PYXFILES, language='c++',
+                  include_dirs=[np.get_include()])]
     extensions = cythonize(extensions, language='c++')
 else:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=CPPFILES+CYFILES, language='c++')]
+                  sources=CPPFILES+CYFILES, language='c++',
+                  include_dirs=[np.get_include()])]
 
 
 setup(name = 'pygeotess',

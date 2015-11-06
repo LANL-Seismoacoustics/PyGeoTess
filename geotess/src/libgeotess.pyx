@@ -30,9 +30,7 @@ Python approaches to working with the underlying GeoTess library.
 
 ## Current conversion conventions
 
-* GeoTess unit vectors are returned as 3-tuples of doubles, but internally
-  managed with array.array.  This is because array.arrays exposes its pointer
-  easily, and tuples are immutable.  Seems appropriate.
+* GeoTess unit vectors are returned as 3-element of NumPy arrays of doubles
 
 
 ## Current headaches
@@ -44,8 +42,13 @@ Python approaches to working with the underlying GeoTess library.
 """
 import os
 
-from cpython cimport array
-import array
+# from cpython cimport array
+# import array
+
+import numpy as np
+cimport numpy as np
+
+np.import_array()
 
 from cython.operator cimport dereference as deref
 
@@ -54,6 +57,12 @@ from libcpp.vector cimport vector
 
 cimport clibgeotess as clib
 import geotess.exc as exc
+
+########################## HELPER FUNCTIONS AND CLASSES #######################
+#
+# Mostly, these allow memory created in C++ to be safely sent to Python as
+# NumPy arrays, without leaking memory or worse.
+#
 
 cdef class GeoTessGrid:
     cdef clib.GeoTessGrid *thisptr
@@ -87,8 +96,31 @@ cdef class GeoTessGrid:
         return self.thisptr.toString()
 
     def getVertex(self, int vertex):
-        # XXX: how to get an array from the double * getVertex returns
-        return self.thisptr.getVertex(vertex)
+        """
+        Retrieve the unit vector that corresponds to the specified vertex.
+
+        Returns a 3-element NumPy vector.  This array is still connected to the
+        vertex in-memory, so don't modify it unless you intend to!
+
+        """
+        # Use some internal NumPy C API calls to safely wrap the array pointer,
+        # hopefully preventing memory leaks or segfaults.
+        # following https://gist.github.com/aeberspaecher/1253698
+        cdef const double *vtx = self.thisptr.getVertex(vertex)
+
+        # Use the PyArray_SimpleNewFromData function from numpy to create a
+        # new Python object pointing to the existing data
+        cdef np.npy_intp shape[1]
+        shape[0] = <np.npy_intp> 3
+        arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> vtx)
+
+        # Tell Python that it can deallocate the memory when the ndarray
+        # object gets garbage collected
+        # As the OWNDATA flag of an array is read-only in Python, we need to
+        # call the C function PyArray_UpdateFlags
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+
+        return arr
 
 
 cdef class GeoTessMetaData:
@@ -203,15 +235,28 @@ cdef class EarthShape:
         # that can be returned, and whos memory can be managed by Python, that
         # can be filled in c++ by passing its pointer, following
         # http://docs.cython.org/src/tutorial/array.html#zero-overhead-unsafe-access-to-raw-c-pointer
-        cdef array.array v = array.array('d', [0.0, 0.0, 0.0])
-        self.thisptr.getVectorDegrees(lat, lon, &v.data.as_doubles[0])
 
-        return tuple(v.tolist())
+        # cdef array.array v = array.array('d', [0.0, 0.0, 0.0])
+        # self.thisptr.getVectorDegrees(lat, lon, &v.data.as_doubles[0])
+
+        cdef np.ndarray[double, ndim=1, mode="c"] v = np.empty(3)
+        # XXX: this syntax is preferred, but not working
+        # error: Cannot convert Python object to 'double *'
+        # self.thisptr.getVectorDegrees(lat, lon, &v[0] )
+        # https://github.com/cython/cython/wiki/tutorials-NumpyPointerToC#other-options
+        self.thisptr.getVectorDegrees(lat, lon, <double*> v.data)
+
+        return v
 
     @staticmethod
     cdef EarthShape wrap(clib.EarthShape *cptr):
+        """
+        Wrap a C++ pointer in a Python class.
+
+        """
         cdef EarthShape inst = EarthShape(raw=True)
         inst.thisptr = cptr
+
         return inst
 
 
