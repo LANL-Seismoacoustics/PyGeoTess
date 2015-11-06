@@ -58,11 +58,25 @@ from libcpp.vector cimport vector
 cimport clibgeotess as clib
 import geotess.exc as exc
 
-########################## HELPER FUNCTIONS AND CLASSES #######################
-#
-# Mostly, these allow memory created in C++ to be safely sent to Python as
-# NumPy arrays, without leaking memory or worse.
-#
+
+cdef class GeoTessUtils:
+    cdef clib.GeoTessUtils *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new clib.GeoTessUtils()
+
+    def __dealloc__(self):
+        if self.thisptr != NULL:
+            del self.thisptr
+
+    @staticmethod
+    def getLatDegrees(double[:] v):
+        return clib.GeoTessUtils.getLatDegrees(&v[0])
+
+    @staticmethod
+    def getLonDegrees(double[:] v):
+        return clib.GeoTessUtils.getLatDegrees(&v[0])
+
 
 cdef class GeoTessGrid:
     cdef clib.GeoTessGrid *thisptr
@@ -112,7 +126,7 @@ cdef class GeoTessGrid:
         # new Python object pointing to the existing data
         cdef np.npy_intp shape[1]
         shape[0] = <np.npy_intp> 3
-        arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> vtx)
+        arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_DOUBLE, <void *> vtx)
 
         # Tell Python that it can deallocate the memory when the ndarray
         # object gets garbage collected
@@ -128,9 +142,14 @@ cdef class GeoTessGrid:
         considering only triangles in the specified tessellation/level.
 
         """
-        cdef list triangles = self.thisptr.getVertexTriangles(tessId, level, vertex)
+        cdef vector[int] triangles = self.thisptr.getVertexTriangles(tessId, level, vertex)
+        cdef int N = triangles.size()
+        # instantiate a Python list to hold the return values.
+        py_list = []
+        for i in range(N):
+            py_list.append(triangles[i])
 
-        return triangles
+        return py_list
 
     def getVertexIndex(self, int triangle, int corner):
         return self.getVertexIndex(triangle, corner)

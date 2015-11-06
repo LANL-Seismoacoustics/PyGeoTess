@@ -11,6 +11,14 @@ methods, and functions.  Declarations are mostly unchanged from the original.
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
+cdef extern from "GeoTessUtils.h" namespace "geotess":
+    cdef cppclass GeoTessUtils:
+        GeoTessUtils() except +
+        @staticmethod
+        double getLatDegrees(const double *const v)
+        @staticmethod
+        double getLonDegrees(const double *const v)
+
 cdef extern from "GeoTessGrid.h" namespace "geotess":
     cdef cppclass GeoTessGrid:
         GeoTessGrid() except +
@@ -25,6 +33,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         string toString()
         const double* getVertex(int vertex) const
         const vector[int] getVertexTriangles(const int &tessId, const int &level, const int &vertex) const
+        int getVertexIndex(int triangle, int corner) const
 
 cdef extern from "GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
