@@ -1,3 +1,10 @@
+"""
+population_model_3D_lib.py
+
+Module demonstrating a nearly-literal translation of the GeoTess
+populate_model_3D.cc program, using the Python geotess.lib module.
+
+"""
 from datetime import datetime
 import geotess.libgeotess as lib
 
@@ -11,7 +18,6 @@ author: Sandy Ballard
 contact: sballar@sandia.gov"""
 
 md.setDescription(descr)
-
 md.setLayerNames("INNER_CORE; OUTER_CORE; LOWER_MANTLE; TRANSITION_ZONE; UPPER_MANTLE; LOWER_CRUST; UPPER_CRUST")
 md.setLayerTessIds([0, 0, 1, 1, 1, 2, 2])
 md.setAttributes("Vp; Vs; rho", "km/sec; km/sec; g/cc")
@@ -29,3 +35,7 @@ model = lib.GeoTessModel(grid, md)
 print(model.toString())
 
 ellipsoid = model.getEarthShape()
+
+for layer in range(model.getNLayers()):
+    for vtx in range(model.getNVertices()):
+        model.
