@@ -17,30 +17,29 @@ accept the complex types must do the work.  Unfortunately, this means that any
 constructor or method that accepts complex c++ can't be "directly" exposed to
 Python.
 
-Other hassles include:
-* c++ methods take pointers, but many Python objects don't expose those
-* memory/pointer ownership and garbage collection
-
 Using both a pxd and a pyx file is done, partly, so that we can keep the
 exposed c++ GeoTess functionality together in one namespace using "cimport",
-and we can name the classes exposed to Python the same as those in the
-GeoTess c++.
+so that we can name the classes exposed to Python the same as those in the
+GeoTess c++.  This is sometimes confusing in error messages, however.
 
 GeoTess functionality is intentionally a one-to-one translation into Python so
 that any modifications to the way models and grids are used can be developed
 and tested in in pure Python modules.  This makes it easier to try different
 Python approaches to working with the underlying GeoTess library.
 
+
 ## Current conversion conventions
 
 * GeoTess unit vectors are returned as 3-tuples of doubles, but internally
   managed with array.array.  This is because array.arrays exposes its pointer
-  easily.
+  easily, and tuples are immutable.  Seems appropriate.
 
 
 ## Current headaches
 
-* 
+* Deleting or garbage-collecting objects is dangerous.  Some objects are
+  managed by other objects, so deleting them manually can crash the interpreter.
+  I'm not sure how to fix this yet.
 
 """
 import os
@@ -86,6 +85,10 @@ cdef class GeoTessGrid:
 
     def toString(self):
         return self.thisptr.toString()
+
+    def getVertex(self, int vertex):
+        # XXX: how to get an array from the double * getVertex returns
+        return self.thisptr.getVertex(vertex)
 
 
 cdef class GeoTessMetaData:
@@ -235,7 +238,8 @@ cdef class GeoTessModel:
             if sum((grid is None, metaData is None)) == 1:
                 raise ValueError("Must provide both grid and metaData")
 
-            # copy the grid and metadata, to simplify their life cycles
+            # copy the grid and metadata, so that GeoTessModel can truly control
+            # the destruction of the grid and metadata it uses.
             gptr = new clib.GeoTessGrid(deref(grid.thisptr))
             mdptr = new clib.GeoTessMetaData(deref(metaData.thisptr))
 
