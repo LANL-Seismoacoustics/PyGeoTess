@@ -122,6 +122,19 @@ cdef class GeoTessGrid:
 
         return arr
 
+    def getVertexTriangles(self, int tessId, int level, int vertex):
+        """
+        Retrieve a list of the triangles a particular vertex is a member of,
+        considering only triangles in the specified tessellation/level.
+
+        """
+        cdef list triangles = self.thisptr.getVertexTriangles(tessId, level, vertex)
+
+        return triangles
+
+    def getVertexIndex(self, int triangle, int corner):
+        return self.getVertexIndex(triangle, corner)
+
 
 cdef class GeoTessMetaData:
     cdef clib.GeoTessMetaData *thisptr
@@ -146,6 +159,7 @@ cdef class GeoTessMetaData:
         """
         layrTsIds is an iterable of integers.
         """
+        # iterable of integers is automatically casted to vector of integers
         # http://www.peterbeerli.com/classes/images/f/f7/Isc4304cpluspluscython.pdf
         self.thisptr.setLayerTessIds(layrTsIds)
 
@@ -270,6 +284,8 @@ cdef class GeoTessModel:
     destruction.
 
     """
+    # XXX: pointer ownership is an issue here.
+    # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
     def __cinit__(self, GeoTessGrid grid=None, GeoTessMetaData metaData=None):

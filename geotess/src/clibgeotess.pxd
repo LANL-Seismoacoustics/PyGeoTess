@@ -24,6 +24,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getNTessellations()
         string toString()
         const double* getVertex(int vertex) const
+        const vector[int] getVertexTriangles(const int &tessId, const int &level, const int &vertex) const
 
 cdef extern from "GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
