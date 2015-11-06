@@ -4,17 +4,18 @@
 This module exposes Cython GeoTess functionality from the pxd file into Python.
 
 The class definitions here are Python-visible, and are simply wrappers that 
-forward the Python-exposed methods directly to their Cython-exposed c++
+forward the Python-exposed methods directly to their Cython-exposed C++
 counterparts, which have been exposed in the imported pxd file.
 
 This module is also responsible for converting between Python types and c++
-types, which sometimes involves tricks.  For simple numerical types, this
-conversion done automatically in the calling signature of a "def" method.
-Complex c++ class types, however, can't be in a Python-visable "def" method
-because Python objects can't be automatically cast to c++ types.  For these
-cases, sneaky factory functions that can accept the complex types must do the
-work.  Unfortunately, this means that any constructor or method that accepts
-complex c++ can't be "directly" exposed to Python.
+types, which sometimes involves annoying tricks.  For simple numerical types,
+this conversion can be done automatically in the calling signature of a "def"
+method if types are declared.  Complex C++ class types, for example, can't be
+in a Python-visable "def" method because Python objects can't be automatically
+cast to C++ types.  For these cases, sneaky factory functions that can used
+accept the complex types must do the work.  Unfortunately, this means that any
+constructor or method that accepts complex c++ can't be "directly" exposed to
+Python.
 
 Other hassles include:
 * c++ methods take pointers, but many Python objects don't expose those
@@ -46,6 +47,8 @@ import os
 
 from cpython cimport array
 import array
+
+from cython.operator cimport dereference as deref
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -92,7 +95,8 @@ cdef class GeoTessMetaData:
         self.thisptr = new clib.GeoTessMetaData()
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr != NULL:
+            del self.thisptr
 
     def setEarthShape(self, const string& earthShapeName):
         self.thisptr.setEarthShape(earthShapeName)
@@ -160,7 +164,7 @@ cdef class EarthShape:
             self.thisptr = new clib.EarthShape(earthShape)
 
     def __dealloc__(self):
-        if self.thisptr:
+        if self.thisptr != NULL:
             del self.thisptr
 
     def getLonDegrees(self, double[:] v):
@@ -191,9 +195,10 @@ cdef class EarthShape:
         lat,lon = 0, 90. The z-component points toward north pole.
 
         """
-        # thisptr.getVectorDegrees wants two doubles and an array pointer to fill.
-        # we must create a Python object inside here (so that Python can manage
-        # its memory) that can be filled in c++ by passing its pointer, following
+        # thisptr.getVectorDegrees wants two doubles and a pointer to an array
+        # that will be filled in c++. we must create a Python object here 
+        # that can be returned, and whos memory can be managed by Python, that
+        # can be filled in c++ by passing its pointer, following
         # http://docs.cython.org/src/tutorial/array.html#zero-overhead-unsafe-access-to-raw-c-pointer
         cdef array.array v = array.array('d', [0.0, 0.0, 0.0])
         self.thisptr.getVectorDegrees(lat, lon, &v.data.as_doubles[0])
@@ -208,22 +213,39 @@ cdef class EarthShape:
 
 
 cdef class GeoTessModel:
+    """
+    GeoTessModel accepts a GeoTessGrid and GeoTessMetaData instance.  These
+    instances are _copied_ into the GeoTessModel. Be warned that changes to
+    them are _not_ reflected in the original instances.  This is done to
+    simplify the life cycle of the underlying C++ memory, because GeoTessModel
+    wants to assumes ownership of the provided C++ objects, including
+    destruction.
+
+    """
     cdef clib.GeoTessModel *thisptr
 
     def __cinit__(self, GeoTessGrid grid=None, GeoTessMetaData metaData=None):
+        # https://groups.google.com/forum/#!topic/cython-users/iNmemRwUyuU
+        cdef clib.GeoTessGrid *gptr
+        cdef clib.GeoTessMetaData *mdptr
+
         if grid is None and metaData is None:
             self.thisptr = new clib.GeoTessModel()
         else:
             if sum((grid is None, metaData is None)) == 1:
                 raise ValueError("Must provide both grid and metaData")
+
+            # copy the grid and metadata, to simplify their life cycles
+            gptr = new clib.GeoTessGrid(deref(grid.thisptr))
+            mdptr = new clib.GeoTessMetaData(deref(metaData.thisptr))
+
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-            self.thisptr = new clib.GeoTessModel(grid.thisptr, metaData.thisptr)
-            # keep grid and metaData alive, so they don't get collected?
-            # self.grid = grid
-            # self.metadata = metaData
+            self.thisptr = new clib.GeoTessModel(gptr, mdptr)
 
     def __dealloc__(self):
-        del self.thisptr
+        # XXX: doing "del model" still crashes Python.  Dunno why yet.
+        if self.thisptr != NULL:
+            del self.thisptr
 
     # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
 

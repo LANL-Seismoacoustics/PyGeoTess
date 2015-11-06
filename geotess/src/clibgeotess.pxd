@@ -14,6 +14,7 @@ from libcpp.vector cimport vector
 cdef extern from "GeoTessGrid.h" namespace "geotess":
     cdef cppclass GeoTessGrid:
         GeoTessGrid() except +
+        GeoTessGrid(GeoTessGrid &other) except +
         # string value inputFile is turned into a pointer, that can't be used to
         # modify the thing it points to, and returns a pointer to a GeoTessGrid.
         GeoTessGrid* loadGrid(const string& inputFile)
@@ -27,6 +28,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
 cdef extern from "GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
         GeoTessMetaData() except +
+        GeoTessMetaData(const GeoTessMetaData &md)
         void setEarthShape(const string& earthShapeName)
         void setDescription(const string& dscr)
         void setLayerNames(const string& lyrNms)
