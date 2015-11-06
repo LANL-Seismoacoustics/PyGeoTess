@@ -27,7 +27,8 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         # modify the thing it points to, and returns a pointer to a GeoTessGrid.
         GeoTessGrid* loadGrid(const string& inputFile)
         void writeGrid(const string& fileName)
-        int getNLevels()
+        int getNLevels() const
+        int getNLevels(int tessellation) 
         int getNTriangles()
         int getNTessellations()
         string toString()

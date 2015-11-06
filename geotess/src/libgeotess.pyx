@@ -75,7 +75,7 @@ cdef class GeoTessUtils:
 
     @staticmethod
     def getLonDegrees(double[:] v):
-        return clib.GeoTessUtils.getLatDegrees(&v[0])
+        return clib.GeoTessUtils.getLonDegrees(&v[0])
 
 
 cdef class GeoTessGrid:
@@ -97,8 +97,13 @@ cdef class GeoTessGrid:
     def writeGrid(self, const string& fileName):
         self.thisptr.writeGrid(fileName)
 
-    def getNLevels(self):
-        return self.thisptr.getNLevels()
+    def getNLevels(self, tessellation=None):
+        if tessellation is None:
+            levels = self.thisptr.getNLevels()
+        else:
+            levels = self.thisptr.getNLevels(tessellation)
+
+        return levels
  
     def getNTriangles(self):
         return self.thisptr.getNTriangles()
@@ -134,7 +139,7 @@ cdef class GeoTessGrid:
         # call the C function PyArray_UpdateFlags
         np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
 
-        return arr
+        return arr.copy()
 
     def getVertexTriangles(self, int tessId, int level, int vertex):
         """
@@ -142,17 +147,16 @@ cdef class GeoTessGrid:
         considering only triangles in the specified tessellation/level.
 
         """
+        # XXX: check that self has enough tessellations, levels, vertices to
+        #   return what you requested
         cdef vector[int] triangles = self.thisptr.getVertexTriangles(tessId, level, vertex)
-        cdef int N = triangles.size()
-        # instantiate a Python list to hold the return values.
-        py_list = []
-        for i in range(N):
-            py_list.append(triangles[i])
+        # automatic conversion to Python list
+        # see https://github.com/cython/cython/blob/master/tests/run/cpp_stl_conversion.pyx
 
-        return py_list
+        return triangles
 
     def getVertexIndex(self, int triangle, int corner):
-        return self.getVertexIndex(triangle, corner)
+        return self.thisptr.getVertexIndex(triangle, corner)
 
 
 cdef class GeoTessMetaData:
@@ -273,9 +277,11 @@ cdef class EarthShape:
         # self.thisptr.getVectorDegrees(lat, lon, &v.data.as_doubles[0])
 
         cdef np.ndarray[double, ndim=1, mode="c"] v = np.empty(3)
+
         # XXX: this syntax is preferred, but not working
         # error: Cannot convert Python object to 'double *'
         # self.thisptr.getVectorDegrees(lat, lon, &v[0] )
+
         # https://github.com/cython/cython/wiki/tutorials-NumpyPointerToC#other-options
         self.thisptr.getVectorDegrees(lat, lon, <double*> v.data)
 
