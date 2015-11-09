@@ -144,9 +144,11 @@ cdef class GeoTessGrid:
         """
         # XXX: check that self has enough tessellations, levels, vertices to
         #   return what you requested
+        # XXX: also check that inputs are indeed integers
+
         cdef vector[int] triangles = self.thisptr.getVertexTriangles(tessId, level, vertex)
-        # automatic conversion to Python list
-        # see https://github.com/cython/cython/blob/master/tests/run/cpp_stl_conversion.pyx
+        # automatic conversion from vector[int] to Python list:
+        # https://github.com/cython/cython/blob/master/tests/run/cpp_stl_conversion.pyx
 
         return triangles
 
@@ -243,6 +245,7 @@ cdef class EarthShape:
         # thispt.getLonDegrees expects a pointer
         # do this by passing the address of the first element, following
         # http://stackoverflow.com/a/14585530/745557
+        # XXX: if v is less then 3 elements, this may crash
 
         return self.thisptr.getLonDegrees(&v[0])
 
