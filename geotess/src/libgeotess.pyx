@@ -97,13 +97,8 @@ cdef class GeoTessGrid:
     def writeGrid(self, const string& fileName):
         self.thisptr.writeGrid(fileName)
 
-    def getNLevels(self, tessellation=None):
-        if tessellation is None:
-            levels = self.thisptr.getNLevels()
-        else:
-            levels = self.thisptr.getNLevels(tessellation)
-
-        return levels
+    def getNLevels(self):
+        return = self.thisptr.getNLevels()
  
     def getNTriangles(self):
         return self.thisptr.getNTriangles()
