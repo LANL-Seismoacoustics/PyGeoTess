@@ -1,4 +1,4 @@
-from geotess.model import Layer, Attribute, Model
+from geotess import Layer, Attribute, Model
 
 def ak135_interp(layer):
     # do some stuff
@@ -14,14 +14,14 @@ contact: sballar@sandia.gov"""
 # Layer and Attribute are named tuples, which means they are two-tuples of 
 # (name, tess_id) or (name, unit), the contents of which can be accessed 
 # using names, like: inner_core.tess_id or rho.name
-layers = [Layer(name='INNER_CORE', tess_id=0),
-          Layer('OUTER_CORE', 0),
-          Layer('LOWER_MANTLE', 1),
-          Layer('LOWER_MANTLE', 1),
-          Layer('TRANSITION_ZONE', 1),
-          Layer('UPPER_MANTLE', 1),
-          Layer('LOWER_CRUST', 2),
-          Layer('UPPER_CRUST', 2)]
+layers = (Layer(name='inner_core', tess_id=0),
+          Layer('outer_core', 0),
+          Layer('lower_mantle', 1),
+          Layer('lower_mantle', 1),
+          Layer('transition_zone', 1),
+          Layer('upper_mantle', 1),
+          Layer('lower_crust', 2),
+          Layer('upper_crust', 2))
 
 attributes = [Attribute(name='Vp', unit='km/sec'),
               Attribute('Vs', 'km/sec'),
@@ -29,7 +29,13 @@ attributes = [Attribute(name='Vp', unit='km/sec'),
 
 # Initialize the model.  It is full of null data.
 model = Model(gridfile='path/to/gridfile.ascii', description=descr,
-              layers=layers, attributes=attributes, dtype=float)
+              layers=layers, attributes=attributes, dtype='float')
+
+model = Model.read('modelfile.geotess')
+model.grid
+model.layers
+model.attributes
+
 
 # populate the model from ak135
 for layer in model.layers:
