@@ -47,7 +47,7 @@ setup(name = 'pygeotess',
       author = 'Jonathan K. MacCarthy',
       author_email = 'jkmacc@lanl.gov',
       packages = ['geotess'],
-      py_modules = ['geotess.grid', 'geotess.exc'],
+      py_modules = ['geotess.model', 'geotess.exc'],
       ext_modules = extensions,
       data_files = [ ('geotess/data', glob('geotess/src/GeoTessModels/*')) ],
       )
