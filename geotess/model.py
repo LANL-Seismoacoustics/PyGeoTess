@@ -73,10 +73,7 @@ class Model(object):
         if dtype not in (float, int):
             raise ValueError("dtype must be float or int")
 
-        self.grid = Grid(gridfile)
-
-        self.grid = grid
-        self.metadata
+        self.layers = layers
 
 
     @classmethod
@@ -103,6 +100,21 @@ class Model(object):
         Write the instance to a file on disk.
 
         """
+        pass
+
+    def triangles(self, layer=None, level=None, connected=True):
+        pass
+
+    def vertices(self, layer=None, level=None, connected=True):
+        pass
+
+    def points(self, layer=None, level=None):
+        pass
+
+    def interpolate(self, domain, attribute, interpolant='linear'):
+        pass
+
+    def weights(self, domain, interpolant='linear'):
         pass
 
     def __str__(self):
