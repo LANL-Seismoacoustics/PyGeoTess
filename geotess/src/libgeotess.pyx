@@ -98,7 +98,7 @@ cdef class GeoTessGrid:
         self.thisptr.writeGrid(fileName)
 
     def getNLevels(self):
-        return = self.thisptr.getNLevels()
+        return self.thisptr.getNLevels()
  
     def getNTriangles(self):
         return self.thisptr.getNTriangles()
@@ -186,7 +186,10 @@ cdef class GeoTessMetaData:
     def setAttributes(self, const string& nms, const string& unts):
         self.thisptr.setAttributes(nms, unts)
 
-    def setDataType(self, const string& dt):
+    def setDataType(self, dt):
+        dtypes = ('DOUBLE', 'FLOAT', 'LONG', 'INT', 'SHORTINT', 'BYTE')
+        if dt not in dtypes:
+            raise ValueError("DataType must be one of {}".format(dtypes))
         self.thisptr.setDataType(dt)
 
     def setModelSoftwareVersion(self, const string& swVersion):
