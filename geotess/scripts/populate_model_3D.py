@@ -28,14 +28,8 @@ attributes = [Attribute(name='Vp', unit='km/sec'),
               Attribute('rho', 'g/cc')]
 
 # Initialize the model.  It is full of null data.
-model = Model(gridfile='path/to/gridfile.ascii', description=descr,
-              layers=layers, attributes=attributes, dtype='float')
-
-model = Model.read('modelfile.geotess')
-model.grid
-model.layers
-model.attributes
-
+model = Model('geotess/data/small_model_grid.ascii', layers, attributes,
+              'float', description=descr)
 
 # populate the model from ak135
 for layer in model.layers:
