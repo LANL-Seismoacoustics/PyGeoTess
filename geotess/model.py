@@ -9,7 +9,7 @@ layer and manager of each of these other classes.
 """
 from geotess.utils import Layer, Attribute
 from geotess.grid import Grid
-from geotess.libgeotess import GeoTessModel
+import geotess.libgeotess as lib
 
 class Model(object):
         """
@@ -63,17 +63,16 @@ class Model(object):
 
         Attributes
         ----------
-        grid : geotess.libgeotess.GeoTessGrid instance
         layers : tuple of Layer tuples
         attributes : tuple of Attribute tuples
 
         """
-    def __init__(self, gridfile, layers=None, attributes=None, dtype=float,
-            description=None):
+    def __init__(self, gridfile, layers, attributes, dtype, description=None):
         if dtype not in (float, int):
             raise ValueError("dtype must be float or int")
 
         self.layers = layers
+        self.attributes = attributes
 
 
     @classmethod
@@ -103,15 +102,72 @@ class Model(object):
         pass
 
     def triangles(self, layer=None, level=None, connected=True):
+        """
+        Get tessellation triangles, as integer indices into the corresponding
+        array of vertices.
+
+        Parameters
+        ----------
+        layer, level : str or int
+            The string name or integer index of the target layer, level.
+        connected : bool
+            If True, only return connected triangles.
+
+        Returns
+        -------
+        triangles : numpy.ndarray of ints (Ntriangles x 3)
+            Each row contains integer indices into the corresponding vertex
+            array, producing the triangle coordinates.
+
+        See also:
+        ---------
+        Model.vertices
+
+        """
         pass
 
     def vertices(self, layer=None, level=None, connected=True):
+        """
+        Get geographic coordinates of tessellation vertices.
+
+        Parameters
+        ----------
+        layer, level : str or int
+            The string name or integer index of the target layer, level.
+        connected : bool
+            If True, only return connected triangles.
+
+        Returns
+        -------
+        vertices : numpy.ndarray of floats (Nvert X Ndim)
+            Geographic coordinates of vertices.
+            For 2D models, vertices is Nvert X 2 (lon, lat).
+            For 3D models, vertices is Nvert X 3 (lon, lat, radius).
+
+        """
         pass
 
     def points(self, layer=None, level=None):
+        """
+        Get geographic coordinates of model points.
+
+        Parameters
+        ----------
+        layer, level : str or int
+            The string name or integer index of the target layer, level.
+
+        Returns
+        -------
+        points : numpy.ndarray of floats (Nvert X Ndim)
+            Geographic coordinates of points.
+            For 2D models, vertices is Nvert X 2 (lon, lat).
+            For 3D models, vertices is Nvert X 3 (lon, lat, radius).
+
+        """
         pass
 
     def interpolate(self, domain, attribute, interpolant='linear'):
+
         pass
 
     def weights(self, domain, interpolant='linear'):
