@@ -78,7 +78,7 @@ class Model(object):
     @classmethod
     def read(cls, modelfile):
         """
-        Construct a Model instance from an existing model file name.
+        Construct a Model instance from an existing model file.
 
         """
         model = GeoTessModel.loadModel(modelfile)
