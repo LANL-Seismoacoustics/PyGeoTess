@@ -158,14 +158,12 @@ cdef class GeoTessGrid:
 
 cdef class GeoTessMetaData:
     cdef clib.GeoTessMetaData *thisptr
-    cdef bint ownesptr
 
     def __cinit__(self):
         self.thisptr = new clib.GeoTessMetaData()
-        self.ownesptr = True
 
     def __dealloc__(self):
-        if self.thisptr != NULL and self.ownesptr:
+        if self.thisptr != NULL:
             del self.thisptr
 
     def setEarthShape(self, const string& earthShapeName):
@@ -304,9 +302,9 @@ cdef class EarthShape:
 
 cdef class GeoTessModel:
     """
-    GeoTessModel accepts a GeoTessGrid and GeoTessMetaData instance.  These
-    instances are _copied_ into the GeoTessModel. Be warned that changes to
-    them are _not_ reflected in the original instances.  This is done to
+    GeoTessModel accepts a grid file name and GeoTessMetaData instance.  The
+    metadata is _copied_ into the GeoTessModel, so be warned that changes to
+    it are _not_ reflected in the original instances.  This is done to
     simplify the life cycle of the underlying C++ memory, because GeoTessModel
     wants to assumes ownership of the provided C++ objects, including
     destruction.
@@ -317,6 +315,8 @@ cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
 
     def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
+        cdef clib.GeoTessMetaData *md
+
         if gridFileName is None and metaData is None:
             self.thisptr = new clib.GeoTessModel()
         else:
@@ -324,8 +324,8 @@ cdef class GeoTessModel:
                 raise ValueError("Must provide both gridFileName and metaData")
 
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-            self.thisptr = new clib.GeoTessModel(gridFileName, metaData.thisptr)
-            metaData.ownesptr = False
+            md = metaData.thisptr.copy()
+            self.thisptr = new clib.GeoTessModel(gridFileName, md)
 
     def __dealloc__(self):
         # XXX: doing "del model" still crashes Python.  Dunno why yet.
@@ -348,4 +348,6 @@ cdef class GeoTessModel:
         return self.thisptr.toString()
 
     def getEarthShape(self):
+        # XXX: pointer ownership issues.  Just return a new EarthShape of the
+        # same earthShape string.
         return EarthShape.wrap(&self.thisptr.getEarthShape())

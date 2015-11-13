@@ -49,6 +49,7 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         void setDataType(const string& dt)
         void setModelSoftwareVersion(const string& swVersion)
         void setModelGenerationDate(const string& genDate)
+        GeoTessMetaData* copy()
         string toString() const
 
 cdef extern from "EarthShape.h" namespace "geotess":
