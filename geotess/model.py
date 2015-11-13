@@ -141,10 +141,10 @@ class Model(object):
 
     def write(self, outfile):
         """
-        Write the instance to a file on disk.
+        Write the model to a file on disk.
 
         """
-        self.model.writeGrid(outfile)
+        self.model.writeModel(outfile)
 
     def triangles(self, layer=None, level=None, connected=True):
         """
