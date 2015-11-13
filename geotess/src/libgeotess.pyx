@@ -229,9 +229,9 @@ cdef class EarthShape:
     cdef clib.EarthShape *thisptr
 
     def __cinit__(self, earthShape="WGS84", raw=False):
-        # raw=True means "just give me the wrapper class, I don't want it to
-        # initialize a c++ pointer".  This is useful when you'll be using the
-        # "wrap" method to capture a pointer something else generated.
+        # raw=True means "just give me the Python wrapper class, I don't want
+        # it to initialize a c++ pointer".  This is useful when you'll be using
+        # the "wrap" method to capture a pointer something else generated.
         if not raw:
             self.thisptr = new clib.EarthShape(earthShape)
 
@@ -291,7 +291,7 @@ cdef class EarthShape:
     @staticmethod
     cdef EarthShape wrap(clib.EarthShape *cptr):
         """
-        Wrap a C++ pointer in a Python class.
+        Wrap a C++ pointer with a pointer-less Python EarthShape class.
 
         """
         cdef EarthShape inst = EarthShape(raw=True)
@@ -314,24 +314,24 @@ cdef class GeoTessModel:
     # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
-    def __cinit__(self, GeoTessGrid grid=None, GeoTessMetaData metaData=None):
+    def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
+        # a cdef can't be inside a conditional statement, otherwise these
+        # would be in the else clause.
         # https://groups.google.com/forum/#!topic/cython-users/iNmemRwUyuU
-        cdef clib.GeoTessGrid *gptr
         cdef clib.GeoTessMetaData *mdptr
 
-        if grid is None and metaData is None:
+        if gridFileName is None and metaData is None:
             self.thisptr = new clib.GeoTessModel()
         else:
-            if sum((grid is None, metaData is None)) == 1:
-                raise ValueError("Must provide both grid and metaData")
+            if sum((gridFileName is None, metaData is None)) == 1:
+                raise ValueError("Must provide both gridFileName and metaData")
 
-            # copy the grid and metadata, so that GeoTessModel can truly control
-            # the destruction of the grid and metadata it uses.
-            gptr = new clib.GeoTessGrid(deref(grid.thisptr))
+            # copy the metadata, so that GeoTessModel can truly control
+            # the destruction of the metadata it uses.
             mdptr = new clib.GeoTessMetaData(deref(metaData.thisptr))
 
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-            self.thisptr = new clib.GeoTessModel(gptr, mdptr)
+            self.thisptr = new clib.GeoTessModel(gridFileName, mdptr)
 
     def __dealloc__(self):
         # XXX: doing "del model" still crashes Python.  Dunno why yet.

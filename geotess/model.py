@@ -126,6 +126,7 @@ class Model(object):
         md.setDataType(dtype.upper())
         md.setModelSoftwareVersion("PyGeoTess v{}".format(__version__))
         md.setModelGenerationDate(str(datetime.now()))
+
         self.metadata = md
 
         self.model = lib.GeoTessModel(grid, md)
@@ -143,7 +144,7 @@ class Model(object):
         Write the instance to a file on disk.
 
         """
-        pass
+        self.model.writeGrid(outfile)
 
     def triangles(self, layer=None, level=None, connected=True):
         """
