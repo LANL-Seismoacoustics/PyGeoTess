@@ -158,12 +158,14 @@ cdef class GeoTessGrid:
 
 cdef class GeoTessMetaData:
     cdef clib.GeoTessMetaData *thisptr
+    cdef bint ownesptr
 
     def __cinit__(self):
         self.thisptr = new clib.GeoTessMetaData()
+        self.ownesptr = True
 
     def __dealloc__(self):
-        if self.thisptr != NULL:
+        if self.thisptr != NULL and self.ownesptr:
             del self.thisptr
 
     def setEarthShape(self, const string& earthShapeName):
@@ -315,23 +317,15 @@ cdef class GeoTessModel:
     cdef clib.GeoTessModel *thisptr
 
     def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
-        # a cdef can't be inside a conditional statement, otherwise these
-        # would be in the else clause.
-        # https://groups.google.com/forum/#!topic/cython-users/iNmemRwUyuU
-        cdef clib.GeoTessMetaData *mdptr
-
         if gridFileName is None and metaData is None:
             self.thisptr = new clib.GeoTessModel()
         else:
             if sum((gridFileName is None, metaData is None)) == 1:
                 raise ValueError("Must provide both gridFileName and metaData")
 
-            # copy the metadata, so that GeoTessModel can truly control
-            # the destruction of the metadata it uses.
-            mdptr = new clib.GeoTessMetaData(deref(metaData.thisptr))
-
             # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
-            self.thisptr = new clib.GeoTessModel(gridFileName, mdptr)
+            self.thisptr = new clib.GeoTessModel(gridFileName, metaData.thisptr)
+            metaData.ownesptr = False
 
     def __dealloc__(self):
         # XXX: doing "del model" still crashes Python.  Dunno why yet.
