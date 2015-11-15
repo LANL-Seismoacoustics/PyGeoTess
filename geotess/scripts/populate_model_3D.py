@@ -14,7 +14,7 @@ contact: sballar@sandia.gov"""
 # Layer and Attribute are named tuples, which means they are two-tuples of 
 # (name, tess_id) or (name, unit), the contents of which can be accessed 
 # using names, like: inner_core.tess_id or rho.name
-layers = (Layer(name='inner_core', tess_id=0),
+layers = (Layer(name='inner core', tess_id=0),
           Layer('outer core', 0),
           Layer('lower mantle', 1),
           Layer('lower mantle', 1),

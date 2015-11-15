@@ -70,3 +70,5 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         void writeModel(const string &outputFile)
         string toString()
         EarthShape& getEarthShape()
+        GeoTessMetaData& getMetaData()
+

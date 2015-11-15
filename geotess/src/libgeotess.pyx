@@ -158,15 +158,22 @@ cdef class GeoTessGrid:
 
 cdef class GeoTessMetaData:
     cdef clib.GeoTessMetaData *thisptr
+    cdef object owner
 
-    def __cinit__(self):
-        self.thisptr = new clib.GeoTessMetaData()
+    def __cinit__(self, raw=False):
+        if not raw:
+            self.thisptr = new clib.GeoTessMetaData()
 
     def __dealloc__(self):
-        if self.thisptr != NULL:
+        if self.thisptr != NULL and not self.owner:
             del self.thisptr
 
-    def setEarthShape(self, const string& earthShapeName):
+    def setEarthShape(self, str earthShapeName):
+        shapes = ('SPHERE', 'WGS84', 'WGS84_RCONST', 'GRS80', 'GRS80_RCONST',
+                  'IERS2003', 'IERS2003_RCONST')
+        if earthShapeName not in shapes:
+            msg = "Unknown earth shape '{}'. Choose from {}"
+            raise ValueError(msg.format(earthShapeName, shapes))
         self.thisptr.setEarthShape(earthShapeName)
 
     def setDescription(self, const string& dscr):
@@ -200,6 +207,15 @@ cdef class GeoTessMetaData:
 
     def toString(self):
         return self.thisptr.toString()
+
+    @staticmethod
+    cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
+        cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
+        inst.thisptr = cptr
+        if owner:
+            inst.owner = owner
+
+        return inst
 
 
 cdef class EarthShape:
@@ -351,3 +367,8 @@ cdef class GeoTessModel:
         # XXX: pointer ownership issues.  Just return a new EarthShape of the
         # same earthShape string.
         return EarthShape.wrap(&self.thisptr.getEarthShape())
+
+    def getMetaData(self):
+        md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
+        md.owner = self
+        return md
