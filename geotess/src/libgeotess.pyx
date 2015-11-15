@@ -217,6 +217,25 @@ cdef class GeoTessMetaData:
 
         return inst
 
+    def getAttributeNamesString(self):
+        return self.thisptr.getAttributeNamesString()
+
+    def getAttributeUnitsString(self):
+        return self.thisptr.getAttributeUnitsString()
+
+    def getLayerNamesString(self):
+        return self.thisptr.getLayerNamesString()
+
+    def getLayerTessIds(self):
+        cdef const int *tess_ids = self.thisptr.getLayerTessIds()
+        cdef np.npy_intp shape[1]
+        cdef int nLayers = self.thisptr.getNLayers()
+        shape[0] = <np.npy_intp> nLayers
+        arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> tess_ids)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+
+        return arr.tolist()
+
 
 cdef class EarthShape:
     """
