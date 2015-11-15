@@ -227,6 +227,9 @@ cdef class GeoTessMetaData:
         return self.thisptr.getLayerNamesString()
 
     def getLayerTessIds(self):
+        # Use some internal NumPy C API calls to safely wrap the array pointer,
+        # hopefully preventing memory leaks or segfaults.
+        # following https://gist.github.com/aeberspaecher/1253698
         cdef const int *tess_ids = self.thisptr.getLayerTessIds()
         cdef np.npy_intp shape[1]
         cdef int nLayers = self.thisptr.getNLayers()

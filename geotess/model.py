@@ -15,13 +15,28 @@ from geotess.grid import Grid
 import geotess.libgeotess as lib
 
 def _geotess_layer_names(name_list):
+    """ Convert Python list of names to GeoTess-style name list.
+    """
     # provide a list of string layer names
-    # converts to uppercase and spaces to underscores
+    # converts to uppercase, spaces to underscores, and joins them with "; "
     layer_names = '; '.join([name.upper().replace(' ', '_') for name in name_list])
 
     return layer_names
 
+def _attributes_from_strings(gt_names, gt_units):
+    """Produce geotess.Attribute tuples from GeoTess-style names and units lists.
+    """
+    names = gt_names.split(';')
+    units = gt_units.split(';')
+
+    return [Attribute(name=name, unit=unit) for name, unit in zip(names, units)]
+
 def _geotess_attributes(attrib_tuples):
+    """
+    Convert geotess.Attribute tuples to GeoTess-style attribute name list and
+    attribute unit list.
+
+    """
     # Provide a list of geotess.util.Attribute tuples
     # No constraints on capitalization or spacing.
     attrib_names = "; ".join([attrib.name for attrib in attrib_tuples])
@@ -29,7 +44,16 @@ def _geotess_attributes(attrib_tuples):
 
     return attrib_names, attrib_units
 
+def _layers_from_names_ids(gt_names, tess_ids):
+    """Produce geotess.Layer tuples from GeoTess-style names and tess ids.
+    """
+    names = gt_names.split(';')
+
+    return [Layer(name=name, tess_id=tess_id) for name, tess_id in zip(names, tess_ids)]
+
 def _geotess_earth_shape(earth_shape, rconst):
+    """Combine PyGeoTess earth shape and rconst values into GeoTess values.
+    """
     if earth_shape == 'sphere' or not rconst:
         rc = ''
     else:
@@ -52,7 +76,10 @@ class Model(object):
     ----------
     gridfile : str
         Full path to an existing GeoTess grid file.  If it's an ascii grid,
-        the extension should be ".ascii".
+        the extension should be ".ascii".  Because grid files are made using
+        GeoTessBuilder and are required for a model, if gridfile is omitted,
+        it is assumed that an empty Model class is desired, and the rest of the
+        arguments are ignored.
     layers : list of geotess.util.Layer tuples
         Layer[0] is the layer name string
         Layer[1] is the layer tessellation id integer
@@ -108,33 +135,36 @@ class Model(object):
     http://www.sandia.gov/geotess
 
     """
-    def __init__(self, gridfile, layers, attributes, dtype,
+    def __init__(self, gridfile=None, layers=None, attributes=None, dtype=None,
                  earth_shape="wgs84", rconst=False, description=None):
 
-        self.layers = layers
-        self.attributes = attributes
+        if gridfile is None:
+            pass
+        else:
+            self.layers = layers
+            self.attributes = attributes
 
-        # Create GeoTessMetaData from inputs
-        md = lib.GeoTessMetaData()
-        if not description:
-            description = ""
-        md.setDescription(description)
+            # Create GeoTessMetaData from inputs
+            md = lib.GeoTessMetaData()
+            if not description:
+                description = ""
+            md.setDescription(description)
 
-        layer_names = _geotess_layer_names([layer.name for layer in layers])
-        md.setLayerNames(layer_names)
-        md.setLayerTessIds([int(layer.tess_id) for layer in layers])
+            layer_names = _geotess_layer_names([layer.name for layer in layers])
+            md.setLayerNames(layer_names)
+            md.setLayerTessIds([int(layer.tess_id) for layer in layers])
 
-        attrib_names, attrib_units = _geotess_attributes(attributes)
-        md.setAttributes(attrib_names, attrib_units)
+            attrib_names, attrib_units = _geotess_attributes(attributes)
+            md.setAttributes(attrib_names, attrib_units)
 
-        earth_shape = _geotess_earth_shape(earth_shape, rconst)
-        md.setEarthShape(earth_shape)
+            earth_shape = _geotess_earth_shape(earth_shape, rconst)
+            md.setEarthShape(earth_shape)
 
-        md.setDataType(dtype.upper())
-        md.setModelSoftwareVersion("PyGeoTess v{}".format(__version__))
-        md.setModelGenerationDate(str(datetime.now()))
+            md.setDataType(dtype.upper())
+            md.setModelSoftwareVersion("PyGeoTess v{}".format(__version__))
+            md.setModelGenerationDate(str(datetime.now()))
 
-        self._model = lib.GeoTessModel(gridfile, md)
+            self._model = lib.GeoTessModel(gridfile, md)
 
     @classmethod
     def read(cls, modelfile):
@@ -142,15 +172,25 @@ class Model(object):
         Construct a Model instance from an existing model file.
 
         """
-        # TODO: 
-        # - set empty self._model and loadModel
-        # - set self.layers, self.attributes?
+        m = cls()
+
         model = lib.GeoTessModel()
         model.loadModel(modelfile)
+        m._model = model
 
         md = model.getMetaData()
+        attribute_names = md.getAttributeNamesString()
+        attribute_units = md.getAttributeUnitsString()
+        attributes = _attributes_from_strings(attribute_names, attribute_units)
+        m.attributes = attributes
 
-        self._model = model
+        layer_names = md.getLayerNamesString()
+        layer_tess_ids = md.getLayerTessIds()
+        layers = _layers_from_names_ids(layer_names, layer_tess_ids)
+        m.layers = layers
+
+        return m
+
 
     def write(self, outfile):
         """
