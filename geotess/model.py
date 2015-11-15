@@ -164,7 +164,7 @@ class Model(object):
             md.setModelSoftwareVersion("PyGeoTess v{}".format(__version__))
             md.setModelGenerationDate(str(datetime.now()))
 
-            self._model = lib.GeoTessModel(gridfile, md)
+            self.model = lib.GeoTessModel(gridfile, md)
 
     @classmethod
     def read(cls, modelfile):
@@ -174,11 +174,14 @@ class Model(object):
         """
         m = cls()
 
+        # load the model, add it as data on the instance
         model = lib.GeoTessModel()
         model.loadModel(modelfile)
-        m._model = model
+        m.model = model
 
+        # populate .attributes and .layers from the GeoTessMetaData
         md = model.getMetaData()
+
         attribute_names = md.getAttributeNamesString()
         attribute_units = md.getAttributeUnitsString()
         attributes = _attributes_from_strings(attribute_names, attribute_units)
