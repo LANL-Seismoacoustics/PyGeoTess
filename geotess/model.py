@@ -208,7 +208,8 @@ class Model(object):
         Get tessellation triangles, as integer indices into the corresponding
         array of vertices.
 
-        Use these "triangles" (vertex indices) to index into Model.vertices.
+        Use these "triangles" (vertex indices) to index into the corresponding
+        Model.vertices.
 
         Parameters
         ----------
@@ -218,18 +219,20 @@ class Model(object):
             The integer of the target tessellation level.
         masked : bool
             If False, only return un-masked triangles.  Otherwise, return all.
+            Not yet implemented.
 
         Returns
         -------
         triangles : numpy.ndarray of ints (Ntriangles x 3)
-            Each row contains integer indices into the corresponding vertex
-            array, producing the triangle coordinates.
+            Each row contains (unordered?) integer indices into the
+            corresponding vertex array, producing the triangle coordinates.
 
         See Also
         --------
         Model.vertices
 
         """
+        # XXX: masked flag not programmed.
         try:
             # it's an integer layer index
             tessellation = self.layers[layer].tess_id
@@ -240,16 +243,16 @@ class Model(object):
         grid = self.model.getGrid()
 
         # get the integer ids of all the triangles in this layer and level
-        first_triangle = grid.getFirstTriangle(tessellation, level)
-        last_triangle = grid.getLastTriangle(tessellation, level)
-        triangles = range(first_triangle, last_triangle)
+        first_triangle_id = grid.getFirstTriangle(tessellation, level)
+        last_triangle_id = grid.getLastTriangle(tessellation, level)
+        triangle_ids = range(first_triangle_id, last_triangle_id)
 
         # get the vertex indices of all the triangles as an iteger array
-        indices = np.empty((len(triangles), 3), dtype=np.int)
-        for i, triangle in enumerate(triangles):
-            indices[i,:] = grid.getTriangleVertexIndexes(triangle)
+        triangles = np.empty((len(triangle_ids), 3), dtype=np.int)
+        for i, triangle_id in enumerate(triangle_ids):
+            triangles[i,:] = grid.getTriangleVertexIndexes(triangle_id)
 
-        return indices
+        return triangles
 
     def vertices(self, layer=None, level=None, connected=True):
         """
@@ -257,10 +260,12 @@ class Model(object):
 
         Parameters
         ----------
-        layer, level : str or int
-            The string name or integer index of the target layer, level.
+        layer : str or int
+            The string name or integer index of the target layer.
+        level : int
+            The integer of the target tessellation level.
         connected : bool
-            If True, only return connected triangles.
+            If True, only return connected vertices.
 
         Returns
         -------
@@ -270,6 +275,13 @@ class Model(object):
             For 3D models, vertices is Nvert X 3 (lon, lat, radius).
 
         """
+        try:
+            # it's an integer layer index
+            tessellation = self.layers[layer].tess_id
+        except TypeError:
+            # it's a string layer name
+            tessellation = dict(self.layers)[layer]
+
         # vertex = grid.getVertex(vertex_index)
         # lat = GeoTessUtils.getLatDegrees(vertex)
         # lon = GeoTessUtils.getLonDegrees(vertex)
