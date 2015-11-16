@@ -101,24 +101,12 @@ class Model(object):
         * grs80 - Conversion between geographic and geocentric latitudes,
         and between depth and radius are performed using the parameters of
         the GRS80 ellipsoid.
-        * grs80_rconst - Conversion between geographic and geocentric
-        latitudes are performed using the parameters of the GRS80
-        ellipsoid. Conversions between depth and radius assume the Earth is
-        a sphere with radius 6371.
         * wgs84 - Conversion between geographic and geocentric latitudes,
         and between depth and radius are performed using the parameters of
         the WGS84 ellipsoid.
-        * wgs84_rconst - Conversion between geographic and geocentric
-        latitudes are performed using the parameters of the WGS84
-        ellipsoid. Conversions between depth and radius assume the Earth is
-        a sphere with radius 6371.
         * iers2003 - Conversion between geographic and geocentric
         latitudes, and between depth and radius are performed using the
         parameters of the IERS2003 ellipsoid.
-        * iers2003_rconst - Conversion between geographic and geocentric
-        latitudes are performed using the parameters of the IERS2003
-        ellipsoid. Conversions between depth and radius assume the Earth is
-        a sphere with radius 6371.
     rconst : bool
         If True, assume, for purposes of converting between depth and
         radius, that the radius of the earth is a constant equal
