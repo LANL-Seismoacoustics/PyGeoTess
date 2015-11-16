@@ -80,12 +80,14 @@ cdef class GeoTessUtils:
 
 cdef class GeoTessGrid:
     cdef clib.GeoTessGrid *thisptr
+    cdef object owner
 
-    def __cinit__(self):
-        self.thisptr = new clib.GeoTessGrid()
+    def __cinit__(self, raw=False):
+        if not raw:
+            self.thisptr = new clib.GeoTessGrid()
 
     def __dealloc__(self):
-        if self.thisptr != NULL:
+        if self.thisptr != NULL and not self.owner:
             del self.thisptr
 
     def loadGrid(self, const string& inputFile):
@@ -100,8 +102,18 @@ cdef class GeoTessGrid:
     def getNLevels(self):
         return self.thisptr.getNLevels()
  
-    def getNTriangles(self):
-        return self.thisptr.getNTriangles()
+    def getNTriangles(self, tessellation=None, level=None):
+        if tessellation is None and level is None:
+            NTriangles = self.thisptr.getNTriangles()
+        else:
+            Nlevels = self.thisptr.getNLevels() 
+            NTess = self.getNTessellations()
+            if level > Nlevels or tessellation > NTess:
+                msg = "level > {} or tessellation > {}".format(Nlevels, NTess)
+                raise ValueError(msg)
+            NTriangles = self.thisptr.getNTriangles(int(tessellation), int(level))
+
+        return NTriangles
 
     def getNTessellations(self):
         return self.thisptr.getNTessellations()
@@ -152,8 +164,37 @@ cdef class GeoTessGrid:
 
         return triangles
 
+    def getTriangleVertexIndexes(self, int triangleIndex):
+        """
+        Supply an indeger triangle index, get a 3-element integer array, which
+        are indices of the vertices that make this triangle.
+
+        """
+        cdef const int *tri_vertex_ids = self.thisptr.getTriangleVertexIndexes(triangleIndex)
+        cdef np.npy_intp shape[1]
+        shape[0] = <np.npy_intp> 3
+        arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> tri_vertex_ids)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+
+        return arr.copy()
+
+    def getFirstTriangle(self, int tessellation, int level):
+        return self.thisptr.getFirstTriangle(tessellation, level)
+
+    def getLastTriangle(self, int tessellation, int level):
+        return self.thisptr.getLastTriangle(tessellation, level)
+
     def getVertexIndex(self, int triangle, int corner):
         return self.thisptr.getVertexIndex(triangle, corner)
+
+    @staticmethod
+    cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
+        cdef GeoTessGrid inst = GeoTessGrid(raw=True)
+        inst.thisptr = cptr
+        if owner:
+            inst.owner = owner
+
+        return inst
 
 
 cdef class GeoTessMetaData:
@@ -394,3 +435,8 @@ cdef class GeoTessModel:
         md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
         md.owner = self
         return md
+
+    def getGrid(self):
+        grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
+        grid.owner = self
+        return grid
