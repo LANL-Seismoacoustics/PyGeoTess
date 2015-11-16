@@ -3,7 +3,7 @@
 #
 #sys.path.append(os.path.dirname(__file__) + os.path.sep + 'lib' + os.path.sep + 'geotess.jar')
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 
 from geotess.utils import Layer, Attribute
 from geotess.grid import Grid
