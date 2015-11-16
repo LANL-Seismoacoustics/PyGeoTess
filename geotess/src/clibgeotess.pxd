@@ -30,10 +30,14 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getNLevels() const
         int getNLevels(int tessellation) 
         int getNTriangles()
+        int getNTriangles(int tessellation, int level) const
         int getNTessellations()
         string toString()
         const double* getVertex(int vertex) const
         const vector[int] getVertexTriangles(const int &tessId, const int &level, const int &vertex) const
+        const int* getTriangleVertexIndexes(int triangleIndex) const
+        int getFirstTriangle(int tessellation, int level) const
+        int getLastTriangle(int tessellation, int level) const
         int getVertexIndex(int triangle, int corner) const
 
 cdef extern from "GeoTessMetaData.h" namespace "geotess":
@@ -76,4 +80,5 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         string toString()
         EarthShape& getEarthShape()
         GeoTessMetaData& getMetaData()
+        GeoTessGrid& getGrid()
 
