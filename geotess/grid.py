@@ -18,18 +18,19 @@ class Grid(object):
     * information about which triangles reside on which tessellation level 
 
     """
-    def __init__(self, gridfile):
+    def __init__(self, gridfile=None):
         """
         Construct a grid from a file.
 
         Parameters
         ----------
         gridfile : str
-            Full path to GeoTess grid file.
+            Full path to GeoTess grid file.  None results in an empty Grid
+            instance.
 
         Attributes
         ----------
-        grid : geotess.GeoTessGrid
+        _grid : geotess.GeoTessGrid
             Low-level access to the GeoTessGrid instance.
         tesselations
         levels
@@ -37,33 +38,27 @@ class Grid(object):
         vertices
 
         """
-        self.gridfile = gridfile
-        #self.grid = lib.GeoTessGrid.loadGrid(gridfile)
+        if gridfile
+            self._grid = lib.GeoTessGrid()
+            self._grid.loadGrid(gridfile)
+        else:
+            self._grid = None
 
-    # def __eq__(self, value):
-    #     return self.grid == value
+    @classmethod
+    def from_geotessgrid(cls, gtgrid):
+        """
+        Constructor that wraps a geotess.libgeotess.GeoTessGrid instance.
 
-    # def __str__(self):
-    #     return str(self.grid)
+        """
+        g = cls()
+        g._grid = gtgrid
 
-    # def __repr__(self):
-    #     return str(self.grid)
+        return g
 
-    # PROPERTIES
-    # Properties are like getters.  Here, they're being used to create public
-    # attributes from a subset of the underlying GeoTessGrid instance attributes.
-    # @property
-    # def tessellations(self):
-    #     return self.grid.tessellations
+    def triangles(self, tessellation=None, level=None, masked=None):
+        # TODO: copy Model.triangles over here.  Have Model.triangles forward to 
+        #    Model.grid.triangles.
+        pass
 
-    # @property
-    # def levels(self):
-    #     return self.grid.levels
-
-    # @property
-    # def triangles(self):
-    #     return self.grid.triangles
-
-    # @property
-    # def vertices(self):
-    #     return self.grid.vertices
+    def __str__(self):
+        return str(self._grid.toString())
