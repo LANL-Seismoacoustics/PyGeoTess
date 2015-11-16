@@ -128,11 +128,13 @@ class Model(object):
     def __init__(self, gridfile=None, layers=None, attributes=None, dtype=None,
                  earth_shape="wgs84", rconst=False, description=None):
 
+        self.layers = layers
+        self.attributes = attributes
+
         if gridfile is None:
-            pass
+            self._model = None
+            self.grid = None
         else:
-            self.layers = layers
-            self.attributes = attributes
 
             # Create GeoTessMetaData from inputs
             md = lib.GeoTessMetaData()
@@ -154,7 +156,10 @@ class Model(object):
             md.setModelSoftwareVersion("PyGeoTess v{}".format(__version__))
             md.setModelGenerationDate(str(datetime.now()))
 
-            self.model = lib.GeoTessModel(gridfile, md)
+            # instantiate and store the low-level model instance
+            self._model = lib.GeoTessModel(gridfile, md)
+
+            self.grid = Grid.from_geotessgrid(self._model.getGrid())
 
     @classmethod
     def read(cls, modelfile):
@@ -167,7 +172,7 @@ class Model(object):
         # load the model, add it as data on the instance
         model = lib.GeoTessModel()
         model.loadModel(modelfile)
-        m.model = model
+        m._model = model
 
         # populate .attributes and .layers from the GeoTessMetaData
         md = model.getMetaData()
@@ -189,7 +194,7 @@ class Model(object):
         Write the model to a file on disk.
 
         """
-        self.model.writeModel(outfile)
+        self._model.writeModel(outfile)
 
     def triangles(self, layer=None, level=None, masked=False):
         """
@@ -228,7 +233,7 @@ class Model(object):
             # it's a string layer name
             tessellation = dict(self.layers)[layer]
 
-        grid = self.model.getGrid()
+        grid = self._model.getGrid()
 
         # get the integer ids of all the triangles in this layer and level
         first_triangle_id = grid.getFirstTriangle(tessellation, level)
@@ -308,5 +313,5 @@ class Model(object):
         pass
 
     def __str__(self):
-        return self.model.toString()
+        return self._model.toString()
 
