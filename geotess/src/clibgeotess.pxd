@@ -32,6 +32,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getNTriangles()
         int getNTriangles(int tessellation, int level) const
         int getNTessellations()
+        int getNVertices() const
         string toString()
         const double* getVertex(int vertex) const
         const vector[int] getVertexTriangles(const int &tessId, const int &level, const int &vertex) const
@@ -39,6 +40,10 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getFirstTriangle(int tessellation, int level) const
         int getLastTriangle(int tessellation, int level) const
         int getVertexIndex(int triangle, int corner) const
+        # had to remote a "const" from the def
+        # one can't use 'const' in all the same places between C++ and Cython
+        # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
+        double *const * getVertices() const
 
 cdef extern from "GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:

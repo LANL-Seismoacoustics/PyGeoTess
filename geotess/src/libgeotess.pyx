@@ -52,6 +52,7 @@ np.import_array()
 
 from cython.operator cimport dereference as deref
 
+from libc.string cimport memcpy
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
@@ -119,6 +120,36 @@ cdef class GeoTessGrid:
     def getNTessellations(self):
         return self.thisptr.getNTessellations()
 
+    def getNVertices(self):
+        return self.thisptr.getNVertices()
+
+    def getVertices(self):
+        # http://docs.cython.org/src/userguide/wrapping_CPlusPlus.html#create-cython-wrapper-class
+        # _grid.vertices() returns a double const* const* (2D array), which will
+        # need some internal NumPy functions to get out of Cython.
+        # http://stackoverflow.com/questions/27940848/passing-2-dimensional-c-array-to-python-numpy
+        cdef int nVert = self.thisptr.getNVertices()
+        cdef int nCol = 3
+        cdef np.npy_intp Dims[2]
+        Dims[0] = nVert
+        Dims[1] = nCol
+
+        # an nVert X 3 2D array
+        cdef double *const * c_vertices = self.thisptr.getVertices()
+
+        # http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#c.PyArray_SimpleNew
+        # PyObject *PyArray_SimpleNew(int nd, npy_intp* dims, int typenum)
+        # Allocate the memory needed for the array
+        ArgsArray = np.PyArray_SimpleNew(2, Dims, np.NPY_DOUBLE)
+        # The pointer to the array data is accessed using PyArray_DATA()
+        cdef double *p = <double *> np.PyArray_DATA(ArgsArray)
+
+        for k in range(nVert):
+            memcpy(p, &c_vertices[k], sizeof(double) * nCol)
+            p += nCol
+
+        return ArgsArray
+
     def toString(self):
         return self.thisptr.toString()
 
@@ -146,6 +177,7 @@ cdef class GeoTessGrid:
         # As the OWNDATA flag of an array is read-only in Python, we need to
         # call the C function PyArray_UpdateFlags
         np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+        # http://stackoverflow.com/questions/19204098/c-code-within-python-and-copying-arrays-in-c-code
 
         return arr.copy()
 

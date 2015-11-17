@@ -122,13 +122,6 @@ class Grid(object):
             For 3D models, vertices is Nvert X 3 (lon, lat, radius).
 
         """
-        try:
-            # it's an integer layer index
-            tessellation = self.layers[layer].tess_id
-        except TypeError:
-            # it's a string layer name
-            tessellation = dict(self.layers)[layer]
-
         # vertex = grid.getVertex(vertex_index)
         # lat = GeoTessUtils.getLatDegrees(vertex)
         # lon = GeoTessUtils.getLonDegrees(vertex)
