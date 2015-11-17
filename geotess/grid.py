@@ -57,7 +57,7 @@ class Grid(object):
 
         return g
 
-    def triangles(self, tess=None, level=None, masked=None):
+    def triangles(self, tess, level, masked=None):
         """
         Get tessellation triangles, as integer indices into the corresponding
         array of vertices.
@@ -86,6 +86,9 @@ class Grid(object):
         Model.vertices
 
         """
+        # XXX: handle None values from a grid.triangles() call.
+        #   it should forward to an exposed _grid.getTriangles() method.
+
         # get the integer ids of all the triangles in this layer and level
         first_triangle_id = self._grid.getFirstTriangle(tess, level)
         last_triangle_id = self._grid.getLastTriangle(tess, level)
@@ -97,6 +100,40 @@ class Grid(object):
             triangles[i,:] = self._grid.getTriangleVertexIndexes(triangle_id)
 
         return triangles
+
+    def vertices(self, tess=None, level=None, connected=True):
+        """
+        Get geographic coordinates of tessellation vertices.
+
+        Parameters
+        ----------
+        layer : str or int
+            The string name or integer index of the target layer.
+        level : int
+            The integer of the target tessellation level.
+        connected : bool
+            If True, only return connected vertices.
+
+        Returns
+        -------
+        vertices : numpy.ndarray of floats (Nvert X Ndim)
+            Geographic coordinates of vertices.
+            For 2D models, vertices is Nvert X 2 (lon, lat).
+            For 3D models, vertices is Nvert X 3 (lon, lat, radius).
+
+        """
+        try:
+            # it's an integer layer index
+            tessellation = self.layers[layer].tess_id
+        except TypeError:
+            # it's a string layer name
+            tessellation = dict(self.layers)[layer]
+
+        # vertex = grid.getVertex(vertex_index)
+        # lat = GeoTessUtils.getLatDegrees(vertex)
+        # lon = GeoTessUtils.getLonDegrees(vertex)
+        pass
+
 
     def __str__(self):
         return str(self._grid.toString())
