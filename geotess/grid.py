@@ -2,6 +2,8 @@
 GeoTessGrid Python definitions.
 
 """
+import numpy as np
+
 import geotess.libgeotess as lib
 
 class Grid(object):
@@ -38,7 +40,7 @@ class Grid(object):
         vertices
 
         """
-        if gridfile
+        if gridfile:
             self._grid = lib.GeoTessGrid()
             self._grid.loadGrid(gridfile)
         else:
@@ -55,10 +57,46 @@ class Grid(object):
 
         return g
 
-    def triangles(self, tessellation=None, level=None, masked=None):
-        # TODO: copy Model.triangles over here.  Have Model.triangles forward to 
-        #    Model.grid.triangles.
-        pass
+    def triangles(self, tess=None, level=None, masked=None):
+        """
+        Get tessellation triangles, as integer indices into the corresponding
+        array of vertices.
+
+        Use these "triangles" (vertex indices) to index into the corresponding
+        Model.vertices.
+
+        Parameters
+        ----------
+        tess : int
+            The integer index of the target tessellation.
+        level : int
+            The integer of the target tessellation level.
+        masked : bool
+            If False, only return un-masked triangles.  Otherwise, return all.
+            Not yet implemented.
+
+        Returns
+        -------
+        triangles : numpy.ndarray of ints (Ntriangles x 3)
+            Each row contains (unordered?) integer indices into the
+            corresponding vertex array, producing the triangle coordinates.
+
+        See Also
+        --------
+        Model.vertices
+
+        """
+        # get the integer ids of all the triangles in this layer and level
+        first_triangle_id = self._grid.getFirstTriangle(tess, level)
+        last_triangle_id = self._grid.getLastTriangle(tess, level)
+        triangle_ids = range(first_triangle_id, last_triangle_id)
+
+        # get the vertex indices of all the triangles as an iteger array
+        triangles = np.empty((len(triangle_ids), 3), dtype=np.int)
+        for i, triangle_id in enumerate(triangle_ids):
+            triangles[i,:] = self._grid.getTriangleVertexIndexes(triangle_id)
+
+        return triangles
 
     def __str__(self):
         return str(self._grid.toString())

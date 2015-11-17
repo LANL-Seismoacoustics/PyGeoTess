@@ -83,6 +83,7 @@ cdef class GeoTessGrid:
     cdef object owner
 
     def __cinit__(self, raw=False):
+        # XXX: lots of things evaluate to True or False. A file name, for example.
         if not raw:
             self.thisptr = new clib.GeoTessGrid()
 
