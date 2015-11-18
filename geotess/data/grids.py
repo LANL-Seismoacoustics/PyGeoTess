@@ -4,6 +4,8 @@ from geotess.grid import Grid
 
 here = os.path.dirname(__file__) + os.path.sep
 
+small_model_grid= Grid(here + 'small_model_grid.ascii')
+
 grid_00500 = Grid(here + 'geotess_grid_00500.geotess')
 grid_01000 = Grid(here + 'geotess_grid_01000.geotess')
 grid_02000 = Grid(here + 'geotess_grid_02000.geotess')
