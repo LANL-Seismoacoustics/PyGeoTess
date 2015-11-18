@@ -92,7 +92,7 @@ class Grid(object):
         # get the integer ids of all the triangles in this layer and level
         first_triangle_id = self._grid.getFirstTriangle(tess, level)
         last_triangle_id = self._grid.getLastTriangle(tess, level)
-        triangle_ids = range(first_triangle_id, last_triangle_id)
+        triangle_ids = range(first_triangle_id, last_triangle_id + 1)
 
         # get the vertex indices of all the triangles as an iteger array
         triangles = np.empty((len(triangle_ids), 3), dtype=np.int)
@@ -101,7 +101,7 @@ class Grid(object):
 
         return triangles
 
-    def vertices(self, tess=None, level=None, connected=True):
+    def vertices(self, tess=None, level=None, masked=False):
         """
         Get geocentric coordinates of tessellation vertices.
 
@@ -111,21 +111,28 @@ class Grid(object):
             The string name or integer index of the target layer.
         level : int
             The integer of the target tessellation level.
-        connected : bool
-            If True, only return connected vertices.
+        masked : bool
+            If False, only return un-masked vertices.  Otherwise, return all.
+            Not yet implemented.
 
         Returns
         -------
-        vertices : numpy.ndarray of floats (Nvert X Ndim)
+        vertices : numpy.ndarray of floats (Nvert X 2)
             Geographic coordinates of vertices.
-            For 2D models, vertices is Nvert X 2 (lon, lat).
-            For 3D models, vertices is Nvert X 3 (lon, lat, radius).
 
         """
-        # vertex = grid.getVertex(vertex_index)
-        # lat = GeoTessUtils.getLatDegrees(vertex)
-        # lon = GeoTessUtils.getLonDegrees(vertex)
-        pass
+        # XXX: implement tess, level keywords.
+        gt_util = lib.GeoTessUtils()
+        unit_vertices = self._grid.getVertices()
+        geo_vertices = np.empty((unit_vertices.shape[0], 2), dtype=np.float)
+        for unit_vertex, geo_vertex in zip(unit_vertices, geo_vertices):
+            # this syntax looks funny, but it works b/c iterating through rows
+            # in an array produces references.  so, manipulating these row
+            # references is actually manipulating the main array.
+            geo_vertex[0] = gt_util.getLonDegrees(unit_vertex)
+            geo_vertex[1] = gt_util.getLatDegrees(unit_vertex)
+
+        return geo_vertices
 
 
     def __str__(self):
