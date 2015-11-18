@@ -340,6 +340,7 @@ cdef class EarthShape:
 
     """
     cdef clib.EarthShape *thisptr
+    cdef object owner
 
     def __cinit__(self, earthShape="WGS84", raw=False):
         # raw=True means "just give me the Python wrapper class, I don't want
@@ -349,7 +350,7 @@ cdef class EarthShape:
             self.thisptr = new clib.EarthShape(earthShape)
 
     def __dealloc__(self):
-        if self.thisptr != NULL:
+        if self.thisptr != NULL and not self.owner:
             del self.thisptr
 
     def getLonDegrees(self, double[:] v):
@@ -402,13 +403,15 @@ cdef class EarthShape:
         return v
 
     @staticmethod
-    cdef EarthShape wrap(clib.EarthShape *cptr):
+    cdef EarthShape wrap(clib.EarthShape *cptr, owner=None):
         """
         Wrap a C++ pointer with a pointer-less Python EarthShape class.
 
         """
         cdef EarthShape inst = EarthShape(raw=True)
         inst.thisptr = cptr
+        if owner:
+            inst.owner = owner
 
         return inst
 
@@ -461,9 +464,8 @@ cdef class GeoTessModel:
         return self.thisptr.toString()
 
     def getEarthShape(self):
-        # XXX: pointer ownership issues.  Just return a new EarthShape of the
-        # same earthShape string.
-        return EarthShape.wrap(&self.thisptr.getEarthShape())
+        shp = EarthShape.wrap(&self.thisptr.getEarthShape(), owner=self)
+        return shp
 
     def getMetaData(self):
         md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
