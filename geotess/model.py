@@ -198,23 +198,24 @@ class Model(object):
         """
         self._model.writeModel(outfile)
 
-    def vertices(self, layer=None, level=None, connected=True):
+    def vertices(self, layer=None, level=None, masked=False):
         """
-        Get geographic coordinates of tessellation vertices.
+        Get geographic coordinates of model vertices.
 
         Parameters
         ----------
-        layer : str or int
-            The string name or integer index of the target layer.
+        layer : int or str
+            The integer index or layer name of the target layer.
         level : int
             The integer of the target tessellation level.
-        connected : bool
-            If True, only return connected vertices.
+        masked : bool
+            If False, don't return masked triangles.  Otherwise, return them all.
+            Not yet implemented.
 
         Returns
         -------
-        vertices : numpy.ndarray of floats (Nvert X Ndim)
-            Geographic coordinates of vertices.
+        points : numpy.ndarray of floats (Nvert X Ndim)
+            Geographic coordinates of points.
             For 2D models, vertices is Nvert X 2 (lon, lat).
             For 3D models, vertices is Nvert X 3 (lon, lat, radius).
 
@@ -226,10 +227,6 @@ class Model(object):
             # it's a string layer name
             tessellation = dict(self.layers)[layer]
 
-        # vertex = grid.getVertex(vertex_index)
-        # lat = GeoTessUtils.getLatDegrees(vertex)
-        # lon = GeoTessUtils.getLonDegrees(vertex)
-        pass
 
     def points(self, layer=None, level=None):
         """
@@ -237,8 +234,13 @@ class Model(object):
 
         Parameters
         ----------
-        layer, level : str or int
-            The string name or integer index of the target layer, level.
+        layer : int or str
+            The integer index or layer name of the target layer.
+        level : int
+            The integer of the target tessellation level.
+        masked : bool
+            If False, don't return masked triangles.  Otherwise, return them all.
+            Not yet implemented.
 
         Returns
         -------
@@ -248,7 +250,12 @@ class Model(object):
             For 3D models, vertices is Nvert X 3 (lon, lat, radius).
 
         """
-        pass
+        try:
+            # it's an integer layer index
+            tessellation = self.layers[layer].tess_id
+        except TypeError:
+            # it's a string layer name
+            tessellation = dict(self.layers)[layer]
 
     def interpolate(self, domain, attribute, interpolant='linear'):
         pass

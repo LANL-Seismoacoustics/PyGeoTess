@@ -23,8 +23,6 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
     cdef cppclass GeoTessGrid:
         GeoTessGrid() except +
         GeoTessGrid(GeoTessGrid &other) except +
-        # string value inputFile is turned into a pointer, that can't be used to
-        # modify the thing it points to, and returns a pointer to a GeoTessGrid.
         GeoTessGrid* loadGrid(const string& inputFile)
         void writeGrid(const string& fileName)
         int getNLevels() const
@@ -40,8 +38,8 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getFirstTriangle(int tessellation, int level) const
         int getLastTriangle(int tessellation, int level) const
         int getVertexIndex(int triangle, int corner) const
-        # had to remote a "const" from the def
-        # one can't use 'const' in all the same places between C++ and Cython
+        # had to remove a "const" from the def
+        # Cython can't use 'const' in all the same places as C++
         # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
         double *const * getVertices() const
 
@@ -76,7 +74,6 @@ cdef extern from "EarthShape.h" namespace "geotess":
 cdef extern from "GeoTessModel.h" namespace "geotess":
     cdef cppclass GeoTessModel:
         GeoTessModel() except +
-        # GeoTessModel(GeoTessGrid *grid, GeoTessMetaData *metaData) except +
         GeoTessModel(const string &gridFileName, GeoTessMetaData *metaData) except +
         # methods with default values can't be declared as such here.  they are
         # to be handled in the pyx file.

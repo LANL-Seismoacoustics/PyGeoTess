@@ -57,7 +57,7 @@ class Grid(object):
 
         return g
 
-    def triangles(self, tess, level, masked=None):
+    def triangles(self, tess, level, masked=False):
         """
         Get tessellation triangles, as integer indices into the corresponding
         array of vertices.
@@ -103,7 +103,7 @@ class Grid(object):
 
     def vertices(self, tess=None, level=None, connected=True):
         """
-        Get geographic coordinates of tessellation vertices.
+        Get geocentric coordinates of tessellation vertices.
 
         Parameters
         ----------
