@@ -135,17 +135,18 @@ cdef class GeoTessGrid:
         Dims[1] = nCol
 
         # an nVert X 3 2D array
-        cdef double *const * c_vertices = self.thisptr.getVertices()
+        cdef const double *const * c_vertices
+        c_vertices = self.thisptr.getVertices()
 
         # http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#c.PyArray_SimpleNew
         # PyObject *PyArray_SimpleNew(int nd, npy_intp* dims, int typenum)
         # Allocate the memory needed for the array
-        ArgsArray = np.PyArray_SimpleNew(2, Dims, np.NPY_DOUBLE)
+        cdef np.ndarray ArgsArray = np.PyArray_SimpleNew(2, Dims, np.NPY_DOUBLE)
         # The pointer to the array data is accessed using PyArray_DATA()
         cdef double *p = <double *> np.PyArray_DATA(ArgsArray)
 
-        for k in range(nVert):
-            memcpy(p, &c_vertices[k], sizeof(double) * nCol)
+        for r in range(nVert):
+            memcpy(p, c_vertices[r], sizeof(double) * nCol)
             p += nCol
 
         return ArgsArray
