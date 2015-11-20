@@ -99,11 +99,20 @@ The first 10 triangles are:
 
 ## Plotting grids
 
-The methods for vertices and triangles above makes them amenable to plotting using Matplotlib's [`triplot`](http://matplotlib.org/1.5.0/examples/pylab_examples/triplot_demo.html) function.
+The `.vertices` and `.triangles` methods above return arrays that are amenable
+to plotting using Matplotlib's
+[`triplot`](http://matplotlib.org/1.5.0/examples/pylab_examples/triplot_demo.html)
+function.  We'll project first using Matplotlib
+[Basemap](http://matplotlib.org/basemap/users/examples.html).
 
 
 ```python
 import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+
+m = Basemap(projection='ortho',lat_0=45,lon_0=-100)
+m.etopo()
+x, y = m(vertices[:,0], vertices[:,1])
 
 plt.triplot(vertices[:,0], vertices[:,1], triangles);
 ```
@@ -112,36 +121,24 @@ plt.triplot(vertices[:,0], vertices[:,1], triangles);
 ![png](data/output_7_1.png)
 
 
-The cirularity of vertex longitudes makes plotting tricky.  Luckily, Matplotlib has the tools ['Triangulation'](http://matplotlib.org/api/tri_api.html#matplotlib.tri.Triangulation) and ['TriAnalyzer'](http://matplotlib.org/api/tri_api.html#matplotlib.tri.TriAnalyzer) to mask out these long, flat triangles from the plot!
+The cirularity of vertex longitudes makes plotting a bit wonky.  Luckily,
+Matplotlib has the tools
+[`Triangulation`](http://matplotlib.org/api/tri_api.html#matplotlib.tri.Triangulation)
+and
+[`TriAnalyzer`](http://matplotlib.org/api/tri_api.html#matplotlib.tri.TriAnalyzer)
+to mask out these long, flat triangles from the plot.
 
 ```python
 from matplotlib.tri import Triangulation, TriAnalyzer
 
-tri = Triangulation(vertices[:,0], vertices[:,1], triangles)
+tri = Triangulation(x, y, triangles)
 tri_an = TriAnalyzer(tri)
+mask = tri_an.get_flat_tri_mask()
 
-mask = tri_an.get_flat_tri_mask(min_circle_ratio=0.1, rescale=True)
-plt.triplot(vertices[:,0], vertices[:,1], triangles, mask=mask)
+plt.triplot(x, y, triangles, mask=mask)
 ```
 
 ![png](data/output_9_1.png)
-
-
-Now, let's plot them on a real map, using Matplotlib [Basemap](http://matplotlib.org/basemap/users/examples.html)!
-
-
-```python
-from mpl_toolkits.basemap import Basemap
-
-plt.figure(figsize=(15,7))
-m = Basemap()
-m.etopo()
-x, y = m(vertices[:,0], vertices[:,1])
-plt.triplot(x, y, triangles, mask=mask, color='k')
-```
-
-
-![png](data/output_11_1.png)
 
 
 Not perfect, but not as messy.
