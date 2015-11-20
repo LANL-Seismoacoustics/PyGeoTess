@@ -109,8 +109,10 @@ class Grid(object):
         ----------
         layer : str or int
             The string name or integer index of the target layer.
+            Not yet implemented.
         level : int
             The integer of the target tessellation level.
+            Not yet implemented.
         masked : bool
             If False, only return un-masked vertices.  Otherwise, return all.
             Not yet implemented.

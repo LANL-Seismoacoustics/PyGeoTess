@@ -78,7 +78,7 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         # methods with default values can't be declared as such here.  they are
         # to be handled in the pyx file.
         GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath)
-        void writeModel(const string &outputFile)
+        void writeModel(const string &outputFile) except +
         string toString()
         EarthShape& getEarthShape()
         GeoTessMetaData& getMetaData()
