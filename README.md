@@ -7,3 +7,5 @@ PyGeoTess is a Python interface module to the
 Sandia National Laboratories.  It provides simplified access to a subset of the
 GeoTess library, and takes advantage of of Python's interactive interpreter and
 inline documentation system.
+
+![global grid](docs/src/pages/data/output_9_1.png)
