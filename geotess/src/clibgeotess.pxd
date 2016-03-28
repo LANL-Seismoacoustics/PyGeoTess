@@ -4,10 +4,12 @@ This module pulls GeoTess c++ functionality into Cython (not in Python yet).
 A pxd file is just a header file, mirroring that of c++.  It's necessary
 because Cython doesn't have a C header parser.
 
-We pull from all of GeoTess into this one place, and only the desired classes,
-methods, and functions.  Declarations are mostly unchanged from the original.
+For simplicity, we pull from all of GeoTess into this one place, and only the
+desired classes, methods, and functions.  Declarations are mostly unchanged
+from the original.
 
 """
+# libcpp is a Cython thing
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 

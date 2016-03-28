@@ -4,28 +4,28 @@
 This module exposes Cython GeoTess functionality from the pxd file into Python.
 
 The class definitions here are Python-visible, and are simply wrappers that 
-forward the Python-exposed methods directly to their Cython-exposed C++
+forward the Python-exposed methods directly down to their Cython-exposed C++
 counterparts, which have been exposed in the imported pxd file.
 
 This module is also responsible for converting between Python types and c++
 types, which sometimes involves annoying tricks.  For simple numerical types,
 this conversion can be done automatically in the calling signature of a "def"
 method if types are declared.  Complex C++ class types, for example, can't be
-in a Python-visable "def" method because Python objects can't be automatically
-cast to C++ types.  For these cases, sneaky factory functions that can used
-accept the complex types must do the work.  Unfortunately, this means that any
+in a Python-visible "def" method because Python objects can't be automatically
+cast to C++ types.  For these cases, sneaky factory functions that can accept
+the complex types must do the work.  Unfortunately, this means that any
 constructor or method that accepts complex c++ can't be "directly" exposed to
 Python.
 
 Using both a pxd and a pyx file is done, partly, so that we can keep the
 exposed c++ GeoTess functionality together in one namespace using "cimport",
-so that we can name the classes exposed to Python the same as those in the
+such that we can name the classes exposed to Python the same as those in the
 GeoTess c++.  This is sometimes confusing in error messages, however.
 
-GeoTess functionality is intentionally a one-to-one translation into Python so
-that any modifications to the way models and grids are used can be developed
-and tested in in pure Python modules.  This makes it easier to try different
-Python approaches to working with the underlying GeoTess library.
+GeoTess functionality is intentionally a one-to-one translation into Python
+here so that any modifications to the way models and grids are used can be
+developed and tested in other pure-Python modules.  This makes it easier to try
+different Pythonic approaches to working with the underlying GeoTess library.
 
 
 ## Current conversion conventions
@@ -38,6 +38,9 @@ Python approaches to working with the underlying GeoTess library.
 * Deleting or garbage-collecting objects is dangerous.  Some objects are
   managed by other objects, so deleting them manually can crash the interpreter.
   I'm not sure how to fix this yet.
+
+## Original C++ documentation
+http://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html
 
 """
 import os
@@ -200,7 +203,7 @@ cdef class GeoTessGrid:
 
     def getTriangleVertexIndexes(self, int triangleIndex):
         """
-        Supply an indeger triangle index, get a 3-element integer array, which
+        Supply an integer triangle index, get a 3-element integer array, which
         are indices of the vertices that make this triangle.
 
         """
@@ -223,6 +226,8 @@ cdef class GeoTessGrid:
 
     @staticmethod
     cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
+        # This is a Cython helper function that facilitates passing ownership
+        # of a C++ pointer to a Python class
         cdef GeoTessGrid inst = GeoTessGrid(raw=True)
         inst.thisptr = cptr
         if owner:
