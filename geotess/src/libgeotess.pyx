@@ -286,6 +286,7 @@ cdef class GeoTessMetaData:
         self.thisptr.setModelGenerationDate(genDate)
 
     def toString(self):
+
         return self.thisptr.toString()
 
     @staticmethod
@@ -298,12 +299,15 @@ cdef class GeoTessMetaData:
         return inst
 
     def getAttributeNamesString(self):
+
         return self.thisptr.getAttributeNamesString()
 
     def getAttributeUnitsString(self):
+
         return self.thisptr.getAttributeUnitsString()
 
     def getLayerNamesString(self):
+
         return self.thisptr.getLayerNamesString()
 
     def getLayerTessIds(self):
@@ -466,18 +470,25 @@ cdef class GeoTessModel:
         self.thisptr.writeModel(outputFile)
 
     def toString(self):
+
         return self.thisptr.toString()
 
     def getEarthShape(self):
         shp = EarthShape.wrap(&self.thisptr.getEarthShape(), owner=self)
+
         return shp
 
     def getMetaData(self):
         md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
         md.owner = self
+
         return md
 
     def getGrid(self):
         grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
         grid.owner = self
+
         return grid
+
+    def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
+        self.thisptr.setProfile(vertex, layer, radii, values)

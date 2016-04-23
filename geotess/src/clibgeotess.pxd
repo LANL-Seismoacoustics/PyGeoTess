@@ -85,4 +85,4 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         EarthShape& getEarthShape()
         GeoTessMetaData& getMetaData()
         GeoTessGrid& getGrid()
-
+        setProfile(int vertex, int layer, vector[float] &radii, vector[vector[float]] &values)
