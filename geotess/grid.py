@@ -128,7 +128,8 @@ class Grid(object):
         unit_vertices = self._grid.getVertices()
         geo_vertices = np.empty((unit_vertices.shape[0], 2), dtype=np.float)
         for unit_vertex, geo_vertex in zip(unit_vertices, geo_vertices):
-            # this syntax looks funny, but it works b/c iterating through rows
+            # this syntax looks funny, because we never put geo_vertex back into
+            # the original array, but it works b/c iterating through rows
             # in an array produces references.  so, manipulating these row
             # references is actually manipulating the main array.
             geo_vertex[0] = gt_util.getLonDegrees(unit_vertex)
