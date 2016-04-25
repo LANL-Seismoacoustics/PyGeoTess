@@ -10,9 +10,9 @@ counterparts, which have been exposed in the imported pxd file.
 This module is also responsible for converting between Python types and c++
 types, which sometimes involves annoying tricks.  For simple numerical types,
 this conversion can be done automatically in the calling signature of a "def"
-method if types are declared.  Complex C++ class types, for example, can't be
+method if types are declared.  Complex c++ class types, for example, can't be
 in a Python-visible "def" method because Python objects can't be automatically
-cast to C++ types.  For these cases, sneaky factory functions that can accept
+cast to c++ types.  For these cases, sneaky factory functions that can accept
 the complex types must do the work.  Unfortunately, this means that any
 constructor or method that accepts complex c++ can't be "directly" exposed to
 Python.
@@ -38,6 +38,9 @@ different Pythonic approaches to working with the underlying GeoTess library.
 * Deleting or garbage-collecting objects is dangerous.  Some objects are
   managed by other objects, so deleting them manually can crash the interpreter.
   I'm not sure how to fix this yet.
+ 
+* There is very little/no type checking between Python arguments and when
+  they're forwarded to the c++ methods.  This is dangerous.
 
 ## Original C++ documentation
 http://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html
@@ -286,6 +289,7 @@ cdef class GeoTessMetaData:
         self.thisptr.setModelGenerationDate(genDate)
 
     def toString(self):
+
         return self.thisptr.toString()
 
     @staticmethod
@@ -298,12 +302,15 @@ cdef class GeoTessMetaData:
         return inst
 
     def getAttributeNamesString(self):
+
         return self.thisptr.getAttributeNamesString()
 
     def getAttributeUnitsString(self):
+
         return self.thisptr.getAttributeUnitsString()
 
     def getLayerNamesString(self):
+
         return self.thisptr.getLayerNamesString()
 
     def getLayerTessIds(self):
@@ -466,18 +473,26 @@ cdef class GeoTessModel:
         self.thisptr.writeModel(outputFile)
 
     def toString(self):
+
         return self.thisptr.toString()
 
     def getEarthShape(self):
         shp = EarthShape.wrap(&self.thisptr.getEarthShape(), owner=self)
+
         return shp
 
     def getMetaData(self):
         md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
         md.owner = self
+
         return md
 
     def getGrid(self):
         grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
         grid.owner = self
+
         return grid
+
+    def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
+        # holycrap, vector[vector[...]] can just be a list of lists
+        self.thisptr.setProfile(vertex, layer, radii, values)
