@@ -10,7 +10,7 @@ import numpy as np
 # and http://stackoverflow.com/a/18418524/745557
 
 if platform.python_implementation() == 'CPython':
-    CPPFILES = glob('geotess/src/*.cc') # GeoTess c++ source
+    CPPFILES = glob('geotess/src/*.cc') + ['geotess/src/AK135Model.h'] # GeoTess c++ source
     # PYXFILES = glob('geotess/src/*.pyx') # Cython source files
     # CYFILES = glob('geotess/*.cpp') # cythonized c++ source files
     PYXFILES = ['geotess/src/libgeotess.pyx']
