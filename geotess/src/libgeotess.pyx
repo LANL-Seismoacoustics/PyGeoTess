@@ -496,3 +496,18 @@ cdef class GeoTessModel:
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
         # holycrap, vector[vector[...]] can just be a list of lists
         self.thisptr.setProfile(vertex, layer, radii, values)
+
+
+cdef class AK135Model:
+    cdef clib.AK135Model *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new clib.AK135Model()
+
+    def __dealloc__(self):
+        if self.thisptr != NULL:
+            del self.thisptr
+
+    def getlayerProfile(const double &lat, const double &lon, const int &layer,
+                        vector[float] &r, vector[vector[float]] &nodeData):
+        self.thisptr.getlayerProfile(lat, lon, layer, 
