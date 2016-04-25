@@ -30,7 +30,12 @@ different Pythonic approaches to working with the underlying GeoTess library.
 
 ## Current conversion conventions
 
-* GeoTess unit vectors are returned as 3-element of NumPy arrays of doubles
+* NumPy vectors are generally used instead of lists or vectors, such as for
+  GeoTess unit vectors.
+
+* If an c++ method accepts an empty array/vector argument to be filled by
+  the method, I leave that out of the calling signature.  It is instead
+  initialized inside the method and simply returned by it.
 
 
 ## Current headaches
@@ -405,10 +410,11 @@ cdef class EarthShape:
 
         cdef np.ndarray[double, ndim=1, mode="c"] v = np.empty(3)
 
-        # XXX: this syntax is preferred, but not working
+        # XXX: the commented syntax is preferred, but not working.
         # error: Cannot convert Python object to 'double *'
         # self.thisptr.getVectorDegrees(lat, lon, &v[0] )
 
+        # this syntax works, but isn't preferred.
         # https://github.com/cython/cython/wiki/tutorials-NumpyPointerToC#other-options
         self.thisptr.getVectorDegrees(lat, lon, <double*> v.data)
 
@@ -495,6 +501,7 @@ cdef class GeoTessModel:
 
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
         # holycrap, vector[vector[...]] can just be a list of lists
+        # TODO: accept NumPy vectors instead of lists for radii and values
         self.thisptr.setProfile(vertex, layer, radii, values)
 
 
@@ -508,6 +515,8 @@ cdef class AK135Model:
         if self.thisptr != NULL:
             del self.thisptr
 
-    def getlayerProfile(const double &lat, const double &lon, const int &layer,
-                        vector[float] &r, vector[vector[float]] &nodeData):
-        self.thisptr.getlayerProfile(lat, lon, layer, 
+    def getlayerProfile(const double &lat, const double &lon, const int &layer):
+        # TODO: initialize and fill "r" and "nodeData"
+        r = []
+        nodeData = []
+        self.thisptr.getlayerProfile(lat, lon, layer, r, nodeData)
