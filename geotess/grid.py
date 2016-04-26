@@ -52,6 +52,7 @@ class Grid(object):
         Constructor that wraps a geotess.libgeotess.GeoTessGrid instance.
 
         """
+        # TODO: rename this to "wrap"
         g = cls()
         g._grid = gtgrid
 

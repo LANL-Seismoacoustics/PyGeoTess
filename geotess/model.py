@@ -227,6 +227,8 @@ class Model(object):
             # it's a string layer name
             tessellation = dict(self.layers)[layer]
 
+        # XXX: finish this
+
 
     def points(self, layer=None, level=None):
         """
@@ -256,6 +258,8 @@ class Model(object):
         except TypeError:
             # it's a string layer name
             tessellation = dict(self.layers)[layer]
+
+        # XXX: finish this
 
     def interpolate(self, domain, attribute, interpolant='linear'):
         pass
