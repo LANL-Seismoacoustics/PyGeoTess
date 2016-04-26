@@ -1,9 +1,5 @@
 from geotess import Layer, Attribute, Model
-
-def ak135_interp(layer):
-    # do some stuff
-    radii = attrib_values = None
-    return radii, attrib_values
+from geotess.data import ak135
 
 descr = """
 Simple example of populating a 3D GeoTess model
@@ -32,14 +28,11 @@ model = Model('geotess/data/small_model_grid.ascii', layers, attributes,
               'float', description=descr)
 
 # populate the model from ak135
-for layer in model.layers:
-    for vertex in model.grid.vertices:
-        radii, attrib_values = ak135_interp(layer)
-        model.set_profile(vertex, layer, radii, attrib_values)
+for layer_num in range(len(model.layers)):
+    for vert_num, (lat, lon) in enumerate(model.grid.vertices()):
+        radii, attrib_values = ak135.getLayerProfile(lat, lon, layer_num)
+        model.set_profile(vert_num, layer_num, radii, attrib_values)
 
-
-# a helpful human-readable form of model info
-print(model)
 
 # write to file
 model.write('path/to/output/small_model.ascii')
