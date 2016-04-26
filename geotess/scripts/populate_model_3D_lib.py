@@ -47,4 +47,12 @@ for layer in range(model.getNLayers()):
 
 print(model.toString())
 
+msg = """
+Radial profile at the south pole:
+Radius (km) Vp (km/sec) Vs (km/sec) Density (g/cc)
+"""
+print(msg)
+
+for layer in range(len(model.getNLayers())):
+    p = model.getProfile(11, layer)
 

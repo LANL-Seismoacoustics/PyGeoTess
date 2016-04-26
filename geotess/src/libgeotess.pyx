@@ -518,6 +518,11 @@ cdef class GeoTessModel:
         # TODO: accept NumPy vectors instead of lists for radii and values
         self.thisptr.setProfile(vertex, layer, radii, values)
 
+    def getProfile(self, int vertex, int layer):
+        # TODO: return a numpy structured array, not a profile object
+        # Just use the Profile object internally here
+        pass
+        
 
 cdef class AK135Model:
     cdef clib.AK135Model *thisptr
