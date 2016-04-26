@@ -7,7 +7,6 @@ populate_model_3D.cc program, using the Python geotess.lib module.
 """
 from datetime import datetime
 import geotess.libgeotess as lib
-from geotess.data import ak135
 
 md =  lib.GeoTessMetaData()
 md.setEarthShape("WGS84")
@@ -31,11 +30,21 @@ model = lib.GeoTessModel('../data/small_model_grid.ascii', md)
 
 ellipsoid = model.getEarthShape()
 
+ak135 = lib.AK135Model()
+
+grid = model.getGrid()
+
 for layer in range(model.getNLayers()):
     for vtx in range(model.getNVertices()):
 
-        vertex = model.getGrid().getVertex(vtx)
+        vertex = grid.getVertex(vtx)
         lat = ellipsoid.getLatDegrees(vertex)
         lon = ellipsoid.getLonDegrees(vertex)
 
         radii, attributeValues = ak135.getLayerProfile(lat, lon, layer)
+
+        model.setProfile(vtx, layer, radii, attributeValues)
+
+print(model.toString())
+
+

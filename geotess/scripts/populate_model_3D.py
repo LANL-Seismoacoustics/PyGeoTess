@@ -1,5 +1,4 @@
 from geotess import Layer, Attribute, Model
-from geotess.data import ak135
 
 descr = """
 Simple example of populating a 3D GeoTess model
