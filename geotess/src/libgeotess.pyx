@@ -500,7 +500,21 @@ cdef class GeoTessModel:
         return grid
 
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
+        """
+        Set profile values at a vertex and layer.
+
+        Parameters
+        ----------
+        vertex, layer : int
+            vertex and layer number of the profile.
+        radii : list
+            Radius values of profile data.
+        values : list of lists
+            List of corresponding attribute values at the provided radii.
+
+        """
         # holycrap, vector[vector[...]] can just be a list of lists
+        # I wonder if it can be a 2D NumPy array
         # TODO: accept NumPy vectors instead of lists for radii and values
         self.thisptr.setProfile(vertex, layer, radii, values)
 
@@ -515,8 +529,10 @@ cdef class AK135Model:
         if self.thisptr != NULL:
             del self.thisptr
 
-    def getlayerProfile(const double &lat, const double &lon, const int &layer):
+    def getLayerProfile(self, const double &lat, const double &lon, const int &layer):
         # TODO: initialize and fill "r" and "nodeData"
         r = []
         nodeData = []
-        self.thisptr.getlayerProfile(lat, lon, layer, r, nodeData)
+        self.thisptr.getLayerProfile(lat, lon, layer, r, nodeData)
+
+        return r, nodeData
