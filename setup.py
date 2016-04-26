@@ -38,7 +38,7 @@ if use_cython:
 else:
     extensions = [Extension(name='geotess.libgeotess',
                   sources=CPPFILES+CYFILES, language='c++',
-                  include_dirs=[np.get_include()])]
+                  include_dirs=[np.get_include(), 'geotess/src'])]
 
 
 setup(name = 'pygeotess',

@@ -31,7 +31,7 @@ different Pythonic approaches to working with the underlying GeoTess library.
 ## Current conversion conventions
 
 * NumPy vectors are generally used instead of lists or vectors, such as for
-  GeoTess unit vectors.
+  GeoTess unit vectors and profiles.
 
 * If an c++ method accepts an empty array/vector argument to be filled by
   the method, I leave that out of the calling signature.  It is instead
@@ -507,7 +507,7 @@ cdef class GeoTessModel:
         ----------
         vertex, layer : int
             vertex and layer number of the profile.
-        radii : list
+        radii : list0.58085473988409542
             Radius values of profile data.
         values : list of lists
             List of corresponding attribute values at the provided radii.
@@ -530,9 +530,12 @@ cdef class AK135Model:
             del self.thisptr
 
     def getLayerProfile(self, const double &lat, const double &lon, const int &layer):
-        # TODO: initialize and fill "r" and "nodeData"
-        r = []
-        nodeData = []
+        cdef vector[float] r
+        cdef vector[vector[float]] nodeData
+
         self.thisptr.getLayerProfile(lat, lon, layer, r, nodeData)
 
-        return r, nodeData
+        cdef np.ndarray[double, ndim=1, mode="c"] np_r = np.array(r)
+        cdef np.ndarray[double, ndim=2, mode="c"] np_nodeData = np.array(nodeData)
+
+        return np_r, np_nodeData
