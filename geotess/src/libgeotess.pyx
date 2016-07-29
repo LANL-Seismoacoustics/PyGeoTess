@@ -507,7 +507,7 @@ cdef class GeoTessModel:
         ----------
         vertex, layer : int
             vertex and layer number of the profile.
-        radii : list0.58085473988409542
+        radii : list
             Radius values of profile data.
         values : list of lists
             List of corresponding attribute values at the provided radii.
