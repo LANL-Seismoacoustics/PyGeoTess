@@ -1,9 +1,9 @@
 site_name: PyGeoTess
 site_url: http://lanl-seismoacoustics.github.io/pygeotess
-site_description: GeoTess Earth Model Library for Python Programmers
+site_description: Python interface to the GeoTess earth model library
 site_author: Jonathan K. MacCarthy
 
-copyright: Copyright 2015. Los Alamos National Security, LLC
+copyright: Copyright 2016. Los Alamos National Security, LLC
 
 repo_url: https://github.com/lanl-seismoacoustics/pygeotess
 

@@ -87,6 +87,8 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         GeoTessGrid& getGrid()
         void setProfile(int vertex, int layer, vector[float] &radii, vector[vector[float]] &values)
         GeoTessProfile* getProfile(int vertex, int layer)
+        int getNLayers() const
+        int getNVertices() const
 
 cdef extern from "AK135Model.h" namespace "geotess":
     cdef cppclass AK135Model:
