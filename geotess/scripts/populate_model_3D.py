@@ -1,4 +1,5 @@
 from geotess import Layer, Attribute, Model
+from geotess.libgeotess import AK135Model
 
 descr = """
 Simple example of populating a 3D GeoTess model
@@ -25,6 +26,8 @@ attributes = [Attribute(name='Vp', unit='km/sec'),
 # Initialize the model.  It is full of null data.
 model = Model('geotess/data/small_model_grid.ascii', layers, attributes,
               'float', description=descr)
+
+ak135 = AK135Model()
 
 # populate the model from ak135
 for layer_num in range(len(model.layers)):

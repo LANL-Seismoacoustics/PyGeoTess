@@ -96,4 +96,3 @@ cdef extern from "AK135Model.h" namespace "geotess":
 cdef extern from "GeoTessProfile.h" namespace "geotess":
     cdef cppclass GeoTessProfile:
         GeoTessProfile() except +
-        
