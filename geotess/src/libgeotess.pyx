@@ -1,5 +1,8 @@
 #distutils: language = c++
 #cython: embedsignature=True
+#cython: language_level=3
+#cython: c_string_type=unicode
+#cython: c_string_encoding=utf-8
 """
 This module exposes Cython GeoTess functionality from the pxd file into Python.
 
@@ -294,7 +297,6 @@ cdef class GeoTessMetaData:
         self.thisptr.setModelGenerationDate(genDate)
 
     def toString(self):
-
         return self.thisptr.toString()
 
     @staticmethod
@@ -330,6 +332,12 @@ cdef class GeoTessMetaData:
         np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
 
         return arr.tolist()
+
+    def getNLayers(self):
+        return self.thisptr.getNLayers()
+
+    def getLayerName(self, const int &layerIndex):
+        return self.thisptr.getLayerName(layerIndex)
 
 
 cdef class EarthShape:
@@ -524,10 +532,10 @@ cdef class GeoTessModel:
         pass
 
     def getNLayers(self):
-        returns self.thisptr.getNLayers()
+        return self.thisptr.getNLayers()
 
     def getNVertices(self):
-        returns self.thisptr.getNVertices()
+        return self.thisptr.getNVertices()
         
 
 cdef class AK135Model:

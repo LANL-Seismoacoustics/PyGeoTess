@@ -65,6 +65,7 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         string getLayerNamesString()
         const int* getLayerTessIds() const
         int getNLayers() const
+        string getLayerName(const int &layerIndex) 	
 
 cdef extern from "EarthShape.h" namespace "geotess":
     cdef cppclass EarthShape:

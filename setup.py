@@ -1,5 +1,6 @@
-import platform
 from glob import glob
+import platform
+import sys
 
 from distutils.core import setup
 from distutils.extension import Extension
@@ -23,7 +24,7 @@ else:
     CYFILES = []
 
 try:
-    from Cython.Built import cythonize
+    from Cython.Build import cythonize
 except ImportError:
     use_cython = False
 else:
@@ -34,6 +35,7 @@ if use_cython:
     extensions = [Extension(name='geotess.libgeotess',
                   sources=CPPFILES+PYXFILES, language='c++',
                   include_dirs=[np.get_include()])]
+    sys.stdout.write("Cython found.  Running 'cythonize'.\n")
     extensions = cythonize(extensions, language='c++')
 else:
     extensions = [Extension(name='geotess.libgeotess',
