@@ -1,15 +1,15 @@
 //- ****************************************************************************
-//- 
+//-
 //- Copyright 2009 Sandia Corporation. Under the terms of Contract
 //- DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government
 //- retains certain rights in this software.
-//- 
+//-
 //- BSD Open Source License.
 //- All rights reserved.
-//- 
+//-
 //- Redistribution and use in source and binary forms, with or without
 //- modification, are permitted provided that the following conditions are met:
-//- 
+//-
 //-    * Redistributions of source code must retain the above copyright notice,
 //-      this list of conditions and the following disclaimer.
 //-    * Redistributions in binary form must reproduce the above copyright
@@ -18,7 +18,7 @@
 //-    * Neither the name of Sandia National Laboratories nor the names of its
 //-      contributors may be used to endorse or promote products derived from
 //-      this software without specific prior written permission.
-//- 
+//-
 //- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 //- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 //- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,17 +47,17 @@ namespace geotess {
 // **** _FUNCTION IMPLEMENTATIONS_ *********************************************
 
 GeoTessMetaData::GeoTessMetaData(const GeoTessMetaData& other) :
-		description(other.description), nLayers(other.nLayers), nVertices(other.nVertices),
-		layerNames(NULL), layerTessIds(NULL), dataType(other.dataType),
-		nAttributes(other.nAttributes), attributeNames(NULL), attributeUnits(NULL),
-		boolAttributeFilter(other.boolAttributeFilter),
-		attributeFilterString(other.attributeFilterString),
-		inputModelFile(other.inputModelFile),
-		inputGridFile(other.inputGridFile), loadTimeModel(other.loadTimeModel),
-		outputModelFile(other.outputModelFile), outputGridFile(other.outputGridFile),
-		writeTimeModel(other.writeTimeModel), refCount(0),
-		reuseGrids(true), modelSoftwareVersion(other.modelSoftwareVersion),
-		modelGenerationDate(other.modelGenerationDate)
+				description(other.description), nLayers(other.nLayers), nVertices(other.nVertices),
+				layerNames(NULL), layerTessIds(NULL), dataType(other.dataType),
+				nAttributes(other.nAttributes), attributeNames(NULL), attributeUnits(NULL),
+				boolAttributeFilter(other.boolAttributeFilter),
+				attributeFilterString(other.attributeFilterString),
+				inputModelFile(other.inputModelFile),
+				inputGridFile(other.inputGridFile), loadTimeModel(other.loadTimeModel),
+				outputModelFile(other.outputModelFile), outputGridFile(other.outputGridFile),
+				writeTimeModel(other.writeTimeModel), refCount(0),
+				reuseGrids(true), modelSoftwareVersion(other.modelSoftwareVersion),
+				modelGenerationDate(other.modelGenerationDate)
 {
 	if (nLayers > 0)
 	{
@@ -185,7 +185,7 @@ GeoTessMetaData::~GeoTessMetaData()
 	{
 		ostringstream os;
 		os << endl << "ERROR in GeoTessMetaData::~GeoTessMetaData" << endl
-			 << "Reference count (" << refCount << ") is not zero." << endl;
+				<< "Reference count (" << refCount << ") is not zero." << endl;
 		throw GeoTessException(os, __FILE__, __LINE__, 6006);
 	}
 
@@ -205,14 +205,14 @@ GeoTessMetaData::~GeoTessMetaData()
 		layerNames = NULL;
 	}
 	if (layerTessIds != NULL) \
-	{
+			{
 		delete [] layerTessIds;
 		layerTessIds = NULL;
-	}
+			}
 }
 
 bool GeoTessMetaData::operator==(const GeoTessMetaData& other)
-{
+		{
 	//if (optimization->ordinal() != other.optimization->ordinal()) return false;
 
 	if (dataType->ordinal() != other.dataType->ordinal()) return false;
@@ -242,7 +242,7 @@ bool GeoTessMetaData::operator==(const GeoTessMetaData& other)
 	//if (modelGenerationDate != other.modelGenerationDate) return false;
 
 	return true;
-}
+		}
 
 
 /**
@@ -282,7 +282,7 @@ void GeoTessMetaData::checkComplete()
 	string s = buf.str();
 	if (s.size() > 0)
 	{
-  	ostringstream os;
+		ostringstream os;
 		os	<< endl << "Error in GeoTessMetaData::checkComplete" << endl
 				<< "  MetaData is not complete." << s << endl;
 		throw GeoTessException(os, __FILE__, __LINE__, 6007);
@@ -503,10 +503,10 @@ void GeoTessMetaData::setLayerTessIds(vector<int>& layrTsIds)
 {
 	if ((layerNames != NULL) && ((int) layrTsIds.size() != nLayers))
 	{
-  	ostringstream os;
+		ostringstream os;
 		os	<< "Number of tess ids (" << layrTsIds.size()
-				<< ") != number of layers ("
-			  << nLayers << ")" << endl;
+						<< ") != number of layers ("
+						<< nLayers << ")" << endl;
 		throw GeoTessException(os, __FILE__, __LINE__, 6014);
 	}
 
@@ -602,30 +602,6 @@ void GeoTessMetaData::setDataType(const string& dt)
 	setDataType(*dtype);
 }
 
-void GeoTessMetaData::setOptimizationType(const GeoTessOptimizationType& ot)
-{
-	//optimization = &ot;
-}
-
-/**
- * Specify the type of the data that is stored in the model; Must be one of DOUBLE, FLOAT, LONG,
- * INT, SHORTINT, BYTE.
- *
- * @param dataType the dataType to set
- */
-void GeoTessMetaData::setOptimizationType(const string& ot)
-{
-	string dtut = CPPUtils::uppercase_string(CPPUtils::trimRight(ot, " \t"));
-	const GeoTessOptimizationType* otype = GeoTessOptimizationType::valueOf(dtut);
-	if (!otype)
-	{
-		ostringstream os;
-		os	<< dtut << " is not a recognized OptimizationType " << endl;
-		throw GeoTessException(os, __FILE__, __LINE__, 6020);
-	}
-	setOptimizationType(*otype);
-}
-
 string GeoTessMetaData::toString() const
 { return toString(class_name(), -1L); }
 
@@ -638,13 +614,13 @@ string GeoTessMetaData::toString(const string& className, LONG_INT memory) const
 
 	ostringstream os;
 	os << endl << className << ":" << endl
-		<< "OS: " << CPPUtils::getOpSys()
-		<< " " << nbits << "-bit mode" << endl
-		<< "Input Model File: " << inputModelFile << endl
-		<< "Input Grid File: " << inputGridFile << endl << endl
-		<< "Generated by: " << modelSoftwareVersion
-		<< "  " << modelGenerationDate << endl
-		<< "Model Load Time: " << CPPUtils::dtos(loadTimeModel, "%.3f sec") << endl;
+			<< "OS: " << CPPUtils::getOpSys()
+	<< " " << nbits << "-bit mode" << endl
+	<< "Input Model File: " << inputModelFile << endl
+	<< "Input Grid File: " << inputGridFile << endl << endl
+	<< "Generated by: " << modelSoftwareVersion
+	<< "  " << modelGenerationDate << endl
+	<< "Model Load Time: " << CPPUtils::dtos(loadTimeModel, "%.3f sec") << endl;
 
 	if (memory >= 0)
 		os << "Memory footprint: " << memory/1024./1024. << " MB" << endl;
@@ -652,8 +628,8 @@ string GeoTessMetaData::toString(const string& className, LONG_INT memory) const
 	if (outputModelFile != "none")
 	{
 		os << "Output Model File: " << outputModelFile << endl
-	       << "Output Grid File: " << outputGridFile << endl
-		   << "Model Write Time: " << CPPUtils::dtos(writeTimeModel, "%.3f") << endl;
+				<< "Output Grid File: " << outputGridFile << endl
+				<< "Model Write Time: " << CPPUtils::dtos(writeTimeModel, "%.3f") << endl;
 	}
 	os << endl << "Model Description: " << endl
 			<< description
@@ -666,8 +642,8 @@ string GeoTessMetaData::toString(const string& className, LONG_INT memory) const
 
 	os << attributeFilterString;
 
-//	os << "Attributes: " << getAttributeNamesString() << endl
-//		 << "Attribute Units: " << getAttributeUnitsString() << endl << endl;
+	//	os << "Attributes: " << getAttributeNamesString() << endl
+	//		 << "Attribute Units: " << getAttributeUnitsString() << endl << endl;
 
 	os << "Attributes: " << endl;
 	for (int i=0; i<getNAttributes(); ++i)
@@ -680,8 +656,8 @@ string GeoTessMetaData::toString(const string& className, LONG_INT memory) const
 	for (int i = nLayers - 1; i >= 0; --i)
 	{
 		os << " "  << CPPUtils::itos(i, "%3d")
-		   << "  "    << CPPUtils::itos(layerTessIds[i], "%6d")
-		   << "     " << layerNames[i] << endl;
+		<< "  "    << CPPUtils::itos(layerTessIds[i], "%6d")
+		<< "     " << layerNames[i] << endl;
 	}
 	os << endl;
 
@@ -690,77 +666,110 @@ string GeoTessMetaData::toString(const string& className, LONG_INT memory) const
 
 void GeoTessMetaData::loadMetaData(IFStreamBinary &input)
 {
-	string s;
-
 	// get the GeoTess name (GEOTESSMODEL) and validate
+	string s;
+	input.readCharArray(s, 12);
 
-	string GTName;
-	input.readCharArray(GTName, 12);
-	if (GTName != "GEOTESSMODEL")
+	if (s.compare("GEOTESSMODEL") != 0)
 	{
 		ostringstream os;
-		os << endl << "ERROR in GeoTessModel::loadModelBinary" << endl
-			 << "  expected char array \"GEOTESSMODEL\" as first entry of file "
-			 << "but found \"";
+		os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
+				<< "  expected char array \"GEOTESSMODEL\" as first entry of file "
+				<< "but found \"";
 		for (int i = 0; i < 12; ++i)
-			if ((GTName[i] != 127) && (GTName[i] > 31))
-			  os << GTName[i];
+			if ((s[i] != 127) && (s[i] > 31))
+				os << s[i];
 			else
-			  os << "[" << (int) GTName[i] << "]";
+				os << "[" << (int) s[i] << "]";
 		os << "\" instead ..." << endl;
 
 		throw GeoTessException(os, __FILE__, __LINE__, 6021);
 	}
 
-	// get the fileFormatVersion. Only recognized values right now are 1 and 2.
-
-	int fileFormatVersion = input.readInt();
-	if ((fileFormatVersion < 0) || (fileFormatVersion > 65536))
+	modelFileFormat = input.readInt();
+	if ((modelFileFormat < 0) || (modelFileFormat > 65536))
 	{
 		input.setByteOrderReverse(!input.isByteOrderReversalOn());
 		input.decrementPos(CPPUtils::SINT);
-		fileFormatVersion = input.readInt();
+		modelFileFormat = input.readInt();
 	}
 
-	if (fileFormatVersion < 1 || fileFormatVersion > 2)
+	if (modelFileFormat < 1)
 	{
 		ostringstream os;
-		os << endl << "ERROR in GeoTessModel::loadModelBinary" << endl
-			<< "This version of GeoTessJava (" << GeoTessUtils::getVersion()
-			<< ") cannot read GeoTess files written in file format " << fileFormatVersion << "." << endl
-			<< "Please update GeoTessJava to the latest version, available at www.sandia.gov/geotess" << endl;
-		throw GeoTessException(os, __FILE__, __LINE__, 6022);
+		os << endl << "ERROR in GeoTessMetaData::loadMetaData" << endl
+				<< "while trying to read file " << inputModelFile << endl
+				<< "This version of GeoTessCPP (" << GeoTessUtils::getVersion()
+		<< ") cannot read GeoTess files written in file format " << modelFileFormat << "." << endl
+		<< "Please update GeoTessCPP to the latest version, available at www.sandia.gov/geotess" << endl;
+		throw GeoTessException(os, __FILE__, __LINE__, 6024);
 	}
 
-	// read model population software version and file creation date
-	input.readString(modelSoftwareVersion);
-
-	input.readString(modelGenerationDate);
-
-	if (fileFormatVersion >= 2)
+	if (modelFileFormat >= 3)
 	{
-		string earthShapeName;
-		input.readString(earthShapeName);
-		setEarthShape(earthShapeName);
+		// read the modelClassName.  If this model is the base class,
+		// this will be "GeoTessModel".  If a derived class, it will
+		// contain the class name defined in the class_name() method
+		// of the derived class.  We don't save this value here.
+		input.readString(s);
+
+		int nProperties = input.readInt();
+		string key, value;
+
+		for (int i=0; i<nProperties; ++i)
+		{
+			input.readString(key);
+			input.readString(value);
+			properties[key] = CPPUtils::stringReplaceAll("<NEWLINE>", CPPUtils::NEWLINE,
+					CPPUtils::trim(value));
+		}
+
+		setModelSoftwareVersion(properties["modelSoftwareVersion"]);
+		setModelGenerationDate(properties["modelGenerationDate"]);
+		setEarthShape(properties["earthShape"]);
+		setAttributes(properties["attributeNames"], properties["attributeUnits"]);
+		setDataType(properties["dataType"]);
+		setLayerNames(properties["layerNames"]);
+
 	}
+	else
+	{
+		// read modelSoftwareVersion, modelGenerationDate, earthShapeName
+		// description, attribute names, attribute units, layer names, data type.
 
-	input.readString(s);
-	setDescription(s);
+		// read model population software version and file creation date
+		input.readString(s);
+		setModelSoftwareVersion(s);
 
-	string names, units, lyrs;
-	input.readString(names);
-	input.readString(units);
-	if (units.find_first_of(";") ==  0)
-		units = " "+units;
-	if (units.find_last_of(";") ==  units.length()-1)
-		units = units+" ";
-	setAttributes(names, units);
+		input.readString(s);
+		setModelGenerationDate(s);
 
-	input.readString(lyrs);
-	setLayerNames(lyrs);
+		if (modelFileFormat == 2)
+		{
+			input.readString(s);
+			setEarthShape(s);
+		}
+		else
+			setEarthShape("WGS84");
 
-	input.readString(s);
-	setDataType(s);
+		input.readString(s);
+		setDescription(s);
+
+		string names, units, lyrs;
+		input.readString(names);
+		input.readString(units);
+		if (units.find_first_of(";") ==  0)
+			units = " "+units;
+		if (units.find_last_of(";") ==  units.length()-1)
+			units = units+" ";
+		setAttributes(names, units);
+
+		input.readString(lyrs);
+		setLayerNames(lyrs);
+
+		input.readString(s);
+		setDataType(s);
+	}
 
 	nVertices = input.readInt();
 
@@ -778,127 +787,294 @@ void GeoTessMetaData::loadMetaData(IFStreamBinary &input)
 	setLayerTessIds(tessellations);
 }
 
-void GeoTessMetaData::loadMetaData(IFStreamAscii &input)
+void GeoTessMetaData::writeMetaData(IFStreamBinary& output, const string& modelClassName,
+		int nVertices)
 {
-	// get the dataFileFormat. Only recognized value right now is 1.
+	// write out file type identifier ("GEOTESSMODEL"), format version,
+	// code version, and data stamp
 
-	string line = input.readString();
-	if (line != "GEOTESSMODEL")
+	output.writeCharArray("GEOTESSMODEL", 12);
+
+	output.writeInt(modelFileFormat);
+
+	if (modelFileFormat >= 3)
 	{
-		ostringstream os;
-		os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
-				<< "while trying to read file " << inputModelFile << endl
-			 << "  expected GEOTESSMODEL as first line of file but found" << endl
-			 << line << endl;
-		throw GeoTessException(os, __FILE__, __LINE__, 6023);
+		output.writeString(modelClassName);
+
+		// make sure properties are up-to-date with all parameters
+		// supported by modelFileFormat 3.  If modelFileFormat is > 3,
+		// all the properties read from the input file will still be in
+		// properties map and will be written out right here.
+		properties["modelDescription"] = getDescription();
+		properties["modelSoftwareVersion"] = getModelSoftwareVersion();
+		properties["modelGenerationDate"] = getModelGenerationDate();
+		properties["earthShape"] = getEarthShape().getShapeName();
+		properties["attributeNames"] = getAttributeNamesString();
+		properties["attributeUnits"] = getAttributeUnitsString();
+		properties["dataType"] = getDataType().toString();
+		properties["layerNames"] = getLayerNamesString();
+
+		output.writeInt(properties.size());
+		for (std::map<string, string>::iterator it=properties.begin(); it!=properties.end(); ++it)
+		{
+			output.writeString(it->first);
+			output.writeString(CPPUtils::stringReplaceAll(CPPUtils::NEWLINE, "<NEWLINE>", it->second));
+		}
+	}
+	else
+	{
+		output.writeString(getModelSoftwareVersion());
+		output.writeString(getModelGenerationDate());
+
+		if (modelFileFormat == 2)
+			output.writeString(getEarthShape().getShapeName());
+
+		output.writeString(getDescription());
+
+		output.writeString(getAttributeNamesString());
+		output.writeString(getAttributeUnitsString());
+		output.writeString(getLayerNamesString());
+
+		output.writeString(getDataType().toString());
 	}
 
-	int dataFileFormat = input.readInteger();
-	if (dataFileFormat < 1 || dataFileFormat > 2)
+	output.writeInt(nVertices);
+
+	// tessellation ids
+	for (int i = 0; i < getNLayers(); ++i)
+		output.writeInt(getTessellation(i));
+}
+
+void GeoTessMetaData::writeMetaData(IFStreamAscii& output, const string& modelClassName,
+		int nVertices)
+{
+	// write out file type identifier ("GEOTESSMODEL")
+
+	output.writeStringNL("GEOTESSMODEL");
+
+	output.writeIntNL(modelFileFormat);
+
+	if (modelFileFormat >= 3)
+	{
+		output.writeStringNL(modelClassName);
+
+		// make sure properties are up-to-date with all parameters
+		// supported by modelFileFormat 3.  If modelFileFormat is > 3,
+		// all the properties read from the input file will still be in
+		// properties map and will be written out right here.
+		properties["modelDescription"] = getDescription();
+		properties["modelSoftwareVersion"] = getModelSoftwareVersion();
+		properties["modelGenerationDate"] = getModelGenerationDate();
+		properties["earthShape"] = getEarthShape().getShapeName();
+		properties["attributeNames"] = getAttributeNamesString();
+		properties["attributeUnits"] = getAttributeUnitsString();
+		properties["dataType"] = getDataType().toString();
+		properties["layerNames"] = getLayerNamesString();
+
+		string key, value;
+		for (std::map<string, string>::iterator it=properties.begin();
+				it!=properties.end(); ++it)
+		{
+			key = it->first;
+			value = it->second;
+			output.writeStringNL(key+" = "+
+					CPPUtils::stringReplaceAll(CPPUtils::NEWLINE, "<NEWLINE>", value));
+		}
+		output.writeNL();
+	}
+	else
+	{
+		// write modelSoftwareVersion, modelGenerationDate, earthShapeName
+		// description, attribute names, attribute units, layer names, data type.
+		output.writeStringNL(getModelSoftwareVersion());
+		output.writeStringNL(getModelGenerationDate());
+		if (modelFileFormat == 2)
+			output.writeStringNL(getEarthShape().getShapeName());
+		output.writeStringNL("<model_description>");
+		output.writeStringNL(description);
+		output.writeStringNL("</model_description>");
+		output.writeStringNL("attributes: " + getAttributeNamesString());
+		output.writeStringNL("units: " + getAttributeUnitsString());
+		output.writeStringNL("layers: " + getLayerNamesString());
+		output.writeStringNL(getDataType().name());
+	}
+
+	output.writeIntNL(nVertices);
+
+	for (int i = 0; i < getNLayers(); ++i)
+	{
+		output.writeString(" ");
+		output.writeInt(getTessellation(i));
+	}
+	output.writeNL();
+}
+
+void GeoTessMetaData::loadMetaData(IFStreamAscii &input)
+{
+	// get the GeoTess name (GEOTESSMODEL) and validate
+	string s;
+	input.readLine(s);
+	// cout << endl << "READLINE LENGTH: "<< s.length() << endl;
+	// remove the newline at the end of the input string
+	// s = std::regex_replace(s, std::regex("(\r\n|\r|\n)"), "");
+
+	if (s.compare("GEOTESSMODEL") != 0)
 	{
 		ostringstream os;
 		os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
+				<< "  expected char array \"GEOTESSMODEL\" as first entry of file "
+				<< "but found \"";
+		for (int i = 0; i < 12; ++i)
+			if ((s[i] != 127) && (s[i] > 31))
+				os << s[i];
+			else
+				os << "[" << (int) s[i] << "]";
+		os << "\" instead ..." << endl;
+
+		throw GeoTessException(os, __FILE__, __LINE__, 6021);
+	}
+
+	input.readInteger(modelFileFormat);
+	if (modelFileFormat < 1)
+	{
+		ostringstream os;
+		os << endl << "ERROR in GeoTessMetaData::loadMetaData" << endl
 				<< "while trying to read file " << inputModelFile << endl
-			<< "This version of GeoTessJava (" << GeoTessUtils::getVersion()
-			<< ") cannot read GeoTess files written in file format " << dataFileFormat << "." << endl
-			<< "Please update GeoTessJava to the latest version, available at www.sandia.gov/geotess" << endl;
+				<< "This version of GeoTessCPP (" << GeoTessUtils::getVersion()
+		<< ") cannot read GeoTess files written in file format " << modelFileFormat << "." << endl
+		<< "Please update GeoTessCPP to the latest version, available at www.sandia.gov/geotess" << endl;
 		throw GeoTessException(os, __FILE__, __LINE__, 6024);
 	}
 
-	// read model population software version and file creation date
-
-	input.readLine(modelSoftwareVersion);
-	modelSoftwareVersion = CPPUtils::trim(modelSoftwareVersion);
-
-	input.readLine(modelGenerationDate);
-	modelGenerationDate = CPPUtils::trim(modelGenerationDate);
-
-	if (dataFileFormat >= 2)
-	{
-		string earthShapeName;
-		input.readString(earthShapeName);
-		setEarthShape(earthShapeName);
-		//input.readLine(line);
-	}
-
-	// read description header
-
-	line = input.readString();
-	if (line != "<model_description>")
-	{
-		ostringstream os;
-		os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
-				<< "while trying to read file " << inputModelFile << endl
-				<< "  Expected to read string '<model_description>' but found "
-				<< line << endl;
-		throw GeoTessException(os, __FILE__, __LINE__, 6025);
-	}
-
-	// read description
-
-	description = "";
-	input.readLine(line);
-	while (line != "</model_description>")
-	{
-		CPPUtils::removeEOL(line);
-		description += line + CPPUtils::NEWLINE;
-		input.readLine(line);
-	}
-
-	// read attribute names and units
-
-	string attributes = "";
-	input.readLine(attributes);
 	vector<string> tokens;
-	CPPUtils::tokenizeString(attributes, ":", tokens);
-	if (tokens[0] != "attributes")
+
+	if (modelFileFormat >= 3)
 	{
-		ostringstream os;
-		os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
-				<< "while trying to read file " << inputModelFile << endl
-				<< "  Expected to read string starting with 'attributes:' but found "
-				<< attributes << endl;
-		throw GeoTessException(os, __FILE__, __LINE__, 6026);
-	}
-	vector<string> attrArray;
-	CPPUtils::tokenizeString(tokens[1], ";", attrArray);
+		// read the modelClassName.  If this model is the base class,
+		// this will be "GeoTessModel".  If a derived class, it will
+		// contain the class name defined in the method class_name()
+		// in the derived class. This value is not needed here.
+		input.readLine(s);
 
-	string units = "";
-	input.readLine(units);
-	CPPUtils::tokenizeString(units, ":", tokens);
-	if (tokens[0] != "units")
+		string key, value;
+
+		// start reading properties
+		properties.clear();
+		input.readLine(s);
+		s = CPPUtils::trim(s);
+		while (s != "")
+		{
+			int pos = s.find("=");
+			if (pos !=std::string::npos)
+			{
+				key = CPPUtils::trim(s.substr(0, pos));
+				value = CPPUtils::stringReplaceAll("<NEWLINE>", CPPUtils::NEWLINE,
+						CPPUtils::trim(s.substr(pos+1, s.length())));
+				properties[key] = value;
+			}
+			input.getline(s);
+			s = CPPUtils::trim(s);
+		}
+
+		setDescription(properties["modelDescription"]);
+		setModelSoftwareVersion(properties["modelSoftwareVersion"]);
+		setModelGenerationDate(properties["modelGenerationDate"]);
+		setEarthShape(properties["earthShape"]);
+		setAttributes(properties["attributeNames"], properties["attributeUnits"]);
+		setDataType(properties["dataType"]);
+		setLayerNames(properties["layerNames"]);
+
+	}
+	else
 	{
-		ostringstream os;
-		os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
-				<< "  while trying to read file " << inputModelFile << endl
-				<< "  Expected to read string starting with 'units:' but found "
-				<< units << endl;
-		throw GeoTessException(os, __FILE__, __LINE__, 6027);
+		input.readLine(s);
+		setModelSoftwareVersion(CPPUtils::trim(s));
+
+		input.readLine(s);
+		setModelGenerationDate(CPPUtils::trim(s));
+
+		if (modelFileFormat == 2)
+		{
+			input.readLine(s);
+			setEarthShape(s);
+		}
+		else
+			setEarthShape("WGS84");
+
+		// read description header
+
+		input.readLine(s);
+		if (s != "<model_description>")
+		{
+			ostringstream os;
+			os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
+					<< "while trying to read file " << inputModelFile << endl
+					<< "  Expected to read string '<model_description>' but found "
+					<< s << endl;
+			throw GeoTessException(os, __FILE__, __LINE__, 6025);
+		}
+
+		// read description
+
+		description = "";
+		input.readLine(s);
+		while (s != "</model_description>")
+		{
+			CPPUtils::removeEOL(s);
+			description += s + CPPUtils::NEWLINE;
+			input.readLine(s);
+		}
+
+		// read attribute names and units
+
+		string attributes = "";
+		input.readLine(attributes);
+		vector<string> tokens;
+		CPPUtils::tokenizeString(attributes, ":", tokens);
+		if (tokens[0] != "attributes")
+		{
+			ostringstream os;
+			os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
+					<< "while trying to read file " << inputModelFile << endl
+					<< "  Expected to read string starting with 'attributes:' but found "
+					<< attributes << endl;
+			throw GeoTessException(os, __FILE__, __LINE__, 6026);
+		}
+		attributes = CPPUtils::trim(tokens[1]);
+
+		string units = "";
+		input.readLine(units);
+		CPPUtils::tokenizeString(units, ":", tokens);
+		if (tokens[0] != "units")
+		{
+			ostringstream os;
+			os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
+					<< "  while trying to read file " << inputModelFile << endl
+					<< "  Expected to read string starting with 'units:' but found "
+					<< units << endl;
+			throw GeoTessException(os, __FILE__, __LINE__, 6027);
+		}
+		units = CPPUtils::trim(tokens[1]);
+
+		setAttributes(attributes, units);
+
+		string layers = "";
+		input.readLine(layers);
+		CPPUtils::tokenizeString(layers, ":", tokens);
+		if (tokens[0] != "layers")
+		{
+			ostringstream os;
+			os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
+					<< "while trying to read file " << inputModelFile << endl
+					<< "  Expected to read string starting with 'layers:' but found "
+					<< layers << endl;
+			throw GeoTessException(os, __FILE__, __LINE__, 6028);
+		}
+		setLayerNames(CPPUtils::trim(tokens[1]));
+
+		string datatype = input.readString();
+		setDataType(datatype);
 	}
-	vector<string> unitArray;
-	CPPUtils::tokenizeString(tokens[1], ";", unitArray);
-
-	setAttributes(attrArray, unitArray);
-
-	string layers = "";
-	input.readLine(layers);
-	CPPUtils::tokenizeString(layers, ":", tokens);
-	if (tokens[0] != "layers")
-	{
-		ostringstream os;
-		os << endl << "ERROR in GeoTessModel::loadModelAscii" << endl
-				<< "while trying to read file " << inputModelFile << endl
-				<< "  Expected to read string starting with 'layers:' but found "
-				<< layers << endl;
-		throw GeoTessException(os, __FILE__, __LINE__, 6028);
-	}
-	vector<string> layrArray;
-	CPPUtils::tokenizeString(tokens[1], ";", layrArray);
-
-	setLayerNames(layrArray);
-
-	string datatype = input.readString();
-	setDataType(datatype);
 
 	nVertices = input.readInteger();
 
@@ -915,7 +1091,6 @@ void GeoTessMetaData::loadMetaData(IFStreamAscii &input)
 	}
 	++nTess;
 	setLayerTessIds(tessellations);
-
 }
 
 } // end namespace geotess

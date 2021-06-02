@@ -1,15 +1,15 @@
 //- ****************************************************************************
-//- 
+//-
 //- Copyright 2009 Sandia Corporation. Under the terms of Contract
 //- DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government
 //- retains certain rights in this software.
-//- 
+//-
 //- BSD Open Source License.
 //- All rights reserved.
-//- 
+//-
 //- Redistribution and use in source and binary forms, with or without
 //- modification, are permitted provided that the following conditions are met:
-//- 
+//-
 //-    * Redistributions of source code must retain the above copyright notice,
 //-      this list of conditions and the following disclaimer.
 //-    * Redistributions in binary form must reproduce the above copyright
@@ -18,7 +18,7 @@
 //-    * Neither the name of Sandia National Laboratories nor the names of its
 //-      contributors may be used to endorse or promote products derived from
 //-      this software without specific prior written permission.
-//- 
+//-
 //- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 //- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 //- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -369,6 +369,110 @@ bool GeoTessModel::isGeoTessModel(const string& fileName)
 }
 
 /**
+ * Determine the class name of a model stored in a file, i.e.,
+ * whether it is a GeoTessModel, GeoTessModelSLBM, LibCorr3DModel, etc.
+ *
+ * @param fileName
+ * @return the name of the class of the model in the file.
+ */
+string GeoTessModel::getClassName(const string& inputFile, const string& relGridFilePath)
+{
+	string classname = "?";
+	string line = "";
+	int fileFormatVersion;
+
+	// get the parent directory of the input file.
+	string inputDirectory = "";
+	size_t fp = inputFile.find_last_of(CPPUtils::FILE_SEP);
+	if (fp != string::npos)
+		inputDirectory = inputFile.substr(0, fp);
+
+	if (inputFile.find(".ascii", inputFile.length() - 6) != string::npos)
+	{
+		IFStreamAscii input;
+		input.openForRead(inputFile);
+		// get the GeoTess name (GEOTESSMODEL) and validate
+		string s = input.readString();
+		if (s != "GEOTESSMODEL")
+			return classname;
+
+		fileFormatVersion = input.readInteger();
+		if (fileFormatVersion >= 3)
+		{
+			// read the modelClassName.  If this model is the base class,
+			// this will be "GeoTessModel".  If a derived class, it will
+			// contain the class name defined in the method class_name()
+			// in the derived class.
+			input.readLine(classname);
+		}
+		input.close();
+		if (classname != "?")
+			return classname;
+
+		// for models with fileFormatVersion < 3 we must read all the base class
+		// information and then read the class name as the first string in the
+		// derived class's information.
+		input.openForRead(inputFile);
+		GeoTessModel* model = new GeoTessModel();
+		model->loadModelAscii(input, inputDirectory, relGridFilePath);
+
+		if (input.isEOF())
+			classname = "GeoTessModel";
+		else
+			input.readLine(classname);
+		input.close();
+		delete model;
+
+		return classname;
+	}
+	else
+	{
+		IFStreamBinary input(inputFile);
+		input.setBoundaryAlignment(false);
+		input.resetPos();
+		input.readCharArray(classname, 12);
+
+		if (classname != "GEOTESSMODEL")
+			return "?";
+
+		fileFormatVersion = input.readInt();
+		if ((fileFormatVersion < 0) || (fileFormatVersion > 65536))
+		{
+			input.setByteOrderReverse(!input.isByteOrderReversalOn());
+			input.decrementPos(CPPUtils::SINT);
+			fileFormatVersion = input.readInt();
+		}
+
+		if (fileFormatVersion >= 3)
+		{
+			// read the modelClassName.  If this model is the base class,
+			// this will be "GeoTessModel".  If a derived class, it will
+			// contain the class name defined in the method class_name()
+			// in the derived class.
+			input.readString(classname);
+			return classname;
+		}
+
+		// for models with fileFormatVersion < 3 we must read all the base class
+		// information and then read the class name as the first string in the
+		// derived class's information.
+		input.resetPos();
+		// instantiate a default model
+		GeoTessModel* model = new GeoTessModel();
+		// load all the base class information
+		model->loadModelBinary(input, inputDirectory, relGridFilePath);
+
+		// if the end of the file has not been reached, read the name of the derived class
+		input.readString(classname);
+		if (classname.length() == 0)
+			classname = "GeoTessModel";
+		delete model;
+
+		return classname;
+	}
+}
+
+/**
  * Deletes the profiles array if it has been allocated
  */
 void GeoTessModel::deleteProfiles()
@@ -670,7 +774,8 @@ GeoTessModel* GeoTessModel::loadModel(const string& inputFile,
 	CpuTimer timr;
 	metaData->setInputModelFile(inputFile);
 
-	if (inputFile.find(".ascii", inputFile.length() - 6) != string::npos)
+	// std::cout << endl << "input file: " << inputFile << endl;
+	if (inputFile.find(".ascii", inputFile.length() - 7) != string::npos)
 		loadModelAscii(inputFile, relGridFilePath);
 	else
 		loadModelBinary(inputFile, relGridFilePath);
@@ -766,8 +871,6 @@ void GeoTessModel::loadModelAscii(IFStreamAscii& input,
 	for (int i = 0; i < metaData->getNVertices(); ++i)
 		for (int j = 0; j < metaData->getNLayers(); ++j)
 			profiles[i][j] = GeoTessProfile::newProfile(input, *metaData);
-
-	// read the name of the gridFile
 
 	string gridFileName;
 	input.readLine(gridFileName);
@@ -920,33 +1023,7 @@ void GeoTessModel::writeModelBinary(const string& outputFile,
 void GeoTessModel::writeModelBinary(IFStreamBinary& output,
 		const string& gridFileName)
 {
-	// write out file type identifier ("GEOTESSMODEL"), format version,
-	// code version, and data stamp
-
-	output.writeCharArray("GEOTESSMODEL", 12);
-
-	int format = getEarthShape().getShapeName() == "WGS84" ? 1 : 2;
-
-	output.writeInt(format);
-
-	output.writeString(metaData->getModelSoftwareVersion());
-	output.writeString(metaData->getModelGenerationDate());
-
-	if (format > 1)
-		output.writeString(getEarthShape().getShapeName());
-
-	output.writeString(metaData->getDescription());
-
-	output.writeString(metaData->getAttributeNamesString());
-	output.writeString(metaData->getAttributeUnitsString());
-	output.writeString(metaData->getLayerNamesString());
-
-	output.writeString(metaData->getDataType().toString());
-	output.writeInt(grid->getNVertices());
-
-	// tessellation ids
-	for (int i = 0; i < metaData->getNLayers(); ++i)
-		output.writeInt(metaData->getTessellation(i));
+	metaData->writeMetaData(output, class_name(), grid->getNVertices());
 
 	for (int i = 0; i < grid->getNVertices(); ++i)
 		for (int j = 0; j < metaData->getNLayers(); ++j)
@@ -999,38 +1076,7 @@ void GeoTessModel::writeModelAscii(const string& outputFile,
 void GeoTessModel::writeModelAscii(IFStreamAscii& output,
 		const string& gridFileName)
 {
-	// write out file type identifier ("GEOTESSMODEL"), format version,
-	// code version, and data stamp
-
-	output.writeStringNL("GEOTESSMODEL");
-
-	string format = getEarthShape().getShapeName() == "WGS84" ? "1" : "2";
-
-	output.writeStringNL(format);
-
-	output.writeStringNL(metaData->getModelSoftwareVersion());
-	output.writeStringNL(metaData->getModelGenerationDate());
-
-	if (format != "1")
-		output.writeStringNL(getEarthShape().getShapeName());
-
-	output.writeStringNL("<model_description>");
-	output.writeStringNL(metaData->getDescription());
-	output.writeStringNL("</model_description>");
-
-	output.writeStringNL("attributes: " + metaData->getAttributeNamesString());
-	output.writeStringNL("units: " + metaData->getAttributeUnitsString());
-	output.writeStringNL("layers: " + metaData->getLayerNamesString());
-	output.writeStringNL(metaData->getDataType().toString());
-
-	output.writeIntNL(grid->getNVertices());
-
-	for (int i = 0; i < metaData->getNLayers(); ++i)
-	{
-		output.writeString(" ");
-		output.writeInt(metaData->getTessellation(i));
-	}
-	output.writeNL();
+	metaData->writeMetaData(output, class_name(), grid->getNVertices());
 
 	for (int n = 0; n < grid->getNVertices(); ++n)
 	{

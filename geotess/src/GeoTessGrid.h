@@ -38,8 +38,8 @@
 
 // **** _SYSTEM INCLUDES_ ******************************************************
 
-#include <string>
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <vector>
 #include <set>
@@ -71,6 +71,9 @@ class IFStreamBinary;
 // **** _CLASS DEFINITION_ *****************************************************
 
 /**
+ * \brief Stores information about the connection between two adjacent vertices which
+ * separates two neighboring triangles.
+ *
  * An Edge stores information about the connection between two adjacent vertices which
  * separates two neighboring triangles.  These Edge objects are used in two contexts:
  * (1) every triangle in the grid has an array of three Edges, stored in variable
@@ -152,13 +155,6 @@ struct Edge
  * GeoTessData object can be shared among all the threads in a multi-threaded application and each
  * thread will have it's own instance of a GeoTessPosition object that references the common
  * GeoTessGrid + GeoTessData combination.
- *
- * <p>
- * References Ballard, S., J. R. Hipp and C. J. Young, 2009, Efficient and Accurate Calculation of
- * Ray Theory Seismic Travel Time Through Variable Resolution 3D Earth Models, Seismological
- * Research Letters, v.80, n. 6 p. 989-999.
- *
- * @author Sandy Ballard
  */
 class GEOTESS_EXP_IMP GeoTessGrid
 {

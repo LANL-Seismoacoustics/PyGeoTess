@@ -75,10 +75,7 @@ GeoTessPositionNaturalNeighbor::~GeoTessPositionNaturalNeighbor()
  * Update the vertices and their associated interpolation coefficients, that will be used to
  * interpolate new values. Uses the natural neighbor interpolation algorithm originally proposed
  * by Sibson, R. (1980), A Vector Identity For Dirichlet Tessellation, Proc. Cambridge
- * Philosophical Society, 87, 151-155. The algorithm is described in detail in Hipp, J. R., C.
- * J. Young, S. G. Moore, E. R. Shepherd, C. A. Schultz and S. C. Myers (1999), Parametric Grid
- * Information in the DOE Knowledge Base: Data Preparation, Storage, and Access, SAND99-2277,
- * Sandia National Laboratories Report.
+ * Philosophical Society, 87, 151-155.
  */
 void GeoTessPositionNaturalNeighbor::update2D(int tessId)
 {

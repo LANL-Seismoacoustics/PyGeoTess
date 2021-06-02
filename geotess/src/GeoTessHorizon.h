@@ -73,8 +73,6 @@ class GeoTessPosition;
  * GeoTessPosition object or a vertex position and the 1D array of
  * Profiles associated with that vertex.
  *
- * @author sballar
- *
  */
 class GEOTESS_EXP_IMP GeoTessHorizon
 {

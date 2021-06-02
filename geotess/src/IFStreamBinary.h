@@ -726,7 +726,7 @@ inline string IFStreamBinary::readString()
 inline void IFStreamBinary::readString(string& s)
 {
   int len;
-  // check for zero added by sballar 2013-01-04
+  // check for zero added 2013-01-04
   len = readInt();
   if (len == 0)
 	  s="";

@@ -69,9 +69,6 @@ class GeoTessModel;
  * \brief Implements linear interpolation in geographic dimensions of a grid.
  *
  * Implements linear interpolation in geographic dimensions of a grid.
- *
- * @author Sandy Ballard
- *
  */
 class GEOTESS_EXP_IMP GeoTessPositionLinear: public GeoTessPosition
 {

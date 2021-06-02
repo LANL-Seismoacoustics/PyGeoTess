@@ -162,8 +162,6 @@ namespace geotess {
  * otherwise it will not delete the memory and it is the responsibility of the
  * caller to delete the memory after the lifetime of the GreatCircle object has
  * expired.
- *
- * @author sballar
  */
 class GEOTESS_EXP_IMP GeoTessGreatCircle
 {

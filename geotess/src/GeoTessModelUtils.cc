@@ -537,14 +537,11 @@ void GeoTessModelUtils::getSlice(GeoTessModel& model, const double* const x0, co
 		{
 			pos->setRadius(layerid, transect[i][j][0]);
 
-			if (transform != NULL)
-			{
-				// convert current position from unit vector to full vector
-				pos->copyVector(tloc);
-				for (int k = 0; k < 3; ++k)	tloc[k] *= pos->getRadius();
-				// apply transform to tloc and put resulting vector in g
-				GeoTessUtils::transform(tloc, transform, g);
-			}
+			// convert current position from unit vector to full vector
+			pos->copyVector(tloc);
+			for (int k = 0; k < 3; ++k)	tloc[k] *= pos->getRadius();
+			// apply transform to tloc and put resulting vector in g
+			GeoTessUtils::transform(tloc, transform, g);
 
 			for (int k = 0; k < (int) coordinates.size(); ++k)
 			{
