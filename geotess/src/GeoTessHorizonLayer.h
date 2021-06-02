@@ -66,9 +66,6 @@ namespace geotess {
  *
  * Defines a "surface" in a model that resides at a constant fractional
  * radius within a specified layer.
- *
- * @author sballar
- *
  */
 class GEOTESS_EXP_IMP GeoTessHorizonLayer : public GeoTessHorizon
 {

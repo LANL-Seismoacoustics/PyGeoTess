@@ -3,6 +3,7 @@ population_model_3D_lib.py
 
 Module demonstrating a nearly-literal translation of the GeoTess
 populate_model_3D.cc program, using the Python geotess.lib module.
+https://www.sandia.gov/geotess/assets/documents/example_applications/GeoTessCPPExamples/_populate_model3_d_8cc_source.html
 
 """
 from datetime import datetime
@@ -53,6 +54,7 @@ Radius (km) Vp (km/sec) Vs (km/sec) Density (g/cc)
 """
 print(msg)
 
-for layer in range(len(model.getNLayers())):
+for layer in range(model.getNLayers()):
     p = model.getProfile(11, layer)
-
+    print("Layer {}  {}".format(layer,
+                                 model.getMetaData().getLayerName(layer)))

@@ -775,9 +775,6 @@ void GeoTessGrid::initialize()
 
 	// Find the 3 neighbors of each triangle.
 	// This is an implementation of the "Triangle neighbor identification"
-	// algorithm in Ballard, Hipp and Young, 2009,
-	// Efficient and Accurate Calculation of Ray Theory Seismic Travel
-	// Time through Variable Resolution 3D Earth Models, SRL, 80, 989-999.
 
 	int n, c, vj, vk;
 	int* corners;

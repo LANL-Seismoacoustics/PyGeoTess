@@ -1,15 +1,15 @@
 //- ****************************************************************************
-//- 
+//-
 //- Copyright 2009 Sandia Corporation. Under the terms of Contract
 //- DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government
 //- retains certain rights in this software.
-//- 
+//-
 //- BSD Open Source License.
 //- All rights reserved.
-//- 
+//-
 //- Redistribution and use in source and binary forms, with or without
 //- modification, are permitted provided that the following conditions are met:
-//- 
+//-
 //-    * Redistributions of source code must retain the above copyright notice,
 //-      this list of conditions and the following disclaimer.
 //-    * Redistributions in binary form must reproduce the above copyright
@@ -18,7 +18,7 @@
 //-    * Neither the name of Sandia National Laboratories nor the names of its
 //-      contributors may be used to endorse or promote products derived from
 //-      this software without specific prior written permission.
-//- 
+//-
 //- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 //- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 //- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,6 +45,8 @@
 #include <set>
 #include <list>
 #include <sstream>
+#include <map>
+
 
 // use standard library objects
 using namespace std;
@@ -54,7 +56,6 @@ using namespace std;
 #include "CPPUtils.h"
 #include "GeoTessUtils.h"
 #include "GeoTessDataType.h"
-#include "GeoTessOptimizationType.h"
 #include "GeoTessException.h"
 #include "IFStreamBinary.h"
 #include "IFStreamAscii.h"
@@ -88,15 +89,14 @@ namespace geotess
  * </ul>
  * Each GeoTessModel has a single instance of MetaData that it passes around to
  * wherever the information is needed.
- *
- * @author Sandy Ballard
- *
  */
 class GEOTESS_EXP_IMP GeoTessMetaData
 {
 private:
-	
+
 	EarthShape earthShape;
+
+	int modelFileFormat;
 
 	/**
 	 * A description of the contents of the model.
@@ -231,6 +231,8 @@ private:
 	 * as the date that the model file was copied or translated.
 	 */
 	string modelGenerationDate;
+
+	map<string, string> properties;
 
 public:
 
@@ -448,7 +450,6 @@ public:
 	{
 		return inputModelFile;
 	}
-	;
 
 	/**
 	 * Retrieve the name of the file from which the grid was loaded, or "none".
@@ -561,7 +562,6 @@ public:
 	{
 		return nVertices;
 	}
-	;
 
 	/**
 	 * Retrieve the number of layers represented in the model.
@@ -572,7 +572,6 @@ public:
 	{
 		return nLayers;
 	}
-	;
 
 	/**
 	 * Retrieve the index of the layer that has the specified name, or -1.
@@ -822,6 +821,9 @@ public:
 			throw GeoTessException(os, __FILE__, __LINE__, 6009);
 		}
 		setAttributes(names, units);
+
+		properties["attributeNames"] = nms;
+		properties["attributeUnits"] = unts;
 	}
 
 	/**
@@ -1012,6 +1014,12 @@ public:
 
 	void loadMetaData(IFStreamAscii& input);
 
+	void writeMetaData(IFStreamAscii& output, const string& modelClassName,
+			int nVertices);
+
+	void writeMetaData(IFStreamBinary& output, const string& modelClassName,
+			int nVertices);
+
 	int getRefCount() { return refCount; }
 
 	/**
@@ -1040,6 +1048,8 @@ public:
 	 * Returns true if reference count is zero.
 	 */
 	bool isNotReferenced() { return (refCount == 0) ? true : false; }
+
+	const map<string, string>& getProperties() { return properties; }
 
 	/**
 	 * Specify the number of vertices in the model.
@@ -1088,11 +1098,9 @@ public:
 	 */
 	void setWriteTimeModel(double wtm) { writeTimeModel = wtm; }
 
-	// the following methods that involve Optimization type are all deprecated.
-	// They no longer have any effect since GeoTess is always optimized for speed.
-	const GeoTessOptimizationType& getOptimizationType() const { return GeoTessOptimizationType::SPEED; }
-	void setOptimizationType(const GeoTessOptimizationType& ot);
-	void setOptimizationType(const string& ot);
+	int getModelFileFormat() { return modelFileFormat; }
+
+	void setModelFileFormat(int version) { modelFileFormat = version; }
 
 	///@endcond
 

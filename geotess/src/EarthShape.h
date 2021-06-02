@@ -59,6 +59,9 @@ namespace geotess
 // **** _CLASS DEFINITION_ *****************************************************
 
 /**
+ * \brief Defines the ellipsoid that is to be used to convert between geocentric and
+ *  geographic latitude and between depth and radius.
+ *
  *  EarthShape defines the ellipsoid that is to be used to convert between geocentric and
  *  geographic latitude and between depth and radius.  The default is WGS84.
  *  The following EarthShapes are defined:
@@ -367,7 +370,6 @@ public:
 	 *
 	 * @param lat geographic latitude in degrees.
 	 * @param lon longitude in degrees.
-	 * @param v 3 component unit vector.
 	 * @return pointer to v
 	 */
 	double* getVectorDegrees(const double& lat, const double& lon)

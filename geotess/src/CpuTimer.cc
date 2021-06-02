@@ -154,50 +154,50 @@ string CpuTimer::elapsedTimeString(double tm)
 
   if (days > 0)
   {
-    ts = days + ":";
+    ts = CPPUtils::itos(days) + ":";
     if (hrs < 10) ts += "0";
-    ts += hrs + ":";
+    ts += CPPUtils::itos(hrs) + ":";
     if (min < 10) ts += "0";
-    ts += min + ":";
+    ts += CPPUtils::itos(min) + ":";
     if (sec < 10) ts += "0";
-    ts += sec + ":";
+    ts += CPPUtils::itos(sec) + ":";
     if (msec < 10)
       ts += "00";
     else if (msec < 100) ts += "0";
-    ts += msec + " days";
+    ts += CPPUtils::itos(msec) + " days";
   }
   else if (hrs > 0)
   {
-    ts = hrs + ":";
+    ts = CPPUtils::itos(hrs) + ":";
     if (min < 10) ts += "0";
-    ts += min + ":";
+    ts += CPPUtils::itos(min) + ":";
     if (sec < 10) ts += "0";
-    ts += sec + ":";
+    ts += CPPUtils::itos(sec) + ":";
     if (msec < 10)
       ts += "00";
     else if (msec < 100) ts += "0";
-    ts += msec + " hrs";
+    ts += CPPUtils::itos(msec) + " hrs";
   }
   else if (min > 0)
   {
-    ts = min + ":";
+    ts = CPPUtils::itos(min) + ":";
     if (sec < 10) ts += "0";
-    ts += sec + ":";
+    ts += CPPUtils::itos(sec) + ":";
     if (msec < 10)
       ts += "00";
     else if (msec < 100) ts += "0";
-    ts += msec + " min";
+    ts += CPPUtils::itos(msec) + " min";
   }
   else if (sec > 0)
   {
-    ts = sec + ":";
+    ts = CPPUtils::itos(sec) + ":";
     if (msec < 10)
       ts += "00";
     else if (msec < 100) ts += "0";
-    ts += msec + " sec";
+    ts += CPPUtils::itos(msec) + " sec";
   }
   else
-    ts = msec + " msec";
+    ts = CPPUtils::itos(msec) + " msec";
 
   // return result
 

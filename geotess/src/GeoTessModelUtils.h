@@ -76,9 +76,6 @@ class GeoTessPosition;
  * <li>attribute values interpolated on a vertical slice through a model.
  * <li>attribute values along a radial 'borehole' at a specified position.
  * </ul>
- * 
- * @author sballar
- * 
  */
 class GEOTESS_EXP_IMP GeoTessModelUtils
 {

@@ -162,7 +162,6 @@ class GEOTESS_EXP_IMP IFStreamAscii
 
 	/**
 	 * Read a single line from the underlying istream.
-	 * Added by sballar 2013-03-22.
 	 */
 	void getline(string& s) { std::getline(ifs, s); };
 

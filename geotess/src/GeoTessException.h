@@ -58,9 +58,6 @@ namespace geotess
  * \brief An exception class for all GeoTess objects.
  *
  * An exception class for all GeoTess objects.
- *
- * @author Sandy Ballard
- *
  */
 class GEOTESS_EXP_IMP GeoTessException
 {

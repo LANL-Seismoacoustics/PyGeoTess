@@ -60,16 +60,17 @@ const int		CPPUtils::SDBL		= sizeof(double);
 // **** _FUNCTION IMPLEMENTATIONS_ *********************************************
 
 // Definition of OpSys = one of Windows, Linux, SunOS, MacOs, Undefined
-#if defined WIN32 || defined _WIN32
+// Definition of OpSys = one of Windows, Linux, SunOS, MacOs, Undefined
+#if defined WIN32 || defined _WIN32 || defined __WIN32__ || defined __NT__
 	#define OpSys "Windows"
 #else
-	#if defined Linux
+	#if defined Linux || defined __linux__ || defined __unix__ || defined __posix__
 		#define OpSys "Linux"
 	#else
 		#if defined SunOS
 			#define OpSys "SunOS"
 		#else
-			#if defined Darwin
+			#if defined Darwin || defined __APPLE__
 				#define OpSys "MacOSX"
 			#else
 				#define OpSys "Undefined"
@@ -77,6 +78,7 @@ const int		CPPUtils::SDBL		= sizeof(double);
 		#endif
 	#endif
 #endif
+
 
 // Definition of  NEWLINE
 #if defined WIN32 || defined _WIN32

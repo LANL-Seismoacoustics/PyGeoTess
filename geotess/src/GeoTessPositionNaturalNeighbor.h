@@ -71,13 +71,7 @@ class GeoTessProfile;
  *
  * Implements the Natural Neighbor Interpolation algorithm of Sibson (1980, 1981). This technique
  * interpolates values stored on a Delaunay triangulation. Returned values are continuous everywhere
- * and smooth everywhere except the vertices of the triangulation. Implementation of the algorithm
- * is described in detail in Hipp et al. (1999).
- *
- * <p>
- * Hipp, J. R., C. J. Young, S. G. Moore, E. R. Shepherd, C. A. Schultz and S. C. Myers (1999),
- * Parametric Grid Information in the DOE Knowledge Base: Data Preparation, Storage, and Access,
- * SAND99-2277, Sandia National Laboratories Report.
+ * and smooth everywhere except the vertices of the triangulation.
  *
  * <p>
  * Sibson, R., (1980) A Vector Identity for the Dirichlet Tessellation, Proc. Cambridge
@@ -86,8 +80,6 @@ class GeoTessProfile;
  * <p>
  * Sibson, R. (1981). "A brief description of natural neighbor interpolation (Chapter 2)". In V.
  * Barnett. Interpreting Multivariate Data. Chichester: John Wiley. pp. 21�36.
- *
- * @author Sandy Ballard
  *
  */
 class GEOTESS_EXP_IMP GeoTessPositionNaturalNeighbor: public GeoTessPosition {
@@ -120,10 +112,7 @@ protected:
 	 * Update the vertices and their associated interpolation coefficients, that will be used to
 	 * interpolate new values. Uses the natural neighbor interpolation algorithm originally proposed
 	 * by Sibson, R. (1980), A Vector Identity For Dirichlet Tessellation, Proc. Cambridge
-	 * Philosophical Society, 87, 151-155. The algorithm is described in detail in Hipp, J. R., C.
-	 * J. Young, S. G. Moore, E. R. Shepherd, C. A. Schultz and S. C. Myers (1999), Parametric Grid
-	 * Information in the DOE Knowledge Base: Data Preparation, Storage, and Access, SAND99-2277,
-	 * Sandia National Laboratories Report.
+	 * Philosophical Society, 87, 151-155.
 	 */
 	virtual void update2D(int tid);
 
