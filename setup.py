@@ -1,5 +1,4 @@
 from glob import glob
-import platform
 import sys
 
 from distutils.core import setup
@@ -10,33 +9,21 @@ import numpy as np
 # see http://stackoverflow.com/a/4515279/745557
 # and http://stackoverflow.com/a/18418524/745557
 
-if platform.python_implementation() == 'CPython':
-    CPPFILES = glob('geotess/src/*.cc') # GeoTess c++ source
-    # PYXFILES = glob('geotess/src/*.pyx') # Cython source files
-    # CYFILES = glob('geotess/*.cpp') # cythonized c++ source files
-    PYXFILES = ['geotess/src/libgeotess.pyx']
-    CYFILES = glob('geotess/src/libgeotess.cpp') # cythonized c++ source files
-else:
-    # Jython
-    # in here will go code that deals with the GeoTess jar file
-    CPPFILES = []
-    PYXFILES = []
-    CYFILES = []
+CPPFILES = glob('geotess/src/*.cc') # GeoTess c++ source (automatically finds .h files)
+PYXFILES = ['geotess/src/libgeotess.pyx'] # hand-crafted Cython (automatically finds clibgeotess.pxd)
+CYFILES = glob('geotess/src/libgeotess.cpp') # pre-cythonized c++ source files, in case cythonize fails
 
 try:
     from Cython.Build import cythonize
+    use_cython = True
 except ImportError:
     use_cython = False
-else:
-    use_cython = True
-
 
 if use_cython:
     extensions = [Extension(name='geotess.libgeotess',
                   sources=CPPFILES+PYXFILES, language='c++',
                   include_dirs=[np.get_include()])]
-    sys.stdout.write("Cython found.  Running 'cythonize'.\n")
-    extensions = cythonize(extensions, language='c++')
+    extensions = cythonize(extensions)
 else:
     extensions = [Extension(name='geotess.libgeotess',
                   sources=CPPFILES+CYFILES, language='c++',
