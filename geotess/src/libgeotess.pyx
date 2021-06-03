@@ -644,7 +644,7 @@ cdef class GeoTessModel:
 
         """
         # holycrap, vector[vector[...]] can just be a list of lists
-        # I wonder if it can be a 2D NumPy array
+        # I wonder if it can be a 2D NumPy array.  Yep!  I can do the to do below.
         # TODO: accept NumPy vectors instead of lists for radii and values
         self.thisptr.setProfile(vertex, layer, radii, values)
 
@@ -718,6 +718,9 @@ cdef class GeoTessModel:
 
         return weights
 
+    def getValueFloat(self, int pointIndex, int attributeIndex):
+        return self.thisptr.getValueFloat(pointIndex, attributeIndex)
+
 
 cdef class AK135Model:
     cdef clib.AK135Model *thisptr
@@ -739,3 +742,21 @@ cdef class AK135Model:
         cdef np.ndarray[double, ndim=2, mode="c"] np_nodeData = np.array(nodeData)
 
         return np_r, np_nodeData
+
+
+cdef class GeoTessModelAmplitude(GeoTessModel):
+    """
+    Amplitude extension class of GeoTessModel.
+
+    """
+    cdef clib.GeoTessModelAmplitude *thisptr
+
+    def __cinit__(self, modelInputFile=None):
+        if modelInputFile is None:
+            self.thisptr = new clib.GeoTessModelAmplitude()
+        else:
+            self.thisptr = new clib.GeoTessModelAmplitude(modelInputFile)
+    
+    def __dealloc__(self):
+        if self.thisptr != NULL:
+            del self.thisptr
