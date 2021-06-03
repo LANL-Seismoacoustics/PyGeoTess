@@ -270,6 +270,9 @@ cdef class GeoTessMetaData:
     def setDescription(self, const string& dscr):
         self.thisptr.setDescription(dscr)
 
+    def getDescription(self):
+        self.thisptr.getDescription()
+
     def setLayerNames(self, const string& lyrNms):
         self.thisptr.setLayerNames(lyrNms)
 

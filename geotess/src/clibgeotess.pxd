@@ -52,6 +52,7 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         GeoTessMetaData(const GeoTessMetaData &md)
         void setEarthShape(const string& earthShapeName)
         void setDescription(const string& dscr)
+        const string& getDescription() const
         void setLayerNames(const string& lyrNms)
         void setLayerTessIds(vector[int]& layrTsIds)
         # apparently, vector<int> in c++ is vector[int] in Cython
