@@ -749,14 +749,14 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
     Amplitude extension class of GeoTessModel.
 
     """
-    cdef clib.GeoTessModelAmplitude *thisptr
+    cdef clib.GeoTessModelAmplitude *thisampptr
 
     def __cinit__(self, modelInputFile=None):
         if modelInputFile is None:
-            self.thisptr = new clib.GeoTessModelAmplitude()
+            self.thisampptr = new clib.GeoTessModelAmplitude()
         else:
-            self.thisptr = new clib.GeoTessModelAmplitude(modelInputFile)
+            self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)
     
     def __dealloc__(self):
-        if self.thisptr != NULL:
-            del self.thisptr
+        if self.thisampptr != NULL:
+            del self.thisampptr
