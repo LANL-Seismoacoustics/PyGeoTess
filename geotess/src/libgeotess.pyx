@@ -358,6 +358,7 @@ cdef class GeoTessGrid:
     cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
         # This is a Cython helper function that facilitates passing ownership
         # of a C++ pointer to a Python class
+        # XXX: I don't think this is working
         cdef GeoTessGrid inst = GeoTessGrid(raw=True)
         inst.thisptr = cptr
         if owner:
@@ -624,6 +625,7 @@ cdef class GeoTessModel:
         return md
 
     def getGrid(self):
+        #XXX: I don't this this works
         grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
         grid.owner = self
 
