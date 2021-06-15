@@ -54,6 +54,8 @@ different Pythonic approaches to working with the underlying GeoTess library.
 http://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html
 
 """
+# good page on calling signatures.  Doesn't yet know about typed memoryviews, though.
+# https://medium.com/@yusuken/calling-c-functions-from-cython-references-pointers-and-arrays-e1ccb461b6d8
 import os
 
 # from cpython cimport array
@@ -75,6 +77,14 @@ import geotess.exc as exc
 
 
 cdef class GeoTessUtils:
+    """
+    Collection of static functions to manipulate geographic information.
+
+    The Utils class provides basic static utility functions for GeoTess to manipulate geographic information. 
+
+    """
+    # These are almost all static return values in C++, which makes this class
+    # more like a module of functions instead of a class with methods.
     cdef clib.GeoTessUtils *thisptr
 
     def __cinit__(self):
@@ -86,11 +96,122 @@ cdef class GeoTessUtils:
 
     @staticmethod
     def getLatDegrees(double[:] v):
+        """
+        Convert a 3-component unit vector to geographic latitude, in degrees.
+        Uses the WGS84 ellipsoid.
+
+        Parameters
+        ----------
+        v : array_like
+            3-component unit vector of floats
+
+        Returns
+        -------
+        float
+            Geographic latitude in degrees. 
+
+        Notes
+        -----
+        Input arrays longer than length three ignore the remaining values.
+
+        """
+        # double getLatDegrees(const double *const v)
+        # I think I implemented it with cython "typed memory views.
+        # The "double[:]" signifies a 1D Python buffer of doubles
+        # "v" shares memory with the Python array-like object.
+        # I think the &v[0] can be understood as ‘the address of the first element
+        # of the memoryview’. For contiguous arrays, this is equivalent to the start
+        # address of the flat memory buffer
+        # https://cython.readthedocs.io/en/latest/src/userguide/memoryviews.html
         return clib.GeoTessUtils.getLatDegrees(&v[0])
 
     @staticmethod
     def getLonDegrees(double[:] v):
+        """
+        Convert a 3-component unit vector to geographic longitude, in degrees.
+        Uses the WGS84 ellipsoid.
+
+        Parameters
+        ----------
+        v : array_like
+            3-component unit vector
+
+        Returns
+        -------
+        float
+            Geographic longitude in degrees. 
+
+        Notes
+        -----
+        Input arrays longer than length three ignore the remaining values.
+
+        """
+        # Cython didn't like "double[:3] v" to clarify it's size
         return clib.GeoTessUtils.getLonDegrees(&v[0])
+
+    @staticmethod
+    def getVectorDegrees(double lat, double lon):
+        #def getVectorDegrees(const double &lat, const double &lon):
+        """ Convert geographic lat, lon into a geocentric unit vector.
+        
+        The x-component points toward lat,lon = 0, 0. The y-component points
+        toward lat,lon = 0, 90. The z-component points toward north pole. Uses
+        the WGS84 ellipsoid.
+
+        Parameters
+        ----------
+        lat, lon : float
+
+        Returns
+        -------
+        numpy.ndarray
+            x, y, z floats
+
+        """
+        # We supply lat, lon Python floats.  Because we supply C types for numeric
+        # Python inputs, Cython automatically converts them to their equivalent C types.
+        # Addresses to the C-level lat, lon doubles are automatically obtained when passed to
+        # GeoTessUtils.getVectorDegrees (I think).
+
+        # C++ returns pointer to 3-vector, but can also take a pointer to the 3-vector.  
+        # I allocate the output in NumPy, cast it to a typed memoryview, and send its
+        # pointer to the method call.
+        # TODO: I don't yet know about memory ownership here.
+        arr = np.empty(3, dtype=np.float64)
+        cdef double[::1] arr_memview = arr
+        cdef double* v = clib.GeoTessUtils.getVectorDegrees(lat, lon, &arr_memview[0])
+
+        return arr
+
+
+    # @staticmethod
+    # def getEarthRadius(const double *const v):
+    #     """
+    #     Retrieve the radius of the Earth in km at the position specified by an
+    #     Earth-centered unit vector. Uses the WGS84 ellipsoid.
+
+    #     Parameters
+    #     ----------
+    #     v : Earth-centered unit vector
+
+    #     Returns
+    #     -------
+    #     float
+    #         Radius of the Earth in km at specified position. 
+
+
+    #     Parameters
+    #     ----------
+    #     v : array_like
+    #         3-component unit vector
+
+    #     Returns
+    #     -------
+    #     float
+    #         geographic longitude in degrees. 
+
+    #     """
+    #     return clib.GeoTessUtils.getEarthRadius(&v[0])
 
 
 cdef class GeoTessGrid:
@@ -194,6 +315,9 @@ cdef class GeoTessGrid:
         np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
         # http://stackoverflow.com/questions/19204098/c-code-within-python-and-copying-arrays-in-c-code
 
+        # XXX: this seems to contradict the docstring that memory is shared.
+        # I must've done it just to be safe, even though it doesn't follow the 
+        # original API.
         return arr.copy()
 
     def getVertexTriangles(self, int tessId, int level, int vertex):
@@ -202,6 +326,8 @@ cdef class GeoTessGrid:
         considering only triangles in the specified tessellation/level.
 
         """
+        # getVertexTriangles(const int &tessId, const int &level, const int &vertex) const
+        # This calling signature removes the "const" from the C++ method signature.
         # XXX: check that self has enough tessellations, levels, vertices to
         #   return what you requested
         # XXX: also check that inputs are indeed integers
@@ -334,7 +460,7 @@ cdef class GeoTessMetaData:
         arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> tess_ids)
         np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
 
-        return arr.tolist()
+        return arr.tolist() # copies the data to a list.
 
     def getNLayers(self):
         return self.thisptr.getNLayers()
