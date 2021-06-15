@@ -184,34 +184,24 @@ cdef class GeoTessUtils:
         return arr
 
 
-    # @staticmethod
-    # def getEarthRadius(const double *const v):
-    #     """
-    #     Retrieve the radius of the Earth in km at the position specified by an
-    #     Earth-centered unit vector. Uses the WGS84 ellipsoid.
+    @staticmethod
+    def getEarthRadius(double[:] v):
+        """
+        Retrieve the radius of the Earth in km at the position specified by an
+        Earth-centered unit vector. Uses the WGS84 ellipsoid.
 
-    #     Parameters
-    #     ----------
-    #     v : Earth-centered unit vector
+        Parameters
+        ----------
+        v : array_like
+            3-element unit vector
 
-    #     Returns
-    #     -------
-    #     float
-    #         Radius of the Earth in km at specified position. 
+        Returns
+        -------
+        float
+            Radius of the Earth in km at specified position. 
 
-
-    #     Parameters
-    #     ----------
-    #     v : array_like
-    #         3-component unit vector
-
-    #     Returns
-    #     -------
-    #     float
-    #         geographic longitude in degrees. 
-
-    #     """
-    #     return clib.GeoTessUtils.getEarthRadius(&v[0])
+        """
+        return clib.GeoTessUtils.getEarthRadius(&v[0])
 
 
 cdef class GeoTessGrid:

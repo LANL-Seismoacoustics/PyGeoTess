@@ -2,9 +2,11 @@
 """
 import numpy as np
 import geotess.libgeotess as lib
+import pytest
 
 LAT = 30.0
 LON = 45.0
+R = 6372.824420335703
 VEC = np.array([0.61339643, 0.61339643, 0.4974833])
 
 def test_init():
@@ -25,3 +27,8 @@ def test_getVectorDegrees():
     expected = VEC
     observed = lib.GeoTessUtils.getVectorDegrees(LAT, LON)
     np.testing.assert_array_almost_equal(expected, observed)
+
+def test_getEarthRadius():
+    expected = R
+    observed = lib.GeoTessUtils.getEarthRadius(VEC)
+    assert observed == pytest.approx(expected)
