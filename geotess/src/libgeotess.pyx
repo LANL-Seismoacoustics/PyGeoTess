@@ -74,6 +74,7 @@ from libc.string cimport memcpy
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
+from libcpp import quiet_NaN
 
 cimport clibgeotess as clib
 import geotess.exc as exc
@@ -358,6 +359,7 @@ cdef class GeoTessGrid:
     cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
         # This is a Cython helper function that facilitates passing ownership
         # of a C++ pointer to a Python class
+        # XXX: I don't think this is working
         cdef GeoTessGrid inst = GeoTessGrid(raw=True)
         inst.thisptr = cptr
         if owner:
@@ -624,6 +626,7 @@ cdef class GeoTessModel:
         return md
 
     def getGrid(self):
+        #XXX: I don't this this works
         grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
         grid.owner = self
 
@@ -644,7 +647,7 @@ cdef class GeoTessModel:
 
         """
         # holycrap, vector[vector[...]] can just be a list of lists
-        # I wonder if it can be a 2D NumPy array
+        # I wonder if it can be a 2D NumPy array.  Yep!  I can do the to do below.
         # TODO: accept NumPy vectors instead of lists for radii and values
         self.thisptr.setProfile(vertex, layer, radii, values)
 
@@ -718,6 +721,9 @@ cdef class GeoTessModel:
 
         return weights
 
+    def getValueFloat(self, int pointIndex, int attributeIndex):
+        return self.thisptr.getValueFloat(pointIndex, attributeIndex)
+
 
 cdef class AK135Model:
     cdef clib.AK135Model *thisptr
@@ -739,3 +745,46 @@ cdef class AK135Model:
         cdef np.ndarray[double, ndim=2, mode="c"] np_nodeData = np.array(nodeData)
 
         return np_r, np_nodeData
+
+
+cdef class GeoTessModelAmplitude(GeoTessModel):
+    """
+    Amplitude extension class of GeoTessModel.
+
+    """
+    cdef clib.GeoTessModelAmplitude *thisampptr
+
+    def __cinit__(self, modelInputFile=None):
+        if modelInputFile is None:
+            self.thisampptr = new clib.GeoTessModelAmplitude()
+        else:
+            self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)
+    
+    def __dealloc__(self):
+        if self.thisampptr != NULL:
+            del self.thisampptr
+
+    def getSiteTrans(self, const string& station, const string& channel, const string& band):
+        """ Retrieve the site term for the specified station/channel/band or NaN if not supported.
+
+        Parameters
+        ----------
+        station, channel, band : str
+
+        Returns
+        -------
+        float or None
+            Site term.
+
+        """
+        cdef float site_trans = self.thisampptr.getSiteTrans(station, channel, band)
+
+        # from CPPGlobals.h, I see GeoTess uses quiet_NaN as "NaN_FLOAT",
+        # cast to a float.  Not sure this comparison will work.
+        cdef float NaN_FLOAT = quiet_NaN()
+        if site_trans == NaN_FLOAT:
+            out = None
+        else:
+            out = site_trans
+
+        return out

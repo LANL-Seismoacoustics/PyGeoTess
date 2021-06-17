@@ -22,6 +22,7 @@ cdef extern from "GeoTessUtils.h" namespace "geotess":
         # https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#static-member-method
         # This makes them like functions within a "GeoTessUtils" Python module
         # instead of methods on a class instance.
+        # try to match common C++ exceptions to Python ones: https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#exceptions
         @staticmethod
         double getLatDegrees(const double *const v)
         @staticmethod
@@ -102,6 +103,7 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         int getNLayers() const
         int getNVertices() const
         void getWeights(const double *pointA, const double *pointB, const double &pointSpacing, const double &radius, const GeoTessInterpolatorType &horizontalType, cmap[int, double] &weights) except +
+        float getValueFloat(int pointIndex, int attributeIndex)
 
 cdef extern from "AK135Model.h" namespace "geotess":
     cdef cppclass AK135Model:
@@ -121,3 +123,11 @@ cdef extern from "GeoTessInterpolatorType.h" namespace "geotess":
         # const GeoTessInterpolatorType LINEAR
         # const GeoTessInterpolatorType NATURAL_NEIGHBOR
         # const GeoTessInterpolatorType CUBIC_SPLINE
+
+# GeoTessModelAmplitude is a subclass of GeoTessModel.  Hence the longer name.
+# https://altugkarakurt.github.io/how-to-wrap-polymorphic-cpp-classes-with-cython
+cdef extern from "GeoTessModelAmplitude.h" namespace "geotess":
+    cdef cppclass GeoTessModelAmplitude(GeoTessModel):
+        GeoTessModelAmplitude() except +
+        GeoTessModelAmplitude(const string& modelInputFile);
+        float getSiteTrans(const string& station, const string& channel, const string& band)
