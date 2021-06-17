@@ -56,6 +56,8 @@ http://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html
 """
 # good page on calling signatures.  Doesn't yet know about typed memoryviews, though.
 # https://medium.com/@yusuken/calling-c-functions-from-cython-references-pointers-and-arrays-e1ccb461b6d8
+# good page on c++ and cython
+# https://azhpushkin.me/posts/cython-cpp-intro
 import os
 
 # from cpython cimport array
@@ -71,6 +73,7 @@ from cython.operator cimport dereference as deref
 from libc.string cimport memcpy
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp.map cimport map as cmap
 
 cimport clibgeotess as clib
 import geotess.exc as exc
@@ -655,7 +658,66 @@ cdef class GeoTessModel:
 
     def getNVertices(self):
         return self.thisptr.getNVertices()
+
+    def getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):
+        """ Compute the weights on each model point that results from interpolating positions along the specified ray path.
+
+        This method is only applicable to 2D GeoTessModels.
+
+        Parameters
+        ----------
+        pointA, pointB : array_like
+            The 3-element unit vector of floats defining the beginning, end of the great circle path
+            C-contiguous layout of floats.
+        pointSpacing : float
+            The maximum spacing between points, in radians. The actual spacing will generally be
+            slightly less than the specified value in order for there to be an integral number of
+            uniform intervals along the great circle path.
+        radius : float
+            The radius of the great circle path, in km. If the value is less than or equal to zero
+            then the radius of the Earth determined by the current EarthShape is used. 
+            See getEarthShape() and setEarathShape() for more information about EarthShapes.
+        horizontalType : str {'LINEAR', 'NATURAL_NEIGHBOR'}
+
+        Returns
+        -------
+        weights : dict
+            Integer keys to float values. (output) map from pointIndex to weight.
+            The sum of the weights will equal the length of the ray path in km.
+
+        Notes
+        -----
+        The following procedure is implemented:
+        1. divide the great circle path from pointA to pointB into nIntervals which each are of length less than or equal to pointSpacing.
+        2.  multiply the length of each interval by the radius of the earth at the center of the interval, which converts the length of the interval into km.
+        3. interpolate the value of the specified attribute at the center of the interval.
+        4. sum the length of the interval times the attribute value, along the path.
+
+        """
+        # TODO: make this return two NumPy arrays instead?
         
+        # pointA and pointB were specified as typed memorviews, so we can send the address to their first
+        # element as the double pointer.
+        # pointSpacing and radius are automatically converted to addresses by Cython because they
+        # are numeric types and we specified them as typed in the calling signature.
+        # The output of the C++ getWeights method is a map, which will automatically be converted to
+        # a Python dict by Cython.
+
+        cdef const clib.GeoTessInterpolatorType* interpolator
+        cdef cmap[int, double] weights
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        self.thisptr.getWeights(&pointA[0], &pointB[0], pointSpacing, radius,
+                                deref(interpolator),
+                                weights)
+
+        return weights
+
 
 cdef class AK135Model:
     cdef clib.AK135Model *thisptr

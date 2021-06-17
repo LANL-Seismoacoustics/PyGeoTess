@@ -13,6 +13,7 @@ from the original.
 # libcpp is a Cython thing
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp.map cimport map as cmap
 
 cdef extern from "GeoTessUtils.h" namespace "geotess":
     cdef cppclass GeoTessUtils:
@@ -100,6 +101,7 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         GeoTessProfile* getProfile(int vertex, int layer)
         int getNLayers() const
         int getNVertices() const
+        void getWeights(const double *pointA, const double *pointB, const double &pointSpacing, const double &radius, const GeoTessInterpolatorType &horizontalType, cmap[int, double] &weights) except +
 
 cdef extern from "AK135Model.h" namespace "geotess":
     cdef cppclass AK135Model:
@@ -109,3 +111,13 @@ cdef extern from "AK135Model.h" namespace "geotess":
 cdef extern from "GeoTessProfile.h" namespace "geotess":
     cdef cppclass GeoTessProfile:
         GeoTessProfile() except +
+
+cdef extern from "GeoTessInterpolatorType.h" namespace "geotess":
+    cdef cppclass GeoTessInterpolatorType:
+        @staticmethod
+        GeoTessInterpolatorType* valueOf(const string &s)
+        # I can't seem to access public const members in Cython
+        # https://stackoverflow.com/a/46998685/745557
+        # const GeoTessInterpolatorType LINEAR
+        # const GeoTessInterpolatorType NATURAL_NEIGHBOR
+        # const GeoTessInterpolatorType CUBIC_SPLINE
