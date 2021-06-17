@@ -130,3 +130,4 @@ cdef extern from "GeoTessModelAmplitude.h" namespace "geotess":
     cdef cppclass GeoTessModelAmplitude(GeoTessModel):
         GeoTessModelAmplitude() except +
         GeoTessModelAmplitude(const string& modelInputFile);
+        float getSiteTrans(const string& station, const string& channel, const string& band)

@@ -74,6 +74,7 @@ from libc.string cimport memcpy
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
+from libcpp import quiet_NaN
 
 cimport clibgeotess as clib
 import geotess.exc as exc
@@ -762,3 +763,28 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
     def __dealloc__(self):
         if self.thisampptr != NULL:
             del self.thisampptr
+
+    def getSiteTrans(self, const string& station, const string& channel, const string& band):
+        """ Retrieve the site term for the specified station/channel/band or NaN if not supported.
+
+        Parameters
+        ----------
+        station, channel, band : str
+
+        Returns
+        -------
+        float or None
+            Site term.
+
+        """
+        cdef float site_trans = self.thisampptr.getSiteTrans(station, channel, band)
+
+        # from CPPGlobals.h, I see GeoTess uses quiet_NaN as "NaN_FLOAT",
+        # cast to a float.  Not sure this comparison will work.
+        cdef float NaN_FLOAT = quiet_NaN()
+        if site_trans == NaN_FLOAT:
+            out = None
+        else:
+            out = site_trans
+
+        return out
