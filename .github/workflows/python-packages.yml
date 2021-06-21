@@ -28,22 +28,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy cython pytest
 
-    # https://github.com/pybind/python_example/blob/master/.github/workflows/pip.yml
-    - name: Build for Windows 64 bit
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: win64
-
-    - name: Set setuptools Windows environment variables
-      if: runner.os == 'Windows'
-      shell: bash
-      run: |
-        echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
-        echo "MSSdk=1" >> $GITHUB_ENV
+#     # https://github.com/pybind/python_example/blob/master/.github/workflows/pip.yml
+#     - name: Prepare for Windows 64 bit
+#       uses: ilammy/msvc-dev-cmd@v1
+#       with:
+#         arch: win64
+# 
+#     - name: Setuptools Windows environment variables
+#       if: runner.os == 'Windows'
+#       shell: bash
+#       run: |
+#         echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
+#         echo "MSSdk=1" >> $GITHUB_ENV
 
     - name: Build with Mac/Linux
       run: |
         pip install .
+
     - name: Test with pytest
       run: |
         pytest -v
