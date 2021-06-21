@@ -29,12 +29,17 @@ jobs:
         pip install numpy cython pytest
 
     # https://github.com/pybind/python_example/blob/master/.github/workflows/pip.yml
-    # maybe should use https://github.com/ilammy/msvc-dev-cmd
     - name: Build for Windows 64 bit
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: win64
-    - run: pip install .
+
+    - name: Set setuptools Windows environment variables
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
+        echo "MSSdk=1" >> $GITHUB_ENV
 
     - name: Build with Mac/Linux
       run: |
