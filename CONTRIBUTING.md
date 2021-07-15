@@ -5,6 +5,7 @@ The main areas that need help are:
 
 * wrapping new [GeoTessCPP](https://github.com/sandialabs/GeoTessCPP) classes and methods.
 * designing and implementing a more Pythonic way to use PyGeoTess
+* improving the documentation
 
 ## To wrap new GeoTessCPP functionality
 
@@ -15,4 +16,4 @@ The main areas that need help are:
 5. Make a test for your class and/or method in the `tests` directory.
 6. Push your changes to GitHub.
 7. Make a Pull Request to the main PyGeoTess branch, and watch to make sure the tests pass.
-8. If the tests fail, look at the test logs on GitHub to help diagnose the problem, or you can make sure Pytest is installed and run `pytest tests` from the main project directory.
+8. If the tests fail, look at the test logs on GitHub to help diagnose the problem. To develop locally, you need to `pip install -U -e .` when you make changes to Cython files (so that they're re-compiled and re-installed), make sure Pytest is installed, and run `pytest tests` from the main project directory.
