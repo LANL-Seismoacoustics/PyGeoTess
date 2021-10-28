@@ -9,3 +9,12 @@ GeoTess library: a direct interface to the GeoTess c++ classes and methods,
 and a more Pythonic interface.
 
 ![global grid](docs/src/pages/data/output_9_1.png)
+
+
+## Installation
+
+PyGeoTess currently requires a C++ compiler.  In the future, binary wheels may be available on PyPI.
+
+To install centrally from this repo: `pip install .`
+
+To install an "editable" local installation from this repo: `pip install -e .`
