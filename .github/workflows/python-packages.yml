@@ -35,7 +35,8 @@ jobs:
 #         arch: win64
 # 
 #     - name: Setuptools Windows environment variables
-#       if: runner.os == 'Windows'
+#       with:
+#         arch: win64
 #       shell: bash
 #       run: |
 #         echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
