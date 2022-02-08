@@ -6,7 +6,7 @@
 """
 This module exposes Cython GeoTess functionality from the pxd file into Python.
 
-The class definitions here are Python-visible, and are simply wrappers that 
+The class definitions here are Python-visible, and are simply wrappers that
 forward the Python-exposed methods directly down to their Cython-exposed C++
 counterparts, which have been exposed in the imported pxd file.
 
@@ -46,12 +46,64 @@ different Pythonic approaches to working with the underlying GeoTess library.
 * Deleting or garbage-collecting objects is dangerous.  Some objects are
   managed by other objects, so deleting them manually can crash the interpreter.
   I'm not sure how to fix this yet.
- 
+
 * There is very little/no type checking between Python arguments and when
   they're forwarded to the c++ methods.  This is dangerous.
 
 ## Original C++ documentation
 http://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html
+
+As of November, 2021, Rob Porritt came in with a bit of a hammer to Jonathon
+MacCarthy's codes and conventions.
+
+Generally, methods are packed into the GeoTessModel class with the geotess
+subclass added to the method's name.
+For instance, getDepth() is now positionGetDepth(lat, lon) or
+getPointDepth(pointIndex)
+This is designed to reduce the class interface to the user while maintaining
+functionality.
+
+Copyright (c) 2016, Los Alamos National Security, LLC
+
+All rights reserved.
+
+Copyright 2016. Los Alamos National Security, LLC. This software was produced
+under U.S. Government contract DE-AC52-06NA25396 for Los Alamos National
+Laboratory (LANL), which is operated by Los Alamos National Security, LLC for
+the U.S. Department of Energy. The U.S. Government has rights to use,
+reproduce, and distribute this software.  NEITHER THE GOVERNMENT NOR LOS ALAMOS
+NATIONAL SECURITY, LLC MAKES ANY WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY
+LIABILITY FOR THE USE OF THIS SOFTWARE.  If software is modified to produce
+derivative works, such modified software should be clearly marked, so as not to
+confuse it with the version available from LANL.
+
+BSD Open Source License.
+
+Additionally, redistribution and use in source and binary forms, with or
+without modification, are permitted provided that the following conditions are
+met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+3. Neither the name of Los Alamos National Security, LLC, Los Alamos National
+   Laboratory, LANL, the U.S. Government, nor the names of its contributors may
+   be used to endorse or promote products derived from this software without
+   specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY LOS ALAMOS NATIONAL SECURITY, LLC AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL LOS ALAMOS NATIONAL SECURITY, LLC OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+OF SUCH DAMAGE.
 
 """
 # good page on calling signatures.  Doesn't yet know about typed memoryviews, though.
@@ -69,12 +121,14 @@ cimport numpy as np
 np.import_array()
 
 from cython.operator cimport dereference as deref
+from cython.view cimport array as cvarray
 
 from libc.string cimport memcpy
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.limits cimport numeric_limits
+from libcpp.set cimport set
 
 cimport clibgeotess as clib
 import geotess.exc as exc
@@ -84,7 +138,7 @@ cdef class GeoTessUtils:
     """
     Collection of static functions to manipulate geographic information.
 
-    The Utils class provides basic static utility functions for GeoTess to manipulate geographic information. 
+    The Utils class provides basic static utility functions for GeoTess to manipulate geographic information.
 
     """
     # These are almost all static return values in C++, which makes this class
@@ -112,7 +166,7 @@ cdef class GeoTessUtils:
         Returns
         -------
         float
-            Geographic latitude in degrees. 
+            Geographic latitude in degrees.
 
         Notes
         -----
@@ -143,7 +197,7 @@ cdef class GeoTessUtils:
         Returns
         -------
         float
-            Geographic longitude in degrees. 
+            Geographic longitude in degrees.
 
         Notes
         -----
@@ -157,7 +211,7 @@ cdef class GeoTessUtils:
     def getVectorDegrees(double lat, double lon):
         #def getVectorDegrees(const double &lat, const double &lon):
         """ Convert geographic lat, lon into a geocentric unit vector.
-        
+
         The x-component points toward lat,lon = 0, 0. The y-component points
         toward lat,lon = 0, 90. The z-component points toward north pole. Uses
         the WGS84 ellipsoid.
@@ -177,7 +231,7 @@ cdef class GeoTessUtils:
         # Addresses to the C-level lat, lon doubles are automatically obtained when passed to
         # GeoTessUtils.getVectorDegrees (I think).
 
-        # C++ returns pointer to 3-vector, but can also take a pointer to the 3-vector.  
+        # C++ returns pointer to 3-vector, but can also take a pointer to the 3-vector.
         # I allocate the output in NumPy, cast it to a typed memoryview, and send its
         # pointer to the method call.
         # TODO: I don't yet know about memory ownership here.
@@ -202,7 +256,7 @@ cdef class GeoTessUtils:
         Returns
         -------
         float
-            Radius of the Earth in km at specified position. 
+            Radius of the Earth in km at specified position.
 
         """
         return clib.GeoTessUtils.getEarthRadius(&v[0])
@@ -232,12 +286,12 @@ cdef class GeoTessGrid:
 
     def getNLevels(self):
         return self.thisptr.getNLevels()
- 
+
     def getNTriangles(self, tessellation=None, level=None):
         if tessellation is None and level is None:
             NTriangles = self.thisptr.getNTriangles()
         else:
-            Nlevels = self.thisptr.getNLevels() 
+            Nlevels = self.thisptr.getNLevels()
             NTess = self.getNTessellations()
             if level > Nlevels or tessellation > NTess:
                 msg = "level > {} or tessellation > {}".format(Nlevels, NTess)
@@ -310,7 +364,7 @@ cdef class GeoTessGrid:
         # http://stackoverflow.com/questions/19204098/c-code-within-python-and-copying-arrays-in-c-code
 
         # XXX: this seems to contradict the docstring that memory is shared.
-        # I must've done it just to be safe, even though it doesn't follow the 
+        # I must've done it just to be safe, even though it doesn't follow the
         # original API.
         return arr.copy()
 
@@ -417,6 +471,9 @@ cdef class GeoTessMetaData:
     def setModelSoftwareVersion(self, const string& swVersion):
         self.thisptr.setModelSoftwareVersion(swVersion)
 
+    def getModelSoftwareVersion(self):
+        return self.thisptr.getModelSoftwareVersion()
+
     def setModelGenerationDate(self, const string& genDate):
         self.thisptr.setModelGenerationDate(genDate)
 
@@ -462,6 +519,15 @@ cdef class GeoTessMetaData:
 
     def getLayerName(self, const int &layerIndex):
         return self.thisptr.getLayerName(layerIndex)
+
+    def getLayerIndex(self, layerName):
+        return self.thisptr.getLayerIndex(layerName)
+
+    def getModelFileFormat(self):
+        return self.thisptr.getModelFileFormat()
+
+    def setModelFileFormat(self, version):
+        self.thisptr.setModelFileFormat(version)
 
 
 cdef class EarthShape:
@@ -532,7 +598,7 @@ cdef class EarthShape:
 
         """
         # thisptr.getVectorDegrees wants two doubles and a pointer to an array
-        # that will be filled in c++. we must create a Python object here 
+        # that will be filled in c++. we must create a Python object here
         # that can be returned, and whos memory can be managed by Python, that
         # can be filled in c++ by passing its pointer, following
         # http://docs.cython.org/src/tutorial/array.html#zero-overhead-unsafe-access-to-raw-c-pointer
@@ -580,7 +646,7 @@ cdef class GeoTessModel:
     # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
-    def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
+    def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None, viewCopyRight=True):
         cdef clib.GeoTessMetaData *md
 
         if gridFileName is None and metaData is None:
@@ -593,14 +659,84 @@ cdef class GeoTessModel:
             md = metaData.thisptr.copy()
             self.thisptr = new clib.GeoTessModel(gridFileName, md)
 
+        horizontalType = "LINEAR"
+        radialType = "LINEAR"
+
+        if viewCopyRight:
+            self.__viewCopyRight()
+
+    @staticmethod
+    def __viewCopyRight():
+        print("PyGeoTess Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.")
+        print("\n")
+        GeoTessModel.__viewLANLCopyRight()
+        print("\n")
+        print("Set viewCopyRight=False to supress this message.")
+        return
+
+    @staticmethod
+    def __viewLANLCopyRight():
+        copyRightString = """
+        Copyright (c) 2016, Los Alamos National Security, LLC
+        All rights reserved.
+
+        Copyright 2016. Los Alamos National Security, LLC. This software was produced
+        under U.S. Government contract DE-AC52-06NA25396 for Los Alamos National
+        Laboratory (LANL), which is operated by Los Alamos National Security, LLC for
+        the U.S. Department of Energy. The U.S. Government has rights to use,
+        reproduce, and distribute this software.  NEITHER THE GOVERNMENT NOR LOS ALAMOS
+        NATIONAL SECURITY, LLC MAKES ANY WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY
+        LIABILITY FOR THE USE OF THIS SOFTWARE.  If software is modified to produce
+        derivative works, such modified software should be clearly marked, so as not to
+        confuse it with the version available from LANL.
+
+        BSD Open Source License.
+
+        Additionally, redistribution and use in source and binary forms, with or
+        without modification, are permitted provided that the following conditions are
+        met:
+
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        3. Neither the name of Los Alamos National Security, LLC, Los Alamos National
+           Laboratory, LANL, the U.S. Government, nor the names of its contributors may
+           be used to endorse or promote products derived from this software without
+           specific prior written permission.
+
+        THIS SOFTWARE IS PROVIDED BY LOS ALAMOS NATIONAL SECURITY, LLC AND CONTRIBUTORS
+        'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+        THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+        ARE DISCLAIMED. IN NO EVENT SHALL LOS ALAMOS NATIONAL SECURITY, LLC OR
+        CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+        EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+        OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+        IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+        OF SUCH DAMAGE.)"""
+        print(copyRightString)
+        return
+
     def __dealloc__(self):
         # XXX: doing "del model" still crashes Python.  Dunno why yet.
         if self.thisptr != NULL:
             del self.thisptr
 
+    def __str__(self):
+        return self.toString()
+
+    def __repr__(self):
+        return self.toString()
+
     # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
 
     def loadModel(self, const string& inputFile, relGridFilePath=""):
+        """
+        Loads a geotess model given input file name and relative grid file path (relGridFilePath=)
+        """
         # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
         if os.path.exists(inputFile):
             self.thisptr.loadModel(inputFile, relGridFilePath)
@@ -608,25 +744,273 @@ cdef class GeoTessModel:
             raise exc.GeoTessFileError("Model file not found.")
 
     def writeModel(self, const string& outputFile):
+        """
+        Write the model object to a file given file name outputFile
+        """
         self.thisptr.writeModel(outputFile)
 
-    def toString(self):
+    def getConnectedVertices(self, int layerid):
+        """
+        Function fo find which vertices are connected
+        if a vertex is not connected, then it won't have a set profile
+        Argument:
+            layerID: integer layer index
+        Returns:
+            ndarray of connected vertices at this layer
+        """
+        if layerid < 0 or layerid >= self.getNLayers():
+            print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
+            return -1
+        cdef cv = self.thisptr.getConnectedVertices(layerid)
+        nvertices = 0
+        for i in cv:
+            nvertices += 1
+        vertices = np.zeros((nvertices,), dtype='int')
+        for idx, i in enumerate(cv):
+            vertices[idx] = i
 
+        return vertices
+
+    def getPointLatitude(self, pointIndex):
+        """
+        Use the pointMap object to find the latitude given a pointIndex value
+        """
+        ptMap = self.thisptr.getPointMap()
+        loc = ptMap.getPointLatLonString(pointIndex)
+        floatLocation = [float(x) for x in loc.split()]
+        return floatLocation[0]
+
+    def getPointLongitude(self, pointIndex):
+        """
+        Use the pointMap object to find the longitude given a pointIndex value
+        """
+        ptMap = self.thisptr.getPointMap()
+        loc = ptMap.getPointLatLonString(pointIndex)
+        floatLocation = [float(x) for x in loc.split()]
+        return floatLocation[1]
+
+    def getPointLocation(self, pointIndex):
+        """
+        Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        loc = ptMap.getPointLatLonString(pointIndex)
+        floatLocation = [float(x) for x in loc.split()]
+        lat = floatLocation[0]
+        lon = floatLocation[1]
+        depth = self.getPointDepth(pointIndex)
+        radius = self.getPointRadius(pointIndex)
+        return lat, lon, radius, depth
+
+    def getPointVertex(self, pointIndex):
+        """
+        Returns the vertex given a point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getVertexIndex(pointIndex)
+        return idx
+
+    def getPointTessId(self, pointIndex):
+        """
+        Returns the Tesselation ID given a pointIndex
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getTessId(pointIndex)
+        return idx
+
+    def getPointLayerIndex(self, pointIndex):
+        """
+        Returns the layer index given a pointIndex
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getLayerIndex(pointIndex)
+        return idx
+
+    def getPointNodeIndex(self, pointIndex):
+        """
+        Returns the node index (in a profile) given a point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getNodeIndex(pointIndex)
+        return idx
+
+    def getPointVertexTessLayerNode(self, pointIndex):
+        """
+        Parameters
+        ----------
+        pointIndex : Integer from 0 to self.getNPoints()-1
+
+        Returns
+        -------
+        ints for: vertex, tessID, layerID, and Node
+
+        """
+        ptMap = self.thisptr.getPointMap()
+        vertex = ptMap.getVertexIndex(pointIndex)
+        tessID = ptMap.getTessId(pointIndex)
+        layerID = ptMap.getLayerIndex(pointIndex)
+        node = ptMap.getNodeIndex(pointIndex)
+        return vertex, tessID, layerID, node
+
+    def getPointData(self, pointIndex):
+        """
+        For a given point index, returns a vector of attribute values
+        """
+        ptMap = self.thisptr.getPointMap()
+        geotessdata = ptMap.getPointData(pointIndex)
+        npts = geotessdata.size()
+        dataOut = np.zeros((npts,))
+        for i in range(npts):
+            dataOut[i] = geotessdata.getDouble(i)
+        return dataOut
+
+    def setPointData(self, pointIndex, values):
+        """
+        For a given pointIndex, sets the values in the GeoTess Model
+        """
+        ptMap = self.thisptr.getPointMap()
+        # below returns a point to values in a point map.
+        geoData = ptMap.getPointData(pointIndex)
+        for ival, val in enumerate(values):
+            # The reference of the pointer is followed in the setter!
+            geoData.setValue(ival, val)
+        return
+
+    def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):
+        """
+        For a given point index and attribute index, sets the value
+        """
+        ptMap = self.thisptr.getPointMap()
+        geoData = ptMap.getPointData(pointIndex)
+        geoData.setValue(attributeIndex, value)
+        return
+
+    def getNearestPointIndex(self, float latitude, float longitude, float radius):
+        """
+        Warning! This does not always work. Layer definitions need to be included before it will work properly!
+        This is also quite slow.
+
+        Parameters
+        ----------
+        float latitude :
+            floating point from -90 to 90
+            Defines the latitude of the lookup point
+        float longitude : floating point from -180 to 360
+            Defines the longitude of the lookup point.
+        float radius : floating point from 0 to ~6371 (earth's radius out from center')
+            Defines the radius of the lookup point.
+
+        Returns
+        -------
+        (int) pointIndex used to map the given location to the nearest point in the tesselation.
+
+        """
+        #ptMap = self.thisptr.getPointMap()
+        # V2: use the unit vector from the EarthShape class
+        ellipsoid = self.getEarthShape()
+        inputUnitVector = ellipsoid.getVectorDegrees(latitude, longitude)
+        npoints = self.getNPoints()
+        # First, loop to get nearest vertex (ie horizontal coordinate, h)
+        ptOut = -1
+        mindh = 9001
+        for pt in range(npoints):
+            lat, lon, _, _ = self.getPointLocation(pt)
+            testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+            dh = np.linalg.norm(inputUnitVector - testUnitVector)
+            if dh < mindh:
+                mindh = dh
+                vtx = self.getPointVertex(pt)
+
+        # Second, loop to get nearest node (ie vertical coordinate, r)
+        # So this is failing when radius is deeper than what is available in connected vertices
+        mindr = 9001
+        for pt in range(npoints):
+            vtmp = self.getPointVertex(pt)
+            if vtmp == vtx:
+                _, _, rad, _ = self.getPointLocation(pt)
+                dr = np.abs(rad - radius)
+                if dr < mindr:
+                    mindr = dr
+                    ptOut = pt
+
+        return ptOut
+
+    def getPointDepth(self, pointIndex):
+        """
+        Given a point index, return the depth
+        """
+        cdef float depth
+        depth = self.thisptr.getDepth(pointIndex)
+        return depth
+
+    def getPointRadius(self, pointIndex):
+        """
+        Given a point index, return the radius
+        """
+        cdef float radius
+        radius = self.thisptr.getRadius(pointIndex)
+        return radius
+
+    def getPointIndex(self, vertex, layer, node):
+        """
+        Given a vertex, layer, and node, returns the point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        pt = ptMap.getPointIndex(vertex, layer, node)
+        return pt
+
+    def getPointIndexLast(self, vertex, layer):
+        """
+        Returns the point index of the shallowest node in the profile defined by vertex and layer
+        """
+        ptMap = self.thisptr.getPointMap()
+        pt = ptMap.getPointIndexLast(vertex, layer)
+        return pt
+
+    def getPointIndexFirst(self, vertex, layer):
+        """
+        Returns the point index of the deepest node in the profile defined by vertex and layer
+        """
+        ptMap = self.thisptr.getPointMap()
+        pt = ptMap.getPointIndexFirst(vertex, layer)
+        return pt
+
+    def toString(self):
+        """
+        Calls the toString() method
+        """
         return self.thisptr.toString()
 
     def getEarthShape(self):
+        """
+        Returns the earthshape object
+        """
         shp = EarthShape.wrap(&self.thisptr.getEarthShape(), owner=self)
-
         return shp
 
     def getMetaData(self):
+        """
+        returns the metadata object
+        """
         md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
         md.owner = self
 
         return md
 
+    def getNAttributes(self):
+        """
+        Returns the number of attributes in the metadata
+        """
+        md = self.getMetaData()
+        att = md.getAttributeNamesString()
+        x = att.split()
+        return len(x)
+
     def getGrid(self):
-        #XXX: I don't this this works
+        """
+        Returns the grid object
+        """
+        #XXX: I don't think this works
         grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
         grid.owner = self
 
@@ -635,6 +1019,8 @@ cdef class GeoTessModel:
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
         """
         Set profile values at a vertex and layer.
+        This version works with c++ style vector types.
+        Use setProfileND to push ndarrays instead.
 
         Parameters
         ----------
@@ -645,22 +1031,142 @@ cdef class GeoTessModel:
         values : list of lists
             List of corresponding attribute values at the provided radii.
 
+        Returns:
+            1 on success
+            -1 on failure
+
         """
-        # holycrap, vector[vector[...]] can just be a list of lists
-        # I wonder if it can be a 2D NumPy array.  Yep!  I can do the to do below.
-        # TODO: accept NumPy vectors instead of lists for radii and values
-        self.thisptr.setProfile(vertex, layer, radii, values)
+
+        try:
+            self.thisptr.setProfile(vertex, layer, radii, values)
+            return 1
+        except:
+            return -1
+
+    def setProfileND(self, int vertex, int layer, radii, values):
+        """
+        Set profile values at a vertex and layer using ndarrays rather than c++ vector types
+
+        Parameters
+        ----------
+        int vertex, layer
+            vertex and layer indices of the profile
+        radii : 1D ndarray
+            ndarray radius values of the profile data
+        values : 2D ndarray
+            nradii x nattributes ndarray of attribute values at the provided radii
+
+        Returns:
+            1 on success
+            -1 on values not being 2D ndarray
+            -2 on errors packing ndarray in c++ vectors
+            -3 on error setting profile values
+        """
+        import numpy as np
+        cdef vector[float] cradii
+        cdef vector[vector[float]] cvalues
+        cdef vector[float] ctmp
+
+        # Radii have to increase.
+        # Put a check here to make sure the input radii and values ndarrays
+        # are in increasing radius, that is radius outward from the center
+        # of the earth
+        if radii[1] < radii[0]:
+            tmp = np.flipud(radii)
+            radii = tmp.copy()
+            tmp = np.flipud(values)
+            values = tmp.copy()
+
+        try:
+            (nr, na) = values.shape
+        except:
+            print("Error in setProfileND: values must be nradii x nattributes ndarray")
+            return -1
+        try:
+            cradii.reserve(nr)
+            for ir, r in enumerate(radii):
+                cradii.push_back(r)
+                ctmp.clear()
+                for ia, a in enumerate(values[ir]):
+                    ctmp.push_back(a)
+                cvalues.push_back(ctmp)
+        except:
+            print("Error in setProfileND: c++ vector fill error")
+            return -2
+        try:
+            self.thisptr.setProfile(vertex, layer, cradii, cvalues)
+            cradii.clear()
+            cvalues.clear()
+            return 1
+        except:
+            print("Error in setProfileND: c++ call failed.")
+            return -3
+
+
+    def getProfileTypeInt(self, int vertex, int layer):
+        """
+        Given a vertex and layer, returns the profile type as an integer
+        """
+        A = self.thisptr.getProfile(vertex, layer)
+        return A.getTypeInt()
+
 
     def getProfile(self, int vertex, int layer):
-        # TODO: return a numpy structured array, not a profile object
-        # Just use the Profile object internally here
-        pass
+        """
+        Gets values in a profile given the vertex and layer.
+        returns nradius x 1 radius vector and nradius x nattributes attributes matrix
+        """
+        nv = self.getNVertices()
+        if vertex >= nv or vertex < 0:
+            print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
+            return -1, -1
+        nl = self.getNLayers()
+        if layer >= nl or layer < 0:
+            print("Error, layer {} outside of range (0 - {})".format(layer, nl-1))
+            return -2, -2
+        cdef float *r
+        A = self.thisptr.getProfile(vertex, layer)
+        nradii = A.getNRadii()
+        ndata = A.getNData()
+        r = A.getRadii()
+        nparams = self.getNAttributes()
+        radiusPy = np.zeros((nradii,))
+        if ndata > 0:
+            attributesPy = np.zeros((nradii, nparams))
+            for idx in range(nradii):
+                B = A.getData(idx)
+                for jdx in range(B.size()):
+                    attributesPy[idx, jdx] = B.getDouble(jdx)
+                radiusPy[idx] = r[idx]
+        else:
+            for idx in range(nradii):
+                radiusPy[idx] = r[idx]
+            attributesPy = None
+        return radiusPy, attributesPy
 
     def getNLayers(self):
+        """
+        Returns the number of layers.
+        """
         return self.thisptr.getNLayers()
 
     def getNVertices(self):
+        """
+        Returns the number of vertices.
+        """
         return self.thisptr.getNVertices()
+
+    def getNPoints(self):
+        """
+        Returns the number of points
+        """
+        return self.thisptr.getNPoints()
+
+    def getNRadii(self, int vertex, int layer):
+        """
+        For a given vertex and layer, returns the number of radii (nodes)
+        """
+        return self.thisptr.getNRadii(vertex, layer)
 
     def getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):
         """ Compute the weights on each model point that results from interpolating positions along the specified ray path.
@@ -678,7 +1184,7 @@ cdef class GeoTessModel:
             uniform intervals along the great circle path.
         radius : float
             The radius of the great circle path, in km. If the value is less than or equal to zero
-            then the radius of the Earth determined by the current EarthShape is used. 
+            then the radius of the Earth determined by the current EarthShape is used.
             See getEarthShape() and setEarathShape() for more information about EarthShapes.
         horizontalType : str {'LINEAR', 'NATURAL_NEIGHBOR'}
 
@@ -698,7 +1204,7 @@ cdef class GeoTessModel:
 
         """
         # TODO: make this return two NumPy arrays instead?
-        
+
         # pointA and pointB were specified as typed memorviews, so we can send the address to their first
         # element as the double pointer.
         # pointSpacing and radius are automatically converted to addresses by Cython because they
@@ -722,7 +1228,760 @@ cdef class GeoTessModel:
         return weights
 
     def getValueFloat(self, int pointIndex, int attributeIndex):
+        """
+        For a given point index and attribute index, returns the value
+        """
         return self.thisptr.getValueFloat(pointIndex, attributeIndex)
+
+    # Series of position methods. They start with defining the interpolator types
+    def positionToString(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns a string for a position object given latitude, longitude, and depth
+        optionally, give horizontalType and/or radialType interpolators
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        return str(pos.toString())
+
+    def positionToStringLayer(self, layerid, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns a string for a position object given layerid, latitude, longitude, and depth
+        optionally, give horizontalType and/or radialType interpolators
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layerid, lat, lon, depth)
+        return str(pos.toString())
+
+    def positionGetLayer(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        returns the layerID as a function of latitude, longitude, and depth.
+        Optionally, give position interpolation methods horizontalType and/or radialType
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        R = pos.getEarthRadius()
+        radius = R-depth
+        layid = pos.getLayerId(radius)
+        return layid
+
+    def positionGetVector(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        For a given latitude, longitude, and depth, get the position vector
+        Optionally, give horizontalType and/or radialType interpolators
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        cdef double* vec = pos.getVector()
+        output = np.zeros((3,))
+        output[0] = vec[0]
+        output[1] = vec[1]
+        output[2] = vec[2]
+        return output
+
+    def positionGetRadiusBottomLayer(self, layer, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Finds the bottom radius (nearest the core) for a position object
+        defined by location and layer
+
+        Parameters
+        ----------
+        layer : int
+            layer index.
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        radius (km) at bottom of layer.
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        rad = pos.getRadiusBottom(layer)
+        return rad
+
+    def positionGetRadiusTopLayer(self, layer, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Finds the top radius (nearest the surface) for a position object
+        defined by location and layer
+
+        Parameters
+        ----------
+        layer : int
+            layer index.
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        radius (km) at top of layer.
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        rad = pos.getRadiusTop(layer)
+        return rad
+
+    def positionGetValue(self, lat, lon, depth, attribute, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute at a position
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        attribute: int
+            attribute index
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        attribute value at position.
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        val = pos.getValue(attribute)
+        return val
+
+    def positionGetValueLayer(self, layer, lat, lon, depth, attribute, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute at a position, but forces it to be in layer
+
+        Parameters
+        ----------
+        layer: int
+            layer index
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        attribute: int
+            attribute index
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        attribute value at position.
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        val = pos.getValue(attribute)
+        return val
+
+    def positionGetValues(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute values at a position
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            ndarray of attribute values at position
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        nattributes = self.getNAttributes()
+        values = np.zeros((nattributes,))
+        for iatt in range(nattributes):
+            values[iatt] = pos.getValue(iatt)
+        return values
+
+    def positionGetValuesLayer(self, layer, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute at a position, but forces it to be in layer
+
+        Parameters
+        ----------
+        layer: int
+            layer index
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            ndarray of attribute values at position
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        nattributes = self.getNAttributes()
+        values = np.zeros((nattributes,))
+        for iatt in range(nattributes):
+            values[iatt] = pos.getValue(iatt)
+        return values
+
+    def positionGetTriangle(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns which triangle number the given location is located within.
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            Integer triangle where position is located
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        tri = pos.getTriangle()
+        return tri
+
+    def positionGetIndexOfClosestVertex(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the closest vertex to the given location
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            integer vertex
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        idx = pos.getIndexOfClosestVertex()
+        return idx
+
+    def positionGetIndexOfClosestVertexLayer(self, layerid, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the closest vertex to the given location and layer
+
+        Parameters
+        ----------
+        layerid : integer
+            layer index
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            integer vertex
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layerid, lat, lon, depth)
+        idx = pos.getIndexOfClosestVertex()
+        return idx
+
+    def positionGetDepth(self, lat, lon, radius, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Most position methods take depth. This method takes radius and converts to depth for the model's ellipsoid
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        radius : float
+            radius from center of earth (km).
+
+        Returns
+        -------
+        depth from surface of the earth (km).
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        dtmp = 6380-radius
+        pos.set(lat, lon, dtmp)
+        R = pos.getEarthRadius()
+        depth = R - radius
+        return depth
+
+    def positionGetRadius(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        determines radius from input depth
+
+        Parameters
+        ----------
+        lat : float
+            latitude (deg).
+        lon : float
+            longitude (deg).
+        depth : float
+            depth from ellipsoid surface (km).
+
+        Returns
+        -------
+        radius from center of earth (km).
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        R = pos.getEarthRadius()
+        radius = R-depth
+        return radius
+
+    def positionGetBorehole(self, float lat, float lon, float dz=10.0, computeDepth = False, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns layerID vector, radii vector, and attribute matrix for the given latitude, longitude position
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        dz : float
+            regular depth sampling, km, for the borehole
+        Optionally, give horizontalType and/or radialType interpolators
+        set computeDepth=True to convert output from radii to depth
+
+        Returns
+        -------
+            vector layers, vector radii, matrix attributes
+        """
+        cdef vector[int] layers
+        cdef vector[double] radii
+        cdef vector[double] attributes
+        R = self.positionGetRadius(lat, lon, 0)
+        npts = int(np.ceil(R/dz))
+        layers.reserve(npts)
+        radii.reserve(npts)
+        nattributes = self.getNAttributes()
+        attributes.reserve(npts * nattributes)
+
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+
+        pos.set(lat, lon, 0)
+        if computeDepth:
+            computeDepthFlag = 1
+        else:
+            computeDepthFlag = 0
+        i = pos.getBorehole(dz, computeDepthFlag, layers, radii, attributes)
+        layersOut = np.zeros((layers.size(),))
+        radiiOut = np.zeros((radii.size(),))
+        attributesOut = np.zeros((radii.size(), nattributes))
+        for idx in range(layers.size()):
+            layersOut[idx] = layers[idx]
+            radiiOut[idx] = radii[idx]
+            for j in range(nattributes):
+                jdx = j + idx * nattributes
+                attributesOut[idx, j] = attributes[jdx]
+        return layersOut, radiiOut, attributesOut
+
+
+
+    def getGeographicLocationAttribute(self, float lat, float lon, float radius, int attribute, int layer, float dz=1.0, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Uses interpolation to lookup the value of an attribute at a point given latitude, longitude, radius, attribute index, and layer index
+        Optionally give dz for depth search to check the layer
+        Optionally give horizontalType and/or radialType interpolators
+        On success, returns a single value.
+        On failure, returns None object.
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+
+        # So this is a little weird because we can't just set a depth, but need to know what layer to look in as well
+        depth = self.positionGetDepth(lat, lon, radius, horizontalType=horizontalType, radialType=radialType)
+        pos.set(layer, lat, lon, depth)
+
+        if layer > self.getNLayers():
+            return None
+        else:
+            try:
+                rbot = pos.getRadiusBottom(layer)
+                rtop = pos.getRadiusTop(layer)
+                nradii = np.round((rtop - rbot)/dz)
+                if nradii < 2:
+                    nradii = 2
+                dr = (rtop - rbot) / (nradii-1)
+                offset = 9999.0
+                tmprad = 0.0
+                for i in range(int(nradii)):
+                    r = rbot + i * dr
+                    if np.abs(radius - r) < offset:
+                        offset = np.abs(radius-r)
+                        tmprad = r
+                pos.setRadius(layer, tmprad)
+                v = pos.getValue(attribute)
+                return v
+            except:
+                return None
+
+    #def getVertexLayerPosition(self, float lat, float lon, float depth, horizontalType="LINEAR", radialType="LINEAR"):
+    #    """
+    #    (Placeholder method)
+    #    Given coordinates in latitude, longitude, and depth, finds the vertex and layer indices
+    #    """
+    #    print("Error, this method has not been built yet.")
+    #    return
+
+    # Should get this from GeoTessModelUtils
+    # Needs an update based on updated getGeographicLocationAttribute() method
+    def makeDepthMap(self, float depth, int attribute, int layer, float dLon = 8.0,
+                     float dLat=8.0, float minlon=0, float maxlon=360, float minlat=-90, float maxlat=90,
+                     horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Extracts values for a map at constant depth.
+        The output from this can be used to make a map with other software, such as matplotlib
+        Required positional arguments: depth, attribute index.
+        Optional arguments:
+            dLon: gridding step in longitude
+            dLat: gridding step in latitude
+            minlon: minimum longitude in degrees
+            maxlon: maximum longitude in degrees
+            minlat: minimum latitude in degrees
+            maxlat: maximum latitude in degrees
+        relies on numpy as np
+
+        """
+        import numpy as np
+        lons = np.arange(minlon, maxlon, dLon)
+        lats = np.arange(minlat, maxlat, dLat)
+        outData = np.zeros((len(lons), len(lats)))
+        for ilon, lon in enumerate(lons):
+            for ilat, lat in enumerate(lats):
+                radius = self.positionGetRadius(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+                outData[ilon, ilat] = self.getGeographicLocationAttribute(lat, lon, radius, attribute, layer, horizontalType=horizontalType, radialType=radialType)
+
+        return lons, lats, outData
+
+    # Should get this from GeoTessModelUtils
+    def make1DProfile(self, float lat, float lon, int attribute, float mindepth=0, float maxdepth=6371, float dz = 1, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Extracts values as a 1-dimensional array of depth and attribute
+        Returns numpy arrays of depth and value
+        optional parameters:
+            mindepth: minimum depth (km)
+            maxdepth: maximum depth (km)
+            dz: sampling in depth (km)
+        """
+        import numpy as np
+        depths = np.arange(mindepth, maxdepth, dz)
+        outData = np.zeros((len(depths),))
+        for idepth, depth in enumerate(depths):
+            radius = self.positionGetRadius(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+            layer = self.positionGetLayer(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+            outData[idepth] = self.getGeographicLocationAttribute(lat, lon, radius, attribute, layer, horizontalType=horizontalType, radialType=radialType)
+
+        return depths, outData
+
+    def convertToNPArray(self):
+        """
+        Extracts from geotess object to a set of 3 location vectors and an attribute matrix
+        returns longitude vector, latitude vector, radius vector, and data matrix
+        """
+        import numpy as np
+        grid = self.getGrid()
+        ellipsoid = self.getEarthShape()
+
+        npts = 0
+        for layer in range(self.getNLayers()):
+            for vtx in range(self.getNVertices()):
+                #print(vtx, layer)
+                rads, att = self.getProfile(vtx, layer)
+                #print(len(rads))
+                npts += len(rads)
+
+        nparams = self.getNAttributes()
+
+        lonsOut = np.zeros((npts,))
+        latsOut = np.zeros((npts,))
+        radsOut = np.zeros((npts,))
+        dataOut = np.zeros((npts, nparams))
+        idx = 0
+        for layer in range(self.getNLayers()):
+            for vtx in range(self.getNVertices()):
+                vertex = grid.getVertex(vtx)
+                lat = ellipsoid.getLatDegrees(vertex)
+                lon = ellipsoid.getLonDegrees(vertex)
+                rads, att = self.getProfile(vtx, layer)
+                # Need proper err
+                for irad, rad in enumerate(rads):
+                    lonsOut[idx] = lon
+                    latsOut[idx] = lat
+                    radsOut[idx] = rad
+                    if att is not None:
+                        for iat in range(nparams):
+                            dataOut[idx, iat] = att[irad, iat]
+                    idx += 1
+        return lonsOut, latsOut, radsOut, dataOut
 
 
 cdef class AK135Model:
@@ -759,7 +2018,7 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
             self.thisampptr = new clib.GeoTessModelAmplitude()
         else:
             self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)
-    
+
     def __dealloc__(self):
         if self.thisampptr != NULL:
             del self.thisampptr
@@ -789,3 +2048,24 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
             out = site_trans
 
         return out
+
+
+# GeoTessEnumType is protected so we can't use it here.
+#cdef class GeoTessEnumType():
+#    cdef clib.GeoTessEnumType *thisptr
+#
+#    def __cinit__(self):
+#        self.thisptr = new clib.GeoTessEnumType()
+#
+#    def __dealloc__(self):
+#        if self.thisptr != NULL:
+#            del self.thisptr
+#
+#    def toString(self):
+#        return self.thisptr.toString()
+#
+#    def name(self):
+#        return self.thisptr.name()
+#
+#    def ordinal(self):
+#        return self.thisptr.ordinal()
