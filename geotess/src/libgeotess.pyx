@@ -646,7 +646,7 @@ cdef class GeoTessModel:
     # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
-    def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None, viewCopyRight=True):
+    def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None, viewCopyRight=False):
         cdef clib.GeoTessMetaData *md
 
         if gridFileName is None and metaData is None:
