@@ -413,6 +413,11 @@ public:
 	 */
 	EarthShape& getEarthShape() { return earthShape; }
 
+	//const string& getEarthShapeName() const
+//	{
+//		return getEarthShape().getShapeName();
+//	}
+
 	/**
 	 *  Specify the name of the ellipsoid that is to be used to convert between geocentric and
 	 *  geographic latitude and between depth and radius.  This ellipsoid will be save in this

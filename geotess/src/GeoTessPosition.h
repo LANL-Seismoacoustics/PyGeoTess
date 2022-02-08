@@ -537,6 +537,7 @@ public:
 	 * InterpolatorType::NATURAL_NEIGHBOR
 	 */
 	virtual const GeoTessInterpolatorType&	getInterpolatorType() const = ABSTRACT;
+	
 
 	/**
 	 * Retrieve the amount of memory consumed by this GeoTessPosition object.
@@ -837,7 +838,7 @@ public:
 	double								getEarthRadius()
 	{
 		if (earthRadius < 0.)
-			earthRadius = GeoTessUtils::getEarthRadius(unitVector);
+			earthRadius = model->getEarthShape().getEarthRadius(unitVector);
 		return earthRadius;
 	}
 
@@ -1104,6 +1105,30 @@ public:
 	 * @return string
 	 */
 	string								toString();
+	
+	/**
+	* Returns radial interpolator type as string
+	* @return string
+	*/
+	/*
+	string    radialInterpolatorToString() {
+    	// GeoTessInterpolatorType&	getInterpolatorType() 
+    	//const GeoTessInterpolatorType interp = getInterpolatorType()
+    	if (radialInterpolatorType == GeoTessInterpolatorType::LINEAR) {
+        	return "Linear";
+    	} else {
+        	return "Not linear";
+        }
+	}
+	*/
+	
+	/**
+	* returns horizotnal interpolator type as string
+	* @return string
+	string    horizontalInterpolatorToString() {
+	
+	}
+	*/
 
 	/**
 	 * If any calculated value is Double.NaN, then functions like getValue() or
@@ -1281,6 +1306,192 @@ public:
 	 * @return  true if reference count is zero.
 	 */
 	bool isNotReferenced() { return refCount == 0; }
+	
+	
+	/**
+	 *  Compute radii and attribute values at the current geographic position.
+	 *  The radii will be monotonically increasing values with spacing less than
+	 *  or equal to rSpacing.  There will be radius values at the top and bottom of
+	 *  each layer, which implies there will be duplicate radii at interfaces with
+	 *  attribute values interpolated in layers below and above the interface.
+	 *  <br>Upon return from this function, output vectors layers, radii and attributes will all
+	 *  have the same size.
+	 *  @param rSpacing the radial spacing of sample points in km.  Actual spacing will
+	 *  be less than or equal to the specified value such that an integral number of
+	 *  equally spaced points will be generated between the bottom and top of each layer.
+	 *  @param computeDepth if true, parameter radii will be populated with depths instead
+	 *  of radii.
+	 *  @param layers will be populated with the layer index of each point in the borehole
+	 *  @param radii will be populated with radius or depth of each borehole point, in km
+	 *  @param attributes will be populated with the attribute values at each borehole point.
+	 *    -- Note that the attributes array is flattened to 1D vector. Use the relationship below 
+	 *       to unflatten:
+	 *       for i in nradii:
+	 *          for j in nattributes:
+     *             idx = j + i * nattributes
+     *             unflattened[i, j] = flattened[idx] 
+	 *  Units will be same as the units specified in the model metadata.
+	 */
+	int getBorehole(double rSpacing, int computeDepth, vector<int>& layers, vector<double>& radii, vector<double>& attributes) {
+    	int layer0 = getLayerId();
+    	double r0 = getRadius();
+    	layers.clear();
+    	radii.clear();
+    	attributes.clear();
+    	// loop over the layers and compute radii such that there
+		// are radii at the top and bottom of each layer.
+		for (int layer=0; layer<model->getNLayers(); ++layer)
+		{
+			double rbot = getRadiusBottom(layer);
+			double rtop = getRadiusTop(layer);
+
+			int nintervals = (int)ceil((rtop - rbot)/rSpacing);
+			double dinterval = (rtop - rbot)/nintervals;
+
+			for (int i=0; i <= nintervals; ++i)
+			{
+				double r = rbot + i*dinterval;
+				if (!isnan(r)) {
+    				radii.push_back(r);
+    				layers.push_back(layer);
+				}
+			}
+		}
+		
+		// loop over the radii and interpolate attribute values.
+		for (int i=0; i<(int) radii.size(); ++i)
+		{
+			setRadius(layers[i], radii[i]);
+			for (int j=0; j<model->getNAttributes(); ++j) {
+    			double att = getValue(j);
+    			attributes.push_back(att);
+    		}
+		}
+
+		// currently, monotonically increasing radii are stored.
+		// if computeDepth is true, convert to monotonically increasing depths.
+		if (computeDepth > 0)
+		{
+			for (int i=0; i < (int) radii.size()/2; ++i)
+			{
+				int j = radii.size()-1-i;
+				int layer = layers[i];
+				layers[i] = layers[j];
+				layers[j] = layer;
+
+				double r = radii[i];
+				radii[i] = radii[j];
+				radii[j] = r;
+
+				for (int a=0; a < model->getNAttributes(); ++a)
+				{
+					int idx = a + (i * model->getNAttributes());
+					int jdx = a + (j * model->getNAttributes());
+					double att = attributes[idx];
+					double attj = attributes[jdx];
+					attributes[jdx] = att;
+					attributes[idx] = attj;
+				}
+			}
+			for (int i=0; i< (int) radii.size(); ++i)
+				radii[i] = getEarthRadius()-radii[i];
+		}
+
+		// restore original layer and radius.
+        setRadius(layer0, r0);
+        
+    	return 1;
+	}
+
+	/**  Original version by Sanford Ballard. 
+    	Version above by Rob Porritt to flatten the 2D attributes vector for easier casting to python
+	 *  Compute radii and attribute values at the current geographic position.
+	 *  The radii will be monotonically increasing values with spacing less than
+	 *  or equal to rSpacing.  There will be radius values at the top and bottom of
+	 *  each layer, which implies there will be duplicate radii at interfaces with
+	 *  attribute values interpolated in layers below and above the interface.
+	 *  <br>Upon return from this function, output vectors layers, radii and attributes will all
+	 *  have the same size.
+	 *  @param rSpacing the radial spacing of sample points in km.  Actual spacing will
+	 *  be less than or equal to the specified value such that an integral number of
+	 *  equally spaced points will be generated between the bottom and top of each layer.
+	 *  @param computeDepth if true, parameter radii will be populated with depths instead
+	 *  of radii.
+	 *  @param layers will be populated with the layer index of each point in the borehole
+	 *  @param radii will be populated with radius or depth of each borehole point, in km
+	 *  @param attributes will be populated with the attribute values at each borehole point.
+	 *  Units will be same as the units specified in the model metadata.
+	 */
+	 /*
+	void getBorehole(const double& rSpacing,  int computeDepth,
+			vector<int>& layers, vector<double>& radii, vector<vector<double> >& attributes)
+	{
+		// save current layer and radius so they can be restored at the end.
+		int layer0 = getLayerId();
+		double r0 = getRadius();
+		
+		layers.clear();
+		radii.clear();
+		attributes.clear();
+
+		// loop over the layers and compute radii such that there
+		// are radii at the top and bottom of each layer.
+		for (int layer=0; layer<model->getNLayers(); ++layer)
+		{
+			double rbot = getRadiusBottom(layer);
+			double rtop = getRadiusTop(layer);
+
+			int nintervals = (int)ceil((rtop - rbot)/rSpacing);
+			double dinterval = (rtop - rbot)/nintervals;
+
+			for (int i=0; i <= nintervals; ++i)
+			{
+				double r = rbot + i*dinterval;
+				radii.push_back(r);
+				layers.push_back(layer);
+			}
+		}
+
+		// loop over the radii and interpolate attribute values.
+		for (int i=0; i<(int) radii.size(); ++i)
+		{
+			setRadius(layers[i], radii[i]);
+			vector<double> att(model->getNAttributes());
+			for (int j=0; j<model->getNAttributes(); ++j)
+				att[j] = getValue(j);
+			attributes.push_back(att);
+		}
+
+		// currently, monotonically increasing radii are stored.
+		// if computeDepth is true, convert to monotonically increasing depths.
+		if (computeDepth > 0)
+		{
+			for (int i=0; i < (int) radii.size()/2; ++i)
+			{
+				int j = radii.size()-1-i;
+				int layer = layers[i];
+				layers[i] = layers[j];
+				layers[j] = layer;
+
+				double r = radii[i];
+				radii[i] = radii[j];
+				radii[j] = r;
+
+				for (int a=0; a < model->getNAttributes(); ++a)
+				{
+					double att = attributes[i][a];
+					attributes[i][a] = attributes[j][a];
+					attributes[j][a] = att;
+				}
+			}
+			for (int i=0; i< (int) radii.size(); ++i)
+				radii[i] = getEarthRadius()-radii[i];
+		}
+
+		// restore original layer and radius.
+		setRadius(layer0, r0);
+	}
+	*/
 
 }; // end class GeoTessModel
 

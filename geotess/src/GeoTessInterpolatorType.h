@@ -154,7 +154,7 @@ class GEOTESS_EXP_IMP GeoTessInterpolatorType : public GeoTessEnumType
 		 * Returns the total number of enums of this type.
 		 */
 		static int											size() { return aSize; };
-
+		
 }; // end class InterpolatorType
 
 } // end namespace geotess
