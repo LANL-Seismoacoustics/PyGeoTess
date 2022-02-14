@@ -3,3 +3,5 @@ docs/site/
 .DS_Store
 *pyc
 *.so
+.vscode
+*.egg-info
