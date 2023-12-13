@@ -1064,8 +1064,8 @@ cdef class GeoTessModel:
             self.thisptr.setProfile(vertex, layer, c_radii, c_values)
         elif radii is not None:
             self.thisptr.setProfile(vertex, layer, <float*>radii, nRadii, <float**>values, nNodes, nAttributes)
-    else:
-        raise ValueError("Invalid arguments for setProfile")
+        else:
+            raise ValueError("Invalid arguments for setProfile")
 
             
             
