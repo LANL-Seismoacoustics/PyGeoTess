@@ -2050,3 +2050,22 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
         return out
 
 
+# GeoTessEnumType is protected so we can't use it here.
+#cdef class GeoTessEnumType():
+#    cdef clib.GeoTessEnumType *thisptr
+#
+#    def __cinit__(self):
+#        self.thisptr = new clib.GeoTessEnumType()
+#
+#    def __dealloc__(self):
+#        if self.thisptr != NULL:
+#            del self.thisptr
+#
+#    def toString(self):
+#        return self.thisptr.toString()
+#
+#    def name(self):
+#        return self.thisptr.name()
+#
+#    def ordinal(self):
+#        return self.thisptr.ordinal()
