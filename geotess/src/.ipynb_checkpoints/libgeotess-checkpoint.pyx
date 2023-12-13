@@ -3,6 +3,113 @@
 #cython: language_level=3
 #cython: c_string_type=unicode
 #cython: c_string_encoding=utf-8
+"""
+This module exposes Cython GeoTess functionality from the pxd file into Python.
+
+The class definitions here are Python-visible, and are simply wrappers that
+forward the Python-exposed methods directly down to their Cython-exposed C++
+counterparts, which have been exposed in the imported pxd file.
+
+This module is also responsible for converting between Python types and c++
+types, which sometimes involves annoying tricks.  For simple numerical types,
+this conversion can be done automatically in the calling signature of a "def"
+method if types are declared.  Complex c++ class types, for example, can't be
+in a Python-visible "def" method because Python objects can't be automatically
+cast to c++ types.  For these cases, sneaky factory functions that can accept
+the complex types must do the work.  Unfortunately, this means that any
+constructor or method that accepts complex c++ can't be "directly" exposed to
+Python.
+
+Using both a pxd and a pyx file is done, partly, so that we can keep the
+exposed c++ GeoTess functionality together in one namespace using "cimport",
+such that we can name the classes exposed to Python the same as those in the
+GeoTess c++.  This is sometimes confusing in error messages, however.
+
+GeoTess functionality is intentionally a one-to-one translation into Python
+here so that any modifications to the way models and grids are used can be
+developed and tested in other pure-Python modules.  This makes it easier to try
+different Pythonic approaches to working with the underlying GeoTess library.
+
+
+## Current conversion conventions
+
+* NumPy vectors are generally used instead of lists or vectors, such as for
+  GeoTess unit vectors and profiles.
+
+* If a C++ method accepts an empty array/vector argument to be filled by
+  the method, I leave that out of the calling signature.  It is instead
+  initialized inside the method and simply returned by it.
+
+
+## Current headaches
+
+* Deleting or garbage-collecting objects is dangerous.  Some objects are
+  managed by other objects, so deleting them manually can crash the interpreter.
+  I'm not sure how to fix this yet.
+
+* There is very little/no type checking between Python arguments and when
+  they're forwarded to the c++ methods.  This is dangerous.
+
+## Original C++ documentation
+http://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html
+
+As of November, 2021, Rob Porritt came in with a bit of a hammer to Jonathon
+MacCarthy's codes and conventions.
+
+Generally, methods are packed into the GeoTessModel class with the geotess
+subclass added to the method's name.
+For instance, getDepth() is now positionGetDepth(lat, lon) or
+getPointDepth(pointIndex)
+This is designed to reduce the class interface to the user while maintaining
+functionality.
+
+Copyright (c) 2016, Los Alamos National Security, LLC
+
+All rights reserved.
+
+Copyright 2016. Los Alamos National Security, LLC. This software was produced
+under U.S. Government contract DE-AC52-06NA25396 for Los Alamos National
+Laboratory (LANL), which is operated by Los Alamos National Security, LLC for
+the U.S. Department of Energy. The U.S. Government has rights to use,
+reproduce, and distribute this software.  NEITHER THE GOVERNMENT NOR LOS ALAMOS
+NATIONAL SECURITY, LLC MAKES ANY WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY
+LIABILITY FOR THE USE OF THIS SOFTWARE.  If software is modified to produce
+derivative works, such modified software should be clearly marked, so as not to
+confuse it with the version available from LANL.
+
+BSD Open Source License.
+
+Additionally, redistribution and use in source and binary forms, with or
+without modification, are permitted provided that the following conditions are
+met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+3. Neither the name of Los Alamos National Security, LLC, Los Alamos National
+   Laboratory, LANL, the U.S. Government, nor the names of its contributors may
+   be used to endorse or promote products derived from this software without
+   specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY LOS ALAMOS NATIONAL SECURITY, LLC AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL LOS ALAMOS NATIONAL SECURITY, LLC OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+OF SUCH DAMAGE.
+
+"""
+# good page on calling signatures.  Doesn't yet know about typed memoryviews, though.
+# https://medium.com/@yusuken/calling-c-functions-from-cython-references-pointers-and-arrays-e1ccb461b6d8
+# good page on c++ and cython
+# https://azhpushkin.me/posts/cython-cpp-intro
 import os
 
 # from cpython cimport array
@@ -22,108 +129,10 @@ from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.limits cimport numeric_limits
 from libcpp.set cimport set
-from libcpp cimport bool
 
 cimport clibgeotess as clib
 import geotess.exc as exc
 
-
-cdef class GeoTessData:
-    cdef clib.GeoTessData *thisptr
-
-    def __cinit__(self):
-        self.thisptr = new clib.GeoTessData()
-
-    def __dealloc__(self):
-        if self.thisptr is not NULL:
-            del self.thisptr
-
-    # Getters
-    def get_double(self, int attributeIndex):
-        return self.thisptr.getDouble(attributeIndex)
-
-    def get_float(self, int attributeIndex):
-        return self.thisptr.getFloat(attributeIndex)
-
-    def get_long(self, int attributeIndex):
-        return self.thisptr.getLong(attributeIndex)
-
-    def get_int(self, int attributeIndex):
-        return self.thisptr.getInt(attributeIndex)
-
-    def get_short(self, int attributeIndex):
-        return self.thisptr.getShort(attributeIndex)
-
-    def get_byte(self, int attributeIndex):
-        return self.thisptr.getByte(attributeIndex)
-
-    # Setters
-    def set_value_double(self, int attributeIndex, double value):
-        self.thisptr.setValue(attributeIndex, value)
-
-    def set_value_float(self, int attributeIndex, float value):
-        self.thisptr.setValue(attributeIndex, value)
-
-    def set_value_long(self, int attributeIndex, int64_t value):
-        self.thisptr.setValue(attributeIndex, value)
-
-    def set_value_int(self, int attributeIndex, int value):
-        self.thisptr.setValue(attributeIndex, value)
-
-    def set_value_short(self, int attributeIndex, short value):
-        self.thisptr.setValue(attributeIndex, value)
-
-    def copy(self):
-        cdef clib.GeoTessData new_data = new clib.GeoTessData()
-        new_data.thisptr = self.thisptr.copy()
-        return new_data
-
-
-    @staticmethod
-    def create_data_from_double_array(values):
-        cdef double* c_values = &values[0]
-        cdef int size = len(values)
-        return clib.GeoTessData.getData(c_values, size)
-
-    @staticmethod
-    def create_data_from_float_array(values):
-        cdef float* c_values = &values[0]
-        cdef int size = len(values)
-        return clib.GeoTessData.getData(c_values, size)
-
-    
-
-    
-cdef class GeoTessProfile:
-        cdef clib.GeoTessProfile *thisptr
-
-        def __cinit__(self):
-            self.thisptr = new clib.GeoTessProfile()
-
-        def __dealloc__(self):
-            if self.thisptr is not NULL:
-                del self.thisptr
-
-
-        @property
-        def n_radii(self):
-            return self.thisptr.getNRadii()
-
-        @property
-        def n_data(self):
-            return self.thisptr.getNData()
-
-        def get_radii(self):
-            cdef int n = self.n_radii
-            cdef float* radii = self.thisptr.getRadii()
-            return [radii[i] for i in range(n)] if radii is not NULL else []
-
-        def get_data(self, int i):
-            cdef clib._GeoTessData *data_ptr = self.thisptr.getData(i)
-            if data_ptr is not NULL:
-                return GeoTessData(data_ptr)
-            else:
-                return None    
 
 cdef class GeoTessUtils:
     """
@@ -1007,92 +1016,32 @@ cdef class GeoTessModel:
 
         return grid
 
-#     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
-#         """
-#         Set profile values at a vertex and layer.
-#         This version works with c++ style vector types.
-#         Use setProfileND to push ndarrays instead.
-
-#         Parameters
-#         ----------
-#         vertex, layer : int
-#             vertex and layer number of the profile.
-#         radii : list
-#             Radius values of profile data.
-#         values : list of lists
-#             List of corresponding attribute values at the provided radii.
-
-#         Returns:
-#             1 on success
-#             -1 on failure
-
-#         """
-
-#         try:
-#             self.thisptr.setProfile(vertex, layer, radii, values)
-#             return 1
-#         except:
-#             return -1
-
-    def setProfile(self, int vertex, int layer, 
-                   profile=None, radii=None, values=None, 
-                   nRadii=0, nNodes=0, nAttributes=0):
+    def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
         """
-        Set profile values at a vertex and layer in the GeoTessModel.
-        This method is overloaded to handle different types of inputs.
+        Set profile values at a vertex and layer.
+        This version works with c++ style vector types.
+        Use setProfileND to push ndarrays instead.
 
-        Parameters:
-        vertex (int): Vertex index in the model.
-        layer (int): Layer index in the model.
-        profile (GeoTessProfile or None): GeoTessProfile object. Default is None.
-        radii (list or None): List of radius values. Default is None.
-        values (list or None): List of attribute values. Default is None.
-        nRadii, nNodes, nAttributes (int): Sizes for radii, values, and attributes arrays.
+        Parameters
+        ----------
+        vertex, layer : int
+            vertex and layer number of the profile.
+        radii : list
+            Radius values of profile data.
+        values : list of lists
+            List of corresponding attribute values at the provided radii.
 
-        Raises:
-        ValueError: If the arguments provided are invalid.
+        Returns:
+            1 on success
+            -1 on failure
+
         """
-        cdef vector[float] c_radii
-        cdef vector[vector[float]] c_values
-
-        if profile is not None:
-            c_profile = profile.thisptr if profile else NULL
-            self.thisptr.setProfile(vertex, layer, c_profile)
-        elif radii is not None and values is not None:
-            c_radii = radii
-            c_values = values
-            self.thisptr.setProfile(vertex, layer, c_radii, c_values)
-        elif radii is not None:
-            self.thisptr.setProfile(vertex, layer, <float*>radii, nRadii, <float**>values, nNodes, nAttributes)
-        else:
-            raise ValueError("Invalid arguments for setProfile")
-
-            
-            
-    def setSurfaceProfile(self, int vertex, int layer, GeoTessData data):
-        """
-        Sets a surface profile for a given vertex and layer in the GeoTessModel.
-
-        Parameters:
-        vertex (int): The vertex index in the 2D grid.
-        layer (int): The layer index in the model.
-        data (GeoTessData): Python wrapper object containing the data to be set.
-        """
-        cdef clib.GeoTessProfileSurface* profile_surface
-
-        if data is None or not isinstance(data, PyGeoTessData):
-            raise ValueError("Invalid data provided. It must be an instance of PyGeoTessData")
-
-        profile_surface = new clib.GeoTessProfileSurface(data.thisptr)
 
         try:
-            self.thisptr.setProfile(vertex, layer, <clib.GeoTessProfile*>profile_surface)
-        except Exception as e:
-            # Handle potential exceptions during the profile setting
-            del profile_surface
-            raise RuntimeError("Failed to set surface profile: " + str(e))
-
-
+            self.thisptr.setProfile(vertex, layer, radii, values)
+            return 1
+        except:
+            return -1
 
     def setProfileND(self, int vertex, int layer, radii, values):
         """
@@ -1113,6 +1062,7 @@ cdef class GeoTessModel:
             -2 on errors packing ndarray in c++ vectors
             -3 on error setting profile values
         """
+        import numpy as np
         cdef vector[float] cradii
         cdef vector[vector[float]] cvalues
         cdef vector[float] ctmp
@@ -1934,7 +1884,104 @@ cdef class GeoTessModel:
             except:
                 return None
 
+    #def getVertexLayerPosition(self, float lat, float lon, float depth, horizontalType="LINEAR", radialType="LINEAR"):
+    #    """
+    #    (Placeholder method)
+    #    Given coordinates in latitude, longitude, and depth, finds the vertex and layer indices
+    #    """
+    #    print("Error, this method has not been built yet.")
+    #    return
 
+    # Should get this from GeoTessModelUtils
+    # Needs an update based on updated getGeographicLocationAttribute() method
+    def makeDepthMap(self, float depth, int attribute, int layer, float dLon = 8.0,
+                     float dLat=8.0, float minlon=0, float maxlon=360, float minlat=-90, float maxlat=90,
+                     horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Extracts values for a map at constant depth.
+        The output from this can be used to make a map with other software, such as matplotlib
+        Required positional arguments: depth, attribute index.
+        Optional arguments:
+            dLon: gridding step in longitude
+            dLat: gridding step in latitude
+            minlon: minimum longitude in degrees
+            maxlon: maximum longitude in degrees
+            minlat: minimum latitude in degrees
+            maxlat: maximum latitude in degrees
+        relies on numpy as np
+
+        """
+        import numpy as np
+        lons = np.arange(minlon, maxlon, dLon)
+        lats = np.arange(minlat, maxlat, dLat)
+        outData = np.zeros((len(lons), len(lats)))
+        for ilon, lon in enumerate(lons):
+            for ilat, lat in enumerate(lats):
+                radius = self.positionGetRadius(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+                outData[ilon, ilat] = self.getGeographicLocationAttribute(lat, lon, radius, attribute, layer, horizontalType=horizontalType, radialType=radialType)
+
+        return lons, lats, outData
+
+    # Should get this from GeoTessModelUtils
+    def make1DProfile(self, float lat, float lon, int attribute, float mindepth=0, float maxdepth=6371, float dz = 1, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Extracts values as a 1-dimensional array of depth and attribute
+        Returns numpy arrays of depth and value
+        optional parameters:
+            mindepth: minimum depth (km)
+            maxdepth: maximum depth (km)
+            dz: sampling in depth (km)
+        """
+        import numpy as np
+        depths = np.arange(mindepth, maxdepth, dz)
+        outData = np.zeros((len(depths),))
+        for idepth, depth in enumerate(depths):
+            radius = self.positionGetRadius(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+            layer = self.positionGetLayer(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+            outData[idepth] = self.getGeographicLocationAttribute(lat, lon, radius, attribute, layer, horizontalType=horizontalType, radialType=radialType)
+
+        return depths, outData
+
+    def convertToNPArray(self):
+        """
+        Extracts from geotess object to a set of 3 location vectors and an attribute matrix
+        returns longitude vector, latitude vector, radius vector, and data matrix
+        """
+        import numpy as np
+        grid = self.getGrid()
+        ellipsoid = self.getEarthShape()
+
+        npts = 0
+        for layer in range(self.getNLayers()):
+            for vtx in range(self.getNVertices()):
+                #print(vtx, layer)
+                rads, att = self.getProfile(vtx, layer)
+                #print(len(rads))
+                npts += len(rads)
+
+        nparams = self.getNAttributes()
+
+        lonsOut = np.zeros((npts,))
+        latsOut = np.zeros((npts,))
+        radsOut = np.zeros((npts,))
+        dataOut = np.zeros((npts, nparams))
+        idx = 0
+        for layer in range(self.getNLayers()):
+            for vtx in range(self.getNVertices()):
+                vertex = grid.getVertex(vtx)
+                lat = ellipsoid.getLatDegrees(vertex)
+                lon = ellipsoid.getLonDegrees(vertex)
+                rads, att = self.getProfile(vtx, layer)
+                # Need proper err
+                for irad, rad in enumerate(rads):
+                    lonsOut[idx] = lon
+                    latsOut[idx] = lat
+                    radsOut[idx] = rad
+                    if att is not None:
+                        for iat in range(nparams):
+                            dataOut[idx, iat] = att[irad, iat]
+                    idx += 1
+        return lonsOut, latsOut, radsOut, dataOut
 
 
 cdef class AK135Model:
@@ -1967,12 +2014,11 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
     cdef clib.GeoTessModelAmplitude *thisampptr
 
     def __cinit__(self, modelInputFile=None):
-        # GeoTessModelAmplitude() is now protected so we can't use it here.
         if modelInputFile is None:
-            self.thisampptr = new clib.GeoTessModelAmplitude() #removed new
+            self.thisampptr = new clib.GeoTessModelAmplitude()
         else:
-            self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile) #removed new
-    
+            self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)
+
     def __dealloc__(self):
         if self.thisampptr != NULL:
             del self.thisampptr
@@ -2003,26 +2049,23 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
 
         return out
 
-    def getPathCorrection(self, const string& station, const string& channel, const string& band,
-            const double& rcvLat, const double& rcvLon,
-            const double& sourceLat, const double& sourceLon):
-        '''Retrieve Q effect on amplitude for a specified source-receiver path. 
-        or NaN if not supported.
-            
-                    Parameters
-                    ----------
-                    station : str, channel : str, band : str, rcvLat : float, rcvLon : float, 
-                                sourceLat : float, sourceLon  : float
-                    Returns
-                    -------
-                    double or None
-                        Path Correction.'''
 
-        cdef double path_correction = self.thisampptr.getPathCorrection(station, channel, band, rcvLat, rcvLon, sourceLat, sourceLon)
-
-
-        return path_correction
-
-    
-    
- 
+# GeoTessEnumType is protected so we can't use it here.
+#cdef class GeoTessEnumType():
+#    cdef clib.GeoTessEnumType *thisptr
+#
+#    def __cinit__(self):
+#        self.thisptr = new clib.GeoTessEnumType()
+#
+#    def __dealloc__(self):
+#        if self.thisptr != NULL:
+#            del self.thisptr
+#
+#    def toString(self):
+#        return self.thisptr.toString()
+#
+#    def name(self):
+#        return self.thisptr.name()
+#
+#    def ordinal(self):
+#        return self.thisptr.ordinal()
