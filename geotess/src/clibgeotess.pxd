@@ -145,51 +145,64 @@ cdef extern from "AK135Model.h" namespace "geotess":
         AK135Model() except +
         void getLayerProfile(const double &lat, const double &lon, const int &layer, vector[float] &r, vector[vector[float]] &nodeData)
 
-# cdef extern from "GeoTessData.h" namespace "geotess":
-#     cdef cppclass GeoTessData:
-#         GeoTessData() except +
-#         double getDouble(int attributeIndex) const
-#         float getFloat(int attributeIndex) const
-#         void setValue(int attributeIndex, double v)
-#         int size() const
 
-cdef extern from "GeoTessData.h" namespace "geotess":
-    cdef cppclass GeoTessData:
-        GeoTessData() except +
-        # getters
-        double getDouble(int attributeIndex) const
-        float getFloat(int attributeIndex) const
-        int getLong(int attributeIndex) const
-        int getInt(int attributeIndex) const
-        int getShort(int attributeIndex) const
-        #https://github.com/cython/cython/blob/master/Cython/Includes/cpython/bytes.pxd
-        byte getByte(int attributeIndex) const
 
-        #setters
-        void setValue(int attributeIndex, double v)
-        void setValue(int attributeIndex, float v)
-        #https://github.com/cython/cython/blob/master/Cython/Includes/cpython/long.pxd
-        void setValue(int attributeIndex, long v)
-        void setValue(int attributeIndex, int v)
-        void setValue(int attributeIndex, short v)
-        # void setValue(int attributeIndex, byte v)
-        GeoTessData* copy()
-
-        @staticmethod
-        GeoTessData* getData(double values[], const int& size)
-        @staticmethod
-        GeoTessData* getData(float values[], const int& size)
-        #static GeoTessData* getData(double values[], const int& size)
-        #static GeoTessData* getData(float values[], const int& size)
+# cdef extern from "GeoTessProfile.h" namespace "geotess":
+#     cdef cppclass GeoTessProfile:
+#         GeoTessProfile() except +
+#         int getNRadii() const
+#         int getNData() const
+#         float * getRadii() const
+#         GeoTessData* getData(int i)
+#         int getTypeInt()
 
 cdef extern from "GeoTessProfile.h" namespace "geotess":
     cdef cppclass GeoTessProfile:
         GeoTessProfile() except +
+
         int getNRadii() const
         int getNData() const
-        float * getRadii() const
+        float *getRadii() const
         GeoTessData* getData(int i)
-        int getTypeInt()
+        int getTypeInt() const
+
+        double getValue(const GeoTessInterpolatorType& rInterpType, int attributeIndex, double radius, bool allowRadiusOutOfRange) const
+        double getValue(int attributeIndex, int nodeIndex) const
+        bool isNaN(int nodeIndex, int attributeIndex)
+        double getValueTop(int attributeIndex) const
+        double getValueBottom(int attributeIndex) const
+        float getRadius(int i) const
+        float getRadiusTop() const
+        float getRadiusBottom() const
+        void setData(int index, GeoTessData* data)
+        void setData(const vector[GeoTessData*]& inData)
+        void setRadii(const vector[float]& newRadii)
+        void setRadius(int index, float radius)
+        int findClosestRadiusIndex(double radius) const
+        int getPointIndex(int nodeIndex) const
+        void setPointIndex(int nodeIndex, int pointIndex)
+        void resetPointIndices()
+        GeoTessProfile* copy()
+        
+        @staticmethod
+        GeoTessProfile* newProfile(const vector[float]& radii, vector[GeoTessData*]& data)
+        @staticmethod
+        GeoTessProfile* newProfile(float* radii, int nRadii, GeoTessData** data, int nData)
+        @staticmethod
+        GeoTessProfile* newProfile(float* radii, int nRadii, double** values, int nNodes, int nAttributes)
+        @staticmethod
+        GeoTessProfile* newProfile(float* radii, int nRadii, float** values, int nNodes, int nAttributes)
+        @staticmethod
+        GeoTessProfile* newProfile(float* radii, int nRadii, long** values, int nNodes, int nAttributes)
+        @staticmethod
+        GeoTessProfile* newProfile(float* radii, int nRadii, int** values, int nNodes, int nAttributes)
+        @staticmethod
+        GeoTessProfile* newProfile(float* radii, int nRadii, short** values, int nNodes, int nAttributes)
+        @staticmethod
+        GeoTessProfile* newProfile(float* radii, int nRadii, byte** values, int nNodes, int nAttributes)
+
+
+
 
 cdef extern from "GeoTessPointMap.h" namespace "geotess":
     cdef cppclass GeoTessPointMap:
@@ -274,13 +287,79 @@ cdef extern from "GeoTessInterpolatorType.h" namespace "geotess":
         # const GeoTessInterpolatorType LINEAR
         # const GeoTessInterpolatorType NATURAL_NEIGHBOR
         # const GeoTessInterpolatorType CUBIC_SPLINE
+
         
+# cdef extern from "GeoTessData.h" namespace "geotess":
+#     cdef cppclass GeoTessData:
+#         GeoTessData() except +
+#         double getDouble(int attributeIndex) const
+#         float getFloat(int attributeIndex) const
+#         void setValue(int attributeIndex, double v)
+#         int size() const
+
+cdef extern from "GeoTessData.h" namespace "geotess":
+    cdef cppclass GeoTessData:
+        GeoTessData() except +
+
+        double getDouble(int attributeIndex) const
+        float getFloat(int attributeIndex) const
+        int getLong(int attributeIndex) const
+        int getInt(int attributeIndex) const
+        int getShort(int attributeIndex) const
+        #https://github.com/cython/cython/blob/master/Cython/Includes/cpython/bytes.pxd
+        byte getByte(int attributeIndex) const
+
+        void setValue(int attributeIndex, double v)
+        void setValue(int attributeIndex, float v)
+        void setValue(int attributeIndex, long v)
+        void setValue(int attributeIndex, int v)
+        void setValue(int attributeIndex, short v)
+        # void setValue(int attributeIndex, byte v)
+        GeoTessData* copy()
+
+        @staticmethod
+        GeoTessData* getData(double values[], const int& size)
+        @staticmethod
+        GeoTessData* getData(float values[], const int& size)
+        #static GeoTessData* getData(double values[], const int& size)
+        #static GeoTessData* getData(float values[], const int& size)
+
 cdef extern from "GeoTessProfileSurface.h" namespace "geotess":
     cdef cppclass GeoTessProfileSurface:
+        GeoTessProfileSurface() except +
+        GeoTessProfileSurface(GeoTessData* dat) except +
 
-cdef extern from "GeoTessProfileSurfaceEmpty.h" namespace "geotess":
-    cdef cppclass GeoTessProfileSurfaceEmpty:
-        
+        const GeoTessProfileType& getType() const
+        double getValue(int attributeIndex, int nodeIndex) const
+        double getValueTop(int attributeIndex) const
+        bool isNaN(int nodeIndex, int attributeIndex)
+        double getValue(const GeoTessInterpolatorType& rInterpType, int attributeIndex, double radius, bool allowRadiusOutOfRange) const
+        float getRadius(int i) const
+        int getNRadii() const
+        int getNData() const
+        float* getRadii()
+        GeoTessData** getData()
+        GeoTessData* getData(int i)
+        const GeoTessData& getData(int i) const
+        void setData(const vector[GeoTessData*]& inData)
+        void setData(int index, GeoTessData* inData)
+        void setRadii(const vector[float]& newRadii)
+        void setRadius(int index, float radius)
+        float getRadiusTop() const
+        const GeoTessData& getDataTop() const
+        GeoTessData* getDataTop()
+        float getRadiusBottom() const
+        const GeoTessData& getDataBottom() const
+        GeoTessData* getDataBottom()
+        GeoTessProfileSurface(IFStreamBinary& ifs, GeoTessMetaData& gtmd) except +
+        GeoTessProfileSurface(IFStreamAscii& ifs, GeoTessMetaData& gtmd) except +
+        void write(IFStreamBinary& ofs)
+        void write(IFStreamAscii& ofs)
+        int findClosestRadiusIndex(double radius) const
+        void setPointIndex(int nodeIndex, int pntIndex)
+        void resetPointIndices()
+        int getPointIndex(int nodeIndex) const
+        GeoTessProfile* copy()        
     
 
 # GeoTessModelAmplitude is a subclass of GeoTessModel.  Hence the longer name.

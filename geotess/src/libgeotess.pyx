@@ -91,6 +91,40 @@ cdef class GeoTessData:
         cdef int size = len(values)
         return clib.GeoTessData.getData(c_values, size)
 
+    
+
+    
+cdef class GeoTessProfile:
+        cdef clib.GeoTessProfile *thisptr
+
+        def __cinit__(self):
+            self.thisptr = new clib.GeoTessProfile()
+
+        def __dealloc__(self):
+            if self.thisptr is not NULL:
+                del self.thisptr
+
+
+        @property
+        def n_radii(self):
+            return self.thisptr.getNRadii()
+
+        @property
+        def n_data(self):
+            return self.thisptr.getNData()
+
+        def get_radii(self):
+            cdef int n = self.n_radii
+            cdef float* radii = self.thisptr.getRadii()
+            return [radii[i] for i in range(n)] if radii is not NULL else []
+
+        def get_data(self, int i):
+            cdef clib._GeoTessData *data_ptr = self.thisptr.getData(i)
+            if data_ptr is not NULL:
+                return GeoTessData(data_ptr)
+            else:
+                return None    
+
 cdef class GeoTessUtils:
     """
     Collection of static functions to manipulate geographic information.
@@ -1033,8 +1067,6 @@ cdef class GeoTessModel:
     else:
         raise ValueError("Invalid arguments for setProfile")
 
-    
-            
             
             
     def setSurfaceProfile(self, int vertex, int layer, GeoTessData data):
@@ -1044,11 +1076,21 @@ cdef class GeoTessModel:
         Parameters:
         vertex (int): The vertex index in the 2D grid.
         layer (int): The layer index in the model.
-        data (GeoTessData): Object containing the data to be set.
+        data (GeoTessData): Python wrapper object containing the data to be set.
         """
         cdef clib.GeoTessProfileSurface* profile_surface
+
+        if data is None or not isinstance(data, PyGeoTessData):
+            raise ValueError("Invalid data provided. It must be an instance of PyGeoTessData")
+
         profile_surface = new clib.GeoTessProfileSurface(data.thisptr)
-        self.thisptr.setProfile(vertex, layer, <clib.GeoTessProfile*>profile_surface)
+
+        try:
+            self.thisptr.setProfile(vertex, layer, <clib.GeoTessProfile*>profile_surface)
+        except Exception as e:
+            # Handle potential exceptions during the profile setting
+            del profile_surface
+            raise RuntimeError("Failed to set surface profile: " + str(e))
 
 
 
@@ -1981,17 +2023,6 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
 
         return path_correction
 
-cdef class GeoTessData:
-    cdef clib.GeoTessData *thisptr
-
-    def __cinit__(self):
-
-        self.thisptr = new clib.GeoTessData()
-
-    def __dealloc__(self):
-        # Freeing the C++ object when the Python object is deleted
-        if self.thisptr is not NULL:
-            del self.thisptr
-
-    def get_double(self, int attributeIndex):
-        return self.thisptr.getDouble(attributeIndex)
+    
+    
+ 
