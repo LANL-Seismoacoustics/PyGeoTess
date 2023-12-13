@@ -14,15 +14,27 @@ from the original.
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
+from libcpp.set cimport set
+from libcpp cimport bool
+
+cdef extern from "GeoTessModelUtils.h" namespace "geotess":
+    cdef cppclass GeoTessModelUtils:
+        GeoTessModelUtils() except +
+        int updatePointsPerLayer(GeoTessPosition& pos, int firstLayer, int lastLayer, double maxSpacing, vector[int]& pointsPerLayer)
+        # These need to be refactored to replace bools with integer flags
+        #string getBoreholeString(GeoTessModel& pos, double lat, double lon)
+        #string getBoreholeString(GeoTessPosition& pos, double maxSpacing, int firstLayer, int lastLayer, bool convertToDepth, bool reciprocal, vector[int]& attributes)
+        # The rest of the functions use 2D vectors of vectors. I need to make flattened versions for easier passing
+
 
 cdef extern from "GeoTessUtils.h" namespace "geotess":
     cdef cppclass GeoTessUtils:
         GeoTessUtils() except +
         # a lot of these methods are static, so we use @staticmethod
-        # https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#static-member-method
+        # https:#cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#static-member-method
         # This makes them like functions within a "GeoTessUtils" Python module
         # instead of methods on a class instance.
-        # try to match common C++ exceptions to Python ones: https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#exceptions
+        # try to match common C++ exceptions to Python ones: https:#cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#exceptions
         @staticmethod
         double getLatDegrees(const double *const v)
         @staticmethod
@@ -39,7 +51,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         GeoTessGrid* loadGrid(const string& inputFile)
         void writeGrid(const string& fileName)
         int getNLevels() const
-        int getNLevels(int tessellation) 
+        int getNLevels(int tessellation)
         int getNTriangles()
         int getNTriangles(int tessellation, int level) const
         int getNTessellations()
@@ -53,7 +65,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         int getVertexIndex(int triangle, int corner) const
         # had to remove a "const" from the def
         # Cython can't use 'const' in all the same places as C++
-        # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
+        # http:#stackoverflow.com/questions/23873652/how-to-use-const-in-cython
         double *const * getVertices() const
 
 cdef extern from "GeoTessMetaData.h" namespace "geotess":
@@ -61,6 +73,8 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         GeoTessMetaData() except +
         GeoTessMetaData(const GeoTessMetaData &md)
         void setEarthShape(const string& earthShapeName)
+        #const string& getEarthShapeName() const
+        EarthShape& getEarthShape()
         void setDescription(const string& dscr)
         const string& getDescription() const
         void setLayerNames(const string& lyrNms)
@@ -69,6 +83,7 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         void setAttributes(const string& nms, const string& unts)
         void setDataType(const string& dt)
         void setModelSoftwareVersion(const string& swVersion)
+        string getModelSoftwareVersion() const
         void setModelGenerationDate(const string& genDate)
         GeoTessMetaData* copy()
         string toString() const
@@ -76,8 +91,11 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         string getAttributeUnitsString() const
         string getLayerNamesString()
         const int* getLayerTessIds() const
+        int getLayerIndex(const string& layerName) const
         int getNLayers() const
-        string getLayerName(const int &layerIndex) 	
+        string getLayerName(const int &layerIndex)
+        int getModelFileFormat() const
+        void setModelFileFormat(int version) const
 
 cdef extern from "EarthShape.h" namespace "geotess":
     cdef cppclass EarthShape:
@@ -95,39 +113,183 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         GeoTessModel* loadModel(const string& inputFile, const string& relGridFilePath)
         void writeModel(const string &outputFile) except +
         string toString()
+        GeoTessPointMap* getPointMap()
         EarthShape& getEarthShape()
         GeoTessMetaData& getMetaData()
         GeoTessGrid& getGrid()
-        void setProfile(int vertex, int layer, vector[float] &radii, vector[vector[float]] &values)
+        #overloaded method
+        void setProfile(int vertex, int layer, GeoTessProfile* profile)
+        void setProfile(int vertex, int layer, vector[float]& radii, vector[vector[float]]& values)
+        void setProfile(int vertex, int layer, float* radii, int nRadii, float** values, int nNodes, int nAttributes)
+        
+        
+        # void setProfile(int vertex, int layer, vector[float] &radii, vector[vector[float]] &values)
+        #void setProfile(int vertex, int layer, GeoTessProfile* profile)
         GeoTessProfile* getProfile(int vertex, int layer)
+        #int getProfile(int vertex, int layer)
         int getNLayers() const
         int getNVertices() const
+        int getNPoints() const
+        int getNRadii(int vertexId, int layerId)
         void getWeights(const double *pointA, const double *pointB, const double &pointSpacing, const double &radius, const GeoTessInterpolatorType &horizontalType, cmap[int, double] &weights) except +
         float getValueFloat(int pointIndex, int attributeIndex)
+        float getRadius(int pointIndex) const
+        float getDepth(int pointIndex) const
+        set[int]& getConnectedVertices(int layerIndex)
+        GeoTessPosition* getPosition()
+        GeoTessPosition* getPosition(const GeoTessInterpolatorType& horizontalType)
+        GeoTessPosition* getPosition(const GeoTessInterpolatorType& horizontalType, const GeoTessInterpolatorType& radialType)
 
 cdef extern from "AK135Model.h" namespace "geotess":
     cdef cppclass AK135Model:
         AK135Model() except +
         void getLayerProfile(const double &lat, const double &lon, const int &layer, vector[float] &r, vector[vector[float]] &nodeData)
 
+# cdef extern from "GeoTessData.h" namespace "geotess":
+#     cdef cppclass GeoTessData:
+#         GeoTessData() except +
+#         double getDouble(int attributeIndex) const
+#         float getFloat(int attributeIndex) const
+#         void setValue(int attributeIndex, double v)
+#         int size() const
+
+cdef extern from "GeoTessData.h" namespace "geotess":
+    cdef cppclass GeoTessData:
+        GeoTessData() except +
+        # getters
+        double getDouble(int attributeIndex) const
+        float getFloat(int attributeIndex) const
+        int getLong(int attributeIndex) const
+        int getInt(int attributeIndex) const
+        int getShort(int attributeIndex) const
+        #https://github.com/cython/cython/blob/master/Cython/Includes/cpython/bytes.pxd
+        byte getByte(int attributeIndex) const
+
+        #setters
+        void setValue(int attributeIndex, double v)
+        void setValue(int attributeIndex, float v)
+        #https://github.com/cython/cython/blob/master/Cython/Includes/cpython/long.pxd
+        void setValue(int attributeIndex, long v)
+        void setValue(int attributeIndex, int v)
+        void setValue(int attributeIndex, short v)
+        # void setValue(int attributeIndex, byte v)
+        GeoTessData* copy()
+
+        @staticmethod
+        GeoTessData* getData(double values[], const int& size)
+        @staticmethod
+        GeoTessData* getData(float values[], const int& size)
+        #static GeoTessData* getData(double values[], const int& size)
+        #static GeoTessData* getData(float values[], const int& size)
+
 cdef extern from "GeoTessProfile.h" namespace "geotess":
     cdef cppclass GeoTessProfile:
         GeoTessProfile() except +
+        int getNRadii() const
+        int getNData() const
+        float * getRadii() const
+        GeoTessData* getData(int i)
+        int getTypeInt()
+
+cdef extern from "GeoTessPointMap.h" namespace "geotess":
+    cdef cppclass GeoTessPointMap:
+        GeoTessPointMap() except +
+        int size() const
+        int getVertexIndex(int pointIndex) const
+        int getTessId(int pointIndex) const
+        int getLayerIndex(int pointIndex) const
+        int getNodeIndex(int pointIndex) const
+        int getPointIndex(int vertex, int layer, int node) const
+        int getPointIndexLast(int vertex, int layer) const
+        int getPointIndexFirst(int vertex, int layer) const
+        GeoTessData* getPointData(int pointIndex)
+        void setPointData(int pointIndex, GeoTessData* data)
+        double getPointValue(int pointIndex, int attributeIndex)
+        double getDistance3D(int pointIndex1, int pointIndex2)
+        void getPointVector(int pointIndex, double* v)
+        string getPointLatLonString(int pointIndex)
+        string toString(int pointIndex)
+
+# GeoTessPosition objects are called from within the GeoTessModel object
+# Several methods are overloaded, that is flexible on their input parameters, which c++ is ok with, but python freaks out over
+# The setters and getters only operate within GeoTessModel methods and therefore are not sticky in the calling python
+cdef extern from "GeoTessPosition.h" namespace "geotess":
+    cdef cppclass GeoTessPosition:
+        GeoTessPosition() except +
+        GeoTessPosition* getGeoTessPosition(GeoTessModel* model)
+        GeoTessPosition* getGeoTessPosition(GeoTessModel* model, const GeoTessInterpolatorType& horizontalType)
+        GeoTessPosition* getGeoTessPosition(GeoTessModel* model, const GeoTessInterpolatorType& horizontalType, const GeoTessInterpolatorType& radialType);
+        GeoTessInterpolatorType& getInterpolatorType() const
+        void setModel(GeoTessModel* newModel) const
+        void set(double lat, double lon, double depth)
+        void set(int layid, double lat, double lon, double depth)
+        void setTop(int layid, const double* const uVector)
+        void setBottom(int layid, const double* const uVector)
+        double getValue(int attribute)
+        double getRadiusBottom(int layer)
+        double getRadiusTop(int layer)
+        double getRadiusBottom()
+        double getRadiusTop()
+        double getDepth()
+        void setRadius(int layer, double r) const
+        int getLayerId(double rad)
+        void setDepth(int layer, double depth)
+        void setDepth(double depth)
+        void setTop(int layid)
+        void setBottom(int layid)
+        double getEarthRadius() const
+        double*	getVector()
+        int	getTriangle()
+        int	getNVertices()
+        int getIndexOfClosestVertex() const
+        const double* getClosestVertex() const
+        string toString() const
+        # This declaration of getVertex is unclear. It's help is:
+        # Return the index of one of the vertices used to interpolate data.
+        int getVertex(int index)
+        ############################
+        void setMaxTessLevel(int layid, int maxTess)
+        int	getMaxTessLevel(int layid)
+        int	getTessLevel() const
+        int	getTessLevel(const int& tId)
+        int	getTessID()
+        double getRadius()
+        double getLayerThickness()
+        double getLayerThickness(int layid)
+        double getDepthBottom(int layid)
+        double getDepthTop(int layid)
+        double getDepthBottom()
+        double getDepthTop()
+        int	getLayerId()
+        int getBorehole(double rSpacing, int computeDepth, vector[int]& layers, vector[double]& radii, vector[double]& attributes)
+        string radialInterpolatorToString()
 
 cdef extern from "GeoTessInterpolatorType.h" namespace "geotess":
     cdef cppclass GeoTessInterpolatorType:
         @staticmethod
         GeoTessInterpolatorType* valueOf(const string &s)
+        int size() const
         # I can't seem to access public const members in Cython
-        # https://stackoverflow.com/a/46998685/745557
+        # https:#stackoverflow.com/a/46998685/745557
         # const GeoTessInterpolatorType LINEAR
         # const GeoTessInterpolatorType NATURAL_NEIGHBOR
         # const GeoTessInterpolatorType CUBIC_SPLINE
+        
+cdef extern from "GeoTessProfileSurface.h" namespace "geotess":
+    cdef cppclass GeoTessProfileSurface:
+
+cdef extern from "GeoTessProfileSurfaceEmpty.h" namespace "geotess":
+    cdef cppclass GeoTessProfileSurfaceEmpty:
+        
+    
 
 # GeoTessModelAmplitude is a subclass of GeoTessModel.  Hence the longer name.
-# https://altugkarakurt.github.io/how-to-wrap-polymorphic-cpp-classes-with-cython
+# https:#altugkarakurt.github.io/how-to-wrap-polymorphic-cpp-classes-with-cython
 cdef extern from "GeoTessModelAmplitude.h" namespace "geotess":
     cdef cppclass GeoTessModelAmplitude(GeoTessModel):
         GeoTessModelAmplitude() except +
-        GeoTessModelAmplitude(const string& modelInputFile);
-        float getSiteTrans(const string& station, const string& channel, const string& band)
+        GeoTessModelAmplitude(const string& modelInputFile) except +
+        float getSiteTrans(const string& station, const string& channel, const string& band) except +
+        double getPathCorrection(const string& station, const string& channel, const string& band, const double& rcvLat, const double& rcvLon,const double& sourceLat, const double& sourceLon) except +
+
+
