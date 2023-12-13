@@ -1,3 +1,6 @@
+old/
+pygeotess.egg-info/
+geotess/src/.ipynb_checkpoints/
 build/
 docs/site/
 .DS_Store

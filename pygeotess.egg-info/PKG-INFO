@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: pygeotess
-Version: 0.2.1
-Summary: GeoTess access from Python.
-Author: Jonathan K. MacCarthy
-Author-email: jkmacc@lanl.gov
-License-File: LICENSE.txt
