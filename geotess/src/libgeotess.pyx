@@ -76,7 +76,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.limits cimport numeric_limits
-from libcpp.set cimport cset
+from libcpp.set cimport set
 
 
 cimport clibgeotess as clib
