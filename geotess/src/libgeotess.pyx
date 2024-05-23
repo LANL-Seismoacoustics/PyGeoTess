@@ -69,15 +69,19 @@ cimport numpy as np
 np.import_array()
 
 from cython.operator cimport dereference as deref
+from cython.view cimport array as cvarray
 
 from libc.string cimport memcpy
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.limits cimport numeric_limits
+from libcpp.set cimport set
+
 
 cimport clibgeotess as clib
 import geotess.exc as exc
+
 
 
 cdef class GeoTessUtils:
@@ -720,6 +724,35 @@ cdef class GeoTessModel:
                                 weights)
 
         return weights
+    
+    def getPointWeights(self, double lat, double lon, double radius, str horizontalType="LINEAR"):
+            
+        if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
+
+        cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        pos = self.thisptr.getPosition(deref(interpolator))
+        pos.set(lat, lon, radius)
+
+        cdef cmap[int, double] weights 
+
+        pos.getWeights(weights,radius)
+        return weights
+    
+    def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):
+            
+        if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
+
+        cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        pos = self.thisptr.getPosition(deref(interpolator))
+        pos.set(&v[0], radius)
+
+        cdef cmap[int, double] weights 
+
+        pos.getWeights(weights,1.)
+        return weights
+
 
     def getValueFloat(self, int pointIndex, int attributeIndex):
         return self.thisptr.getValueFloat(pointIndex, attributeIndex)
