@@ -4,3 +4,5 @@ docs/site/
 pygeotess.egg-info/
 *pyc
 *.so
+.vscode
+*.egg-info

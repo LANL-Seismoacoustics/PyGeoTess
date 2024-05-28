@@ -33,12 +33,12 @@ different Pythonic approaches to working with the underlying GeoTess library.
 
 ## Current conversion conventions
 
-* NumPy vectors are generally used instead of lists or vectors, such as for
+* NumPy vectors are generally used instead of lists or vectors, like for
   GeoTess unit vectors and profiles.
 
 * If a C++ method accepts an empty array/vector argument to be filled by
   the method, I leave that out of the calling signature.  It is instead
-  initialized inside the method and simply returned by it.
+  initialized inside the method and simply returned to Python.
 
 
 ## Current headaches

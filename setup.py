@@ -39,5 +39,8 @@ setup(name = 'pygeotess',
       py_modules = ['geotess.model', 'geotess.exc'],
       ext_modules = extensions,
       data_files = [ ('geotess/data', glob('geotess/src/GeoTessModels/*')) ],
+      install_requires = [
+          'numpy',
+          ]
       )
 
