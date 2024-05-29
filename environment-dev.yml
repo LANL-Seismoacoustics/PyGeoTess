@@ -1,0 +1,11 @@
+name: geotess-dev
+channels:
+- defaults
+dependencies:
+- python=3
+- numpy
+- cython
+- pytest
+- pip
+- pip:
+  - -e . 

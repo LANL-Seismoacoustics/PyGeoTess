@@ -1,0 +1,8 @@
+{
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "reportUnknownVariableType": false,
+  "reportUnknownArgumentType": false,
+  "reportPossiblyUnboundVariable": false,
+  "reportAny": false
+}
