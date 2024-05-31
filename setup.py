@@ -31,7 +31,7 @@ else:
 
 
 setup(name = 'pygeotess',
-      version = '0.2.1',
+      version = '0.2.2',
       description = 'GeoTess access from Python.',
       author = 'Jonathan K. MacCarthy',
       author_email = 'jkmacc@lanl.gov',
