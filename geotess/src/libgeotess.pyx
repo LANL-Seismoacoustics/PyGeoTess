@@ -10,20 +10,20 @@ The class definitions here are Python-visible, and are simply wrappers that
 forward the Python-exposed methods directly down to their Cython-exposed C++
 counterparts, which have been exposed in the imported pxd file.
 
-This module is also responsible for converting between Python types and c++
+This module is also responsible for converting between Python types and C++
 types, which sometimes involves annoying tricks.  For simple numerical types,
 this conversion can be done automatically in the calling signature of a "def"
-method if types are declared.  Complex c++ class types, for example, can't be
+method if types are declared.  Complex C++ class types, for example, can't be
 in a Python-visible "def" method because Python objects can't be automatically
-cast to c++ types.  For these cases, sneaky factory functions that can accept
+cast to C++ types.  For these cases, sneaky factory functions that can accept
 the complex types must do the work.  Unfortunately, this means that any
-constructor or method that accepts complex c++ can't be "directly" exposed to
+constructor or method that accepts complex C++ can't be "directly" exposed to
 Python.
 
 Using both a pxd and a pyx file is done, partly, so that we can keep the
-exposed c++ GeoTess functionality together in one namespace using "cimport",
+exposed C++ GeoTess functionality together in one namespace using "cimport",
 such that we can name the classes exposed to Python the same as those in the
-GeoTess c++.  This is sometimes confusing in error messages, however.
+GeoTess C++.  This is sometimes confusing in error messages, however.
 
 GeoTess functionality is intentionally a one-to-one translation into Python
 here so that any modifications to the way models and grids are used can be
@@ -48,15 +48,15 @@ different Pythonic approaches to working with the underlying GeoTess library.
   I'm not sure how to fix this yet.
  
 * There is very little/no type checking between Python arguments and when
-  they're forwarded to the c++ methods.  This is dangerous.
+  they're forwarded to the C++ methods.  This is dangerous.
 
 ## Original C++ documentation
-http://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html
+https://sandialabs.github.io/GeoTessCPP/GeoTessCPP/doc/html/annotated.html
 
 """
 # good page on calling signatures.  Doesn't yet know about typed memoryviews, though.
 # https://medium.com/@yusuken/calling-c-functions-from-cython-references-pointers-and-arrays-e1ccb461b6d8
-# good page on c++ and cython
+# good page on C++ and cython
 # https://azhpushkin.me/posts/cython-cpp-intro
 import os
 
