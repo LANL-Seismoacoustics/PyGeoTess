@@ -1584,7 +1584,7 @@ struct __pyx_obj_7geotess_10libgeotess_GeoTessModel {
 };
 
 
-/* "geotess/src/libgeotess.pyx":761
+/* "geotess/src/libgeotess.pyx":1118
  * 
  * 
  * cdef class AK135Model:             # <<<<<<<<<<<<<<
@@ -1597,7 +1597,7 @@ struct __pyx_obj_7geotess_10libgeotess_AK135Model {
 };
 
 
-/* "geotess/src/libgeotess.pyx":783
+/* "geotess/src/libgeotess.pyx":1140
  * 
  * 
  * cdef class GeoTessModelAmplitude(GeoTessModel):             # <<<<<<<<<<<<<<
@@ -2105,6 +2105,32 @@ static Py_ssize_t __Pyx_zeros[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 /* PyIntCompare.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, long intval, long inplace);
 
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
+#else
+#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
+    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
+#endif
+
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_SubtractObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
+#else
+#define __Pyx_PyInt_SubtractObjC(op1, op2, intval, inplace, zerodivision_check)\
+    (inplace ? PyNumber_InPlaceSubtract(op1, op2) : PyNumber_Subtract(op1, op2))
+#endif
+
+/* SetItemInt.proto */
+#define __Pyx_SetItemInt(o, i, v, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_SetItemInt_Fast(o, (Py_ssize_t)i, v, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list assignment index out of range"), -1) :\
+               __Pyx_SetItemInt_Generic(o, to_py_func(i), v)))
+static int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v);
+static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v,
+                                               int is_list, int wraparound, int boundscheck);
+
 /* IncludeStringH.proto */
 #include <string.h>
 
@@ -2113,6 +2139,60 @@ static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int eq
 
 /* UnicodeEquals.proto */
 static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
+
+/* ListCompAppend.proto */
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (likely(L->allocated > len)) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        __Pyx_SET_SIZE(list, len + 1);
+        return 0;
+    }
+    return PyList_Append(list, x);
+}
+#else
+#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
+#endif
+
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
+
+/* RaiseTooManyValuesToUnpack.proto */
+static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
+
+/* RaiseNeedMoreValuesToUnpack.proto */
+static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
+
+/* IterFinish.proto */
+static CYTHON_INLINE int __Pyx_IterFinish(void);
+
+/* UnpackItemEndCheck.proto */
+static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
+
+/* None.proto */
+static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
 
 /* GetTopmostException.proto */
 #if CYTHON_USE_EXC_INFO_STACK
@@ -2146,23 +2226,6 @@ static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject 
 static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
 #endif
 
-/* ListCompAppend.proto */
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len)) {
-        Py_INCREF(x);
-        PyList_SET_ITEM(list, len, x);
-        __Pyx_SET_SIZE(list, len + 1);
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
-#endif
-
 /* StrEquals.proto */
 #if PY_MAJOR_VERSION >= 3
 #define __Pyx_PyString_Equals __Pyx_PyUnicode_Equals
@@ -2181,28 +2244,6 @@ static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *); /*proto*/
 /* GetAttr.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
-
-/* GetItemInt.proto */
-#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
-               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
-#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
-                                                     int is_list, int wraparound, int boundscheck);
 
 /* ObjectGetItem.proto */
 #if CYTHON_USE_TYPE_SLOTS
@@ -2234,12 +2275,6 @@ static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
 /* GetAttr3.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *, PyObject *, PyObject *);
 
-/* RaiseTooManyValuesToUnpack.proto */
-static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
-
-/* RaiseNeedMoreValuesToUnpack.proto */
-static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
-
 /* RaiseNoneIterError.proto */
 static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void);
 
@@ -2268,14 +2303,6 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
 #define __Pyx_PyException_Check(obj) __Pyx_TypeCheck(obj, PyExc_Exception)
 
 static CYTHON_UNUSED int __pyx_memoryview_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /*proto*/
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
-#else
-#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
-    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
-#endif
-
 /* ListExtend.proto */
 static CYTHON_INLINE int __Pyx_PyList_Extend(PyObject* L, PyObject* v) {
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -2322,9 +2349,6 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #else
   #define __pyx_assertions_enabled() (!Py_OptimizeFlag)
 #endif
-
-/* None.proto */
-static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
 
 /* DivInt[long].proto */
 static CYTHON_INLINE long __Pyx_div_long(long, long);
@@ -2622,14 +2646,14 @@ static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
 /* CIntFromPy.proto */
 static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
-
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *);
@@ -2739,6 +2763,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyBytes_string_to_py_std__in_string
 static CYTHON_INLINE PyObject *__pyx_convert_PyByteArray_string_to_py_std__in_string(std::string const &); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_int(const std::vector<int>  &); /*proto*/
 static PyObject *__pyx_convert_map_to_py_int____double(std::map<int,double>  const &); /*proto*/
+static PyObject *__pyx_convert_set_to_py_int(std::set<int>  const &); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_float(const std::vector<float>  &); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_std_3a__3a_vector_3c_float_3e___(const std::vector<std::vector<float> >  &); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
@@ -2786,9 +2811,10 @@ static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_sum;
+static PyObject *__pyx_builtin_enumerate;
+static PyObject *__pyx_builtin_print;
 static PyObject *__pyx_builtin_ImportError;
 static PyObject *__pyx_builtin_MemoryError;
-static PyObject *__pyx_builtin_enumerate;
 static PyObject *__pyx_builtin_Ellipsis;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
@@ -2800,9 +2826,11 @@ static const char __pyx_k_np[] = "np";
 static const char __pyx_k_os[] = "os";
 static const char __pyx_k_INT[] = "INT";
 static const char __pyx_k__13[] = "";
-static const char __pyx_k__42[] = "*";
+static const char __pyx_k__44[] = "*";
+static const char __pyx_k_abs[] = "abs";
 static const char __pyx_k_arr[] = "arr";
 static const char __pyx_k_exc[] = "exc";
+static const char __pyx_k_int[] = "int";
 static const char __pyx_k_lat[] = "lat";
 static const char __pyx_k_lon[] = "lon";
 static const char __pyx_k_new[] = "__new__";
@@ -2821,6 +2849,8 @@ static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_mode[] = "mode";
 static const char __pyx_k_name[] = "name";
 static const char __pyx_k_ndim[] = "ndim";
+static const char __pyx_k_node[] = "node";
+static const char __pyx_k_norm[] = "norm";
 static const char __pyx_k_pack[] = "pack";
 static const char __pyx_k_path[] = "path";
 static const char __pyx_k_size[] = "size";
@@ -2841,10 +2871,13 @@ static const char __pyx_k_flags[] = "flags";
 static const char __pyx_k_layer[] = "layer";
 static const char __pyx_k_level[] = "level";
 static const char __pyx_k_numpy[] = "numpy";
+static const char __pyx_k_print[] = "print";
 static const char __pyx_k_radii[] = "radii";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_start[] = "start";
+static const char __pyx_k_value[] = "value";
+static const char __pyx_k_zeros[] = "zeros";
 static const char __pyx_k_DOUBLE[] = "DOUBLE";
 static const char __pyx_k_LINEAR[] = "LINEAR";
 static const char __pyx_k_SPHERE[] = "SPHERE";
@@ -2853,6 +2886,7 @@ static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_exists[] = "exists";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
+static const char __pyx_k_linalg[] = "linalg";
 static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_pointA[] = "pointA";
@@ -2876,6 +2910,7 @@ static const char __pyx_k_IERS2003[] = "IERS2003";
 static const char __pyx_k_SHORTINT[] = "SHORTINT";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_itemsize[] = "itemsize";
+static const char __pyx_k_latitude[] = "latitude";
 static const char __pyx_k_metaData[] = "metaData";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
 static const char __pyx_k_setstate[] = "__setstate__";
@@ -2883,6 +2918,7 @@ static const char __pyx_k_triangle[] = "triangle";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_enumerate[] = "enumerate";
 static const char __pyx_k_inputFile[] = "inputFile";
+static const char __pyx_k_longitude[] = "longitude";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_AK135Model[] = "AK135Model";
@@ -2890,6 +2926,8 @@ static const char __pyx_k_EarthShape[] = "EarthShape";
 static const char __pyx_k_IndexError[] = "IndexError";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_earthShape[] = "earthShape";
+static const char __pyx_k_getNLayers[] = "getNLayers";
+static const char __pyx_k_getNPoints[] = "getNPoints";
 static const char __pyx_k_pointIndex[] = "pointIndex";
 static const char __pyx_k_pyx_result[] = "__pyx_result";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
@@ -2903,19 +2941,25 @@ static const char __pyx_k_GRS80_RCONST[] = "GRS80_RCONST";
 static const char __pyx_k_GeoTessModel[] = "GeoTessModel";
 static const char __pyx_k_GeoTessUtils[] = "GeoTessUtils";
 static const char __pyx_k_WGS84_RCONST[] = "WGS84_RCONST";
+static const char __pyx_k_getNVertices[] = "getNVertices";
 static const char __pyx_k_gridFileName[] = "gridFileName";
 static const char __pyx_k_pointSpacing[] = "pointSpacing";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_staticmethod[] = "staticmethod";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_tessellation[] = "tessellation";
+static const char __pyx_k_getEarthShape[] = "getEarthShape";
 static const char __pyx_k_getLatDegrees[] = "getLatDegrees";
 static const char __pyx_k_getLonDegrees[] = "getLonDegrees";
+static const char __pyx_k_getPointDepth[] = "getPointDepth";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_File_not_found[] = "File not found.";
 static const char __pyx_k_attributeIndex[] = "attributeIndex";
 static const char __pyx_k_getEarthRadius[] = "getEarthRadius";
+static const char __pyx_k_getNAttributes[] = "getNAttributes";
+static const char __pyx_k_getPointRadius[] = "getPointRadius";
+static const char __pyx_k_getPointVertex[] = "getPointVertex";
 static const char __pyx_k_horizontalType[] = "horizontalType";
 static const char __pyx_k_modelInputFile[] = "modelInputFile";
 static const char __pyx_k_GeoTessMetaData[] = "GeoTessMetaData";
@@ -2928,6 +2972,7 @@ static const char __pyx_k_relGridFilePath[] = "relGridFilePath";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_GeoTessFileError[] = "GeoTessFileError";
 static const char __pyx_k_NATURAL_NEIGHBOR[] = "NATURAL_NEIGHBOR";
+static const char __pyx_k_getPointLocation[] = "getPointLocation";
 static const char __pyx_k_getVectorDegrees[] = "getVectorDegrees";
 static const char __pyx_k_getNTessellations[] = "getNTessellations";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
@@ -2948,7 +2993,10 @@ static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %
 static const char __pyx_k_geotess_src_libgeotess_pyx[] = "geotess/src/libgeotess.pyx";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
+static const char __pyx_k_Error_layer_outside_of_range_0[] = "Error, layer {} outside of range (0 - {})";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
+static const char __pyx_k_Error_layerid_must_be_between_0[] = "Error, layerid must be between 0 and {}";
+static const char __pyx_k_Error_vertex_outside_of_range_0[] = "Error, vertex {} outside of range (0 - {})";
 static const char __pyx_k_This_module_exposes_Cython_GeoT[] = "\nThis module exposes Cython GeoTess functionality from the pxd file into Python.\n\nThe class definitions here are Python-visible, and are simply wrappers that \nforward the Python-exposed methods directly down to their Cython-exposed C++\ncounterparts, which have been exposed in the imported pxd file.\n\nThis module is also responsible for converting between Python types and c++\ntypes, which sometimes involves annoying tricks.  For simple numerical types,\nthis conversion can be done automatically in the calling signature of a \"def\"\nmethod if types are declared.  Complex c++ class types, for example, can't be\nin a Python-visible \"def\" method because Python objects can't be automatically\ncast to c++ types.  For these cases, sneaky factory functions that can accept\nthe complex types must do the work.  Unfortunately, this means that any\nconstructor or method that accepts complex c++ can't be \"directly\" exposed to\nPython.\n\nUsing both a pxd and a pyx file is done, partly, so that we can keep the\nexposed c++ GeoTess functionality together in one namespace using \"cimport\",\nsuch that we can name the classes exposed to Python the same as those in the\nGeoTess c++.  This is sometimes confusing in error messages, however.\n\nGeoTess functionality is intentionally a one-to-one translation into Python\nhere so that any modifications to the way models and grids are used can be\ndeveloped and tested in other pure-Python modules.  This makes it easier to try\ndifferent Pythonic approaches to working with the underlying GeoTess library.\n\n\n## Current conversion conventions\n\n* NumPy vectors are generally used instead of lists or vectors, such as for\n  GeoTess unit vectors and profiles.\n\n* If a C++ method accepts an empty array/vector argument to be filled by\n  the method, I leave that out of the calling signature.  It is instead\n  initialized inside the method and simply returned by it.\n\n\n## Current headaches\n\n* Deleting or garbage-collecting object""s is dangerous.  Some objects are\n  managed by other objects, so deleting them manually can crash the interpreter.\n  I'm not sure how to fix this yet.\n \n* There is very little/no type checking between Python arguments and when\n  they're forwarded to the c++ methods.  This is dangerous.\n\n## Original C++ documentation\nhttp://www.sandia.gov/geotess/assets/documents/documentation_cpp/annotated.html\n\n";
 static const char __pyx_k_Unknown_earth_shape_Choose_from[] = "Unknown earth shape '{}'. Choose from {}";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
@@ -2981,6 +3029,9 @@ static PyObject *__pyx_kp_u_DataType_must_be_one_of;
 static PyObject *__pyx_n_s_EarthShape;
 static PyObject *__pyx_n_s_Ellipsis;
 static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
+static PyObject *__pyx_kp_u_Error_layer_outside_of_range_0;
+static PyObject *__pyx_kp_u_Error_layerid_must_be_between_0;
+static PyObject *__pyx_kp_u_Error_vertex_outside_of_range_0;
 static PyObject *__pyx_n_u_FLOAT;
 static PyObject *__pyx_kp_u_File_not_found;
 static PyObject *__pyx_n_u_GRS80;
@@ -3021,7 +3072,8 @@ static PyObject *__pyx_n_s_View_MemoryView;
 static PyObject *__pyx_n_u_WGS84;
 static PyObject *__pyx_n_u_WGS84_RCONST;
 static PyObject *__pyx_kp_u__13;
-static PyObject *__pyx_n_s__42;
+static PyObject *__pyx_n_s__44;
+static PyObject *__pyx_n_s_abs;
 static PyObject *__pyx_n_s_allocate_buffer;
 static PyObject *__pyx_n_s_arr;
 static PyObject *__pyx_n_s_arr_memview;
@@ -3057,9 +3109,18 @@ static PyObject *__pyx_n_s_geotess_exc;
 static PyObject *__pyx_n_s_geotess_libgeotess;
 static PyObject *__pyx_kp_s_geotess_src_libgeotess_pyx;
 static PyObject *__pyx_n_s_getEarthRadius;
+static PyObject *__pyx_n_s_getEarthShape;
 static PyObject *__pyx_n_s_getLatDegrees;
 static PyObject *__pyx_n_s_getLonDegrees;
+static PyObject *__pyx_n_s_getNAttributes;
+static PyObject *__pyx_n_s_getNLayers;
+static PyObject *__pyx_n_s_getNPoints;
 static PyObject *__pyx_n_s_getNTessellations;
+static PyObject *__pyx_n_s_getNVertices;
+static PyObject *__pyx_n_s_getPointDepth;
+static PyObject *__pyx_n_s_getPointLocation;
+static PyObject *__pyx_n_s_getPointRadius;
+static PyObject *__pyx_n_s_getPointVertex;
 static PyObject *__pyx_n_s_getVectorDegrees;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_kp_s_got_differing_extents_in_dimensi;
@@ -3069,13 +3130,17 @@ static PyObject *__pyx_kp_u_horizontalType_must_be_either_LI;
 static PyObject *__pyx_n_s_id;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_inputFile;
+static PyObject *__pyx_n_u_int;
 static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_s_lat;
+static PyObject *__pyx_n_s_latitude;
 static PyObject *__pyx_n_s_layer;
 static PyObject *__pyx_n_s_level;
 static PyObject *__pyx_kp_u_level_or_tessellation;
+static PyObject *__pyx_n_s_linalg;
 static PyObject *__pyx_n_s_lon;
+static PyObject *__pyx_n_s_longitude;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_metaData;
@@ -3087,6 +3152,8 @@ static PyObject *__pyx_n_s_ndim;
 static PyObject *__pyx_n_s_new;
 static PyObject *__pyx_n_s_nms;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
+static PyObject *__pyx_n_s_node;
+static PyObject *__pyx_n_s_norm;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_num;
 static PyObject *__pyx_n_s_numpy;
@@ -3101,6 +3168,7 @@ static PyObject *__pyx_n_s_pointA;
 static PyObject *__pyx_n_s_pointB;
 static PyObject *__pyx_n_s_pointIndex;
 static PyObject *__pyx_n_s_pointSpacing;
+static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_pyx_PickleError;
 static PyObject *__pyx_n_s_pyx_checksum;
 static PyObject *__pyx_n_s_pyx_getbuffer;
@@ -3143,8 +3211,10 @@ static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_unts;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_v;
+static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_n_s_values;
 static PyObject *__pyx_n_s_vertex;
+static PyObject *__pyx_n_s_zeros;
 static int __pyx_pf_7geotess_10libgeotess_12GeoTessUtils___cinit__(struct __pyx_obj_7geotess_10libgeotess_GeoTessUtils *__pyx_v_self); /* proto */
 static void __pyx_pf_7geotess_10libgeotess_12GeoTessUtils_2__dealloc__(struct __pyx_obj_7geotess_10libgeotess_GeoTessUtils *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessUtils_4getLatDegrees(__Pyx_memviewslice __pyx_v_v); /* proto */
@@ -3207,15 +3277,36 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_10getEarthShape(s
 static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_12getMetaData(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_14getGrid(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_16setProfile(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_vertex, int __pyx_v_layer, std::vector<float>  __pyx_v_radii, std::vector<std::vector<float> >  __pyx_v_values); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_18getProfile(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, CYTHON_UNUSED int __pyx_v_vertex, CYTHON_UNUSED int __pyx_v_layer); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20getNLayers(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getNVertices(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_pointA, __Pyx_memviewslice __pyx_v_pointB, double __pyx_v_pointSpacing, double __pyx_v_radius, PyObject *__pyx_v_horizontalType); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, double __pyx_v_lat, double __pyx_v_lon, double __pyx_v_radius, PyObject *__pyx_v_horizontalType); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeightsVector(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_v, double __pyx_v_radius, PyObject *__pyx_v_horizontalType); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getValueFloat(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_pointIndex, int __pyx_v_attributeIndex); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_32__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_34__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_18setPointData(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_values); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20setPointDataSingleAttribute(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_attributeIndex, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getProfile(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_vertex, int __pyx_v_layer); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getNLayers(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getNVertices(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_pointA, __Pyx_memviewslice __pyx_v_pointB, double __pyx_v_pointSpacing, double __pyx_v_radius, PyObject *__pyx_v_horizontalType); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getPointWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, double __pyx_v_lat, double __pyx_v_lon, double __pyx_v_radius, PyObject *__pyx_v_horizontalType); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_32getPointWeightsVector(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_v, double __pyx_v_radius, PyObject *__pyx_v_horizontalType); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_34getConnectedVertices(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_layerid); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_36getPointLatitude(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_38getPointLongitude(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_40getPointLocation(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_42getPointVertex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_44getPointTessId(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_46getPointLayerIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_48getPointNodeIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_50getPointVertexTessLayerNode(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_52getPointData(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_54setPointData(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_values); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_56setProfile(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_vertex, int __pyx_v_layer, std::vector<float>  __pyx_v_radii, std::vector<std::vector<float> >  __pyx_v_values); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_58setPointDataSingleAttribute(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_attributeIndex, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_60getNearestPointIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, float __pyx_v_latitude, float __pyx_v_longitude, float __pyx_v_radius); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_62getPointDepth(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_64getPointRadius(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_66getPointIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_vertex, PyObject *__pyx_v_layer, PyObject *__pyx_v_node); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_68getPointIndexLast(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_vertex, PyObject *__pyx_v_layer); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_70getPointIndexFirst(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_vertex, PyObject *__pyx_v_layer); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_72getValueFloat(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_pointIndex, int __pyx_v_attributeIndex); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_74__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_76__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7geotess_10libgeotess_10AK135Model___cinit__(struct __pyx_obj_7geotess_10libgeotess_AK135Model *__pyx_v_self); /* proto */
 static void __pyx_pf_7geotess_10libgeotess_10AK135Model_2__dealloc__(struct __pyx_obj_7geotess_10libgeotess_AK135Model *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(struct __pyx_obj_7geotess_10libgeotess_AK135Model *__pyx_v_self, double __pyx_v_lat, double __pyx_v_lon, int __pyx_v_layer); /* proto */
@@ -3283,10 +3374,12 @@ static __Pyx_CachedCFunction __pyx_umethod_PyUnicode_Type_format = {0, &__pyx_n_
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_3;
+static PyObject *__pyx_int_9001;
 static PyObject *__pyx_int_112105877;
 static PyObject *__pyx_int_136983863;
 static PyObject *__pyx_int_184977713;
 static PyObject *__pyx_int_neg_1;
+static PyObject *__pyx_int_neg_2;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
@@ -3296,7 +3389,7 @@ static PyObject *__pyx_tuple__6;
 static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
-static PyObject *__pyx_slice__37;
+static PyObject *__pyx_slice__39;
 static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__11;
 static PyObject *__pyx_tuple__12;
@@ -3323,25 +3416,27 @@ static PyObject *__pyx_tuple__33;
 static PyObject *__pyx_tuple__34;
 static PyObject *__pyx_tuple__35;
 static PyObject *__pyx_tuple__36;
+static PyObject *__pyx_tuple__37;
 static PyObject *__pyx_tuple__38;
-static PyObject *__pyx_tuple__39;
 static PyObject *__pyx_tuple__40;
 static PyObject *__pyx_tuple__41;
+static PyObject *__pyx_tuple__42;
 static PyObject *__pyx_tuple__43;
 static PyObject *__pyx_tuple__45;
 static PyObject *__pyx_tuple__47;
 static PyObject *__pyx_tuple__49;
 static PyObject *__pyx_tuple__51;
-static PyObject *__pyx_tuple__52;
 static PyObject *__pyx_tuple__53;
 static PyObject *__pyx_tuple__54;
 static PyObject *__pyx_tuple__55;
 static PyObject *__pyx_tuple__56;
-static PyObject *__pyx_codeobj__44;
+static PyObject *__pyx_tuple__57;
+static PyObject *__pyx_tuple__58;
 static PyObject *__pyx_codeobj__46;
 static PyObject *__pyx_codeobj__48;
 static PyObject *__pyx_codeobj__50;
-static PyObject *__pyx_codeobj__57;
+static PyObject *__pyx_codeobj__52;
+static PyObject *__pyx_codeobj__59;
 /* Late includes */
 
 /* "geotess/src/libgeotess.pyx":98
@@ -9944,8 +10039,8 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_16setProfile(stru
  *         # I wonder if it can be a 2D NumPy array.  Yep!  I can do the to do below.
  *         # TODO: accept NumPy vectors instead of lists for radii and values
  *         self.thisptr.setProfile(vertex, layer, radii, values)             # <<<<<<<<<<<<<<
- * 
- *     def getProfile(self, int vertex, int layer):
+ *     def setPointData(self, pointIndex, values):
+ *         """
  */
   __pyx_v_self->thisptr->setProfile(__pyx_v_vertex, __pyx_v_layer, __pyx_v_radii, __pyx_v_values);
 
@@ -9964,20 +10059,400 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_16setProfile(stru
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":658
+/* "geotess/src/libgeotess.pyx":657
+ *         # TODO: accept NumPy vectors instead of lists for radii and values
  *         self.thisptr.setProfile(vertex, layer, radii, values)
- * 
- *     def getProfile(self, int vertex, int layer):             # <<<<<<<<<<<<<<
- *         # TODO: return a numpy structured array, not a profile object
- *         # Just use the Profile object internally here
+ *     def setPointData(self, pointIndex, values):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given pointIndex, sets the values in the GeoTess Model
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19getProfile(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_18getProfile[] = "GeoTessModel.getProfile(self, int vertex, int layer)";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19getProfile(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  CYTHON_UNUSED int __pyx_v_vertex;
-  CYTHON_UNUSED int __pyx_v_layer;
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19setPointData(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_18setPointData[] = "GeoTessModel.setPointData(self, pointIndex, values)\n\n        For a given pointIndex, sets the values in the GeoTess Model\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19setPointData(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_pointIndex = 0;
+  PyObject *__pyx_v_values = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("setPointData (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pointIndex,&__pyx_n_s_values,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pointIndex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_values)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setPointData", 1, 2, 2, 1); __PYX_ERR(0, 657, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "setPointData") < 0)) __PYX_ERR(0, 657, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_pointIndex = values[0];
+    __pyx_v_values = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("setPointData", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 657, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointData", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_18setPointData(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointIndex, __pyx_v_values);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_18setPointData(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_values) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  geotess::GeoTessData *__pyx_v_geoData;
+  PyObject *__pyx_v_ival = NULL;
+  PyObject *__pyx_v_val = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  PyObject *__pyx_t_6 = NULL;
+  double __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("setPointData", 0);
+
+  /* "geotess/src/libgeotess.pyx":661
+ *         For a given pointIndex, sets the values in the GeoTess Model
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":663
+ *         ptMap = self.thisptr.getPointMap()
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)             # <<<<<<<<<<<<<<
+ *         for ival, val in enumerate(values):
+ *             # The reference of the pointer is followed in the setter!
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 663, __pyx_L1_error)
+  __pyx_v_geoData = __pyx_v_ptMap->getPointData(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":664
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         for ival, val in enumerate(values):             # <<<<<<<<<<<<<<
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)
+ */
+  __Pyx_INCREF(__pyx_int_0);
+  __pyx_t_2 = __pyx_int_0;
+  if (likely(PyList_CheckExact(__pyx_v_values)) || PyTuple_CheckExact(__pyx_v_values)) {
+    __pyx_t_3 = __pyx_v_values; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
+    __pyx_t_5 = NULL;
+  } else {
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 664, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 664, __pyx_L1_error)
+  }
+  for (;;) {
+    if (likely(!__pyx_t_5)) {
+      if (likely(PyList_CheckExact(__pyx_t_3))) {
+        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_6 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_6); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 664, __pyx_L1_error)
+        #else
+        __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 664, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        #endif
+      } else {
+        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_6); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 664, __pyx_L1_error)
+        #else
+        __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 664, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        #endif
+      }
+    } else {
+      __pyx_t_6 = __pyx_t_5(__pyx_t_3);
+      if (unlikely(!__pyx_t_6)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 664, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_6);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_6);
+    __pyx_t_6 = 0;
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_XDECREF_SET(__pyx_v_ival, __pyx_t_2);
+    __pyx_t_6 = __Pyx_PyInt_AddObjC(__pyx_t_2, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 664, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_2);
+    __pyx_t_2 = __pyx_t_6;
+    __pyx_t_6 = 0;
+
+    /* "geotess/src/libgeotess.pyx":666
+ *         for ival, val in enumerate(values):
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)             # <<<<<<<<<<<<<<
+ *         return
+ * 
+ */
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ival); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 666, __pyx_L1_error)
+    __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_val); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 666, __pyx_L1_error)
+    __pyx_v_geoData->setValue(__pyx_t_1, __pyx_t_7);
+
+    /* "geotess/src/libgeotess.pyx":664
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         for ival, val in enumerate(values):             # <<<<<<<<<<<<<<
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)
+ */
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":667
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)
+ *         return             # <<<<<<<<<<<<<<
+ * 
+ *     def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":657
+ *         # TODO: accept NumPy vectors instead of lists for radii and values
+ *         self.thisptr.setProfile(vertex, layer, radii, values)
+ *     def setPointData(self, pointIndex, values):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given pointIndex, sets the values in the GeoTess Model
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointData", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_ival);
+  __Pyx_XDECREF(__pyx_v_val);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":669
+ *         return
+ * 
+ *     def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given point index and attribute index, sets the value
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_21setPointDataSingleAttribute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_20setPointDataSingleAttribute[] = "GeoTessModel.setPointDataSingleAttribute(self, pointIndex, attributeIndex, value)\n\n        For a given point index and attribute index, sets the value\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_21setPointDataSingleAttribute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_pointIndex = 0;
+  PyObject *__pyx_v_attributeIndex = 0;
+  PyObject *__pyx_v_value = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("setPointDataSingleAttribute (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pointIndex,&__pyx_n_s_attributeIndex,&__pyx_n_s_value,0};
+    PyObject* values[3] = {0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pointIndex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_attributeIndex)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setPointDataSingleAttribute", 1, 3, 3, 1); __PYX_ERR(0, 669, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setPointDataSingleAttribute", 1, 3, 3, 2); __PYX_ERR(0, 669, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "setPointDataSingleAttribute") < 0)) __PYX_ERR(0, 669, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+    }
+    __pyx_v_pointIndex = values[0];
+    __pyx_v_attributeIndex = values[1];
+    __pyx_v_value = values[2];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("setPointDataSingleAttribute", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 669, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointDataSingleAttribute", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_20setPointDataSingleAttribute(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointIndex, __pyx_v_attributeIndex, __pyx_v_value);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20setPointDataSingleAttribute(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_attributeIndex, PyObject *__pyx_v_value) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  geotess::GeoTessData *__pyx_v_geoData;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  double __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("setPointDataSingleAttribute", 0);
+
+  /* "geotess/src/libgeotess.pyx":673
+ *         For a given point index and attribute index, sets the value
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         geoData.setValue(attributeIndex, value)
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":674
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         geoData = ptMap.getPointData(pointIndex)             # <<<<<<<<<<<<<<
+ *         geoData.setValue(attributeIndex, value)
+ *         return
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 674, __pyx_L1_error)
+  __pyx_v_geoData = __pyx_v_ptMap->getPointData(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":675
+ *         ptMap = self.thisptr.getPointMap()
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         geoData.setValue(attributeIndex, value)             # <<<<<<<<<<<<<<
+ *         return
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_attributeIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 675, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_value); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 675, __pyx_L1_error)
+  __pyx_v_geoData->setValue(__pyx_t_1, __pyx_t_2);
+
+  /* "geotess/src/libgeotess.pyx":676
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         geoData.setValue(attributeIndex, value)
+ *         return             # <<<<<<<<<<<<<<
+ * 
+ *     def getProfile(self, int vertex, int layer):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":669
+ *         return
+ * 
+ *     def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given point index and attribute index, sets the value
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointDataSingleAttribute", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":678
+ *         return
+ * 
+ *     def getProfile(self, int vertex, int layer):             # <<<<<<<<<<<<<<
+ *         """
+ *         Gets values in a profile given the vertex and layer.
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_23getProfile(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_22getProfile[] = "GeoTessModel.getProfile(self, int vertex, int layer)\n\n        Gets values in a profile given the vertex and layer.\n        returns nradius x 1 radius vector and nradius x nattributes attributes matrix\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_23getProfile(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_v_vertex;
+  int __pyx_v_layer;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -10007,11 +10482,11 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19getProfile(PyOb
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_layer)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getProfile", 1, 2, 2, 1); __PYX_ERR(0, 658, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getProfile", 1, 2, 2, 1); __PYX_ERR(0, 678, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getProfile") < 0)) __PYX_ERR(0, 658, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getProfile") < 0)) __PYX_ERR(0, 678, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -10019,38 +10494,657 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19getProfile(PyOb
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_vertex = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_vertex == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 658, __pyx_L3_error)
-    __pyx_v_layer = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_layer == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 658, __pyx_L3_error)
+    __pyx_v_vertex = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_vertex == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 678, __pyx_L3_error)
+    __pyx_v_layer = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_layer == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 678, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getProfile", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 658, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getProfile", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 678, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getProfile", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_18getProfile(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_vertex, __pyx_v_layer);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getProfile(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_vertex, __pyx_v_layer);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_18getProfile(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, CYTHON_UNUSED int __pyx_v_vertex, CYTHON_UNUSED int __pyx_v_layer) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getProfile(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_vertex, int __pyx_v_layer) {
+  PyObject *__pyx_v_nv = NULL;
+  PyObject *__pyx_v_nl = NULL;
+  float *__pyx_v_r;
+  geotess::GeoTessProfile *__pyx_v_A;
+  int __pyx_v_nradii;
+  int __pyx_v_ndata;
+  PyObject *__pyx_v_nparams = NULL;
+  PyObject *__pyx_v_radiusPy = NULL;
+  PyObject *__pyx_v_attributesPy = NULL;
+  int __pyx_v_idx;
+  geotess::GeoTessData *__pyx_v_B;
+  int __pyx_v_jdx;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_10;
+  int __pyx_t_11;
+  int __pyx_t_12;
+  int __pyx_t_13;
+  int __pyx_t_14;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getProfile", 0);
 
+  /* "geotess/src/libgeotess.pyx":683
+ *         returns nradius x 1 radius vector and nradius x nattributes attributes matrix
+ *         """
+ *         nv = self.getNVertices()             # <<<<<<<<<<<<<<
+ *         if vertex >= nv or vertex < 0:
+ *             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getNVertices); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 683, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 683, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_nv = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":684
+ *         """
+ *         nv = self.getNVertices()
+ *         if vertex >= nv or vertex < 0:             # <<<<<<<<<<<<<<
+ *             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
+ *             return -1, -1
+ */
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_vertex); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 684, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_v_nv, Py_GE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 684, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 684, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!__pyx_t_5) {
+  } else {
+    __pyx_t_4 = __pyx_t_5;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_5 = ((__pyx_v_vertex < 0) != 0);
+  __pyx_t_4 = __pyx_t_5;
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_4) {
+
+    /* "geotess/src/libgeotess.pyx":685
+ *         nv = self.getNVertices()
+ *         if vertex >= nv or vertex < 0:
+ *             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))             # <<<<<<<<<<<<<<
+ *             return -1, -1
+ *         nl = self.getNLayers()
+ */
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Error_vertex_outside_of_range_0, __pyx_n_s_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 685, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_vertex); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 685, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_6 = __Pyx_PyInt_SubtractObjC(__pyx_v_nv, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 685, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = NULL;
+    __pyx_t_8 = 0;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_1);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_1, function);
+        __pyx_t_8 = 1;
+      }
+    }
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_1)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_t_3, __pyx_t_6};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 685, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_t_3, __pyx_t_6};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 685, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 685, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      if (__pyx_t_7) {
+        __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
+      }
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_t_6);
+      __pyx_t_3 = 0;
+      __pyx_t_6 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 685, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 685, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "geotess/src/libgeotess.pyx":686
+ *         if vertex >= nv or vertex < 0:
+ *             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
+ *             return -1, -1             # <<<<<<<<<<<<<<
+ *         nl = self.getNLayers()
+ *         if layer >= nl or layer < 0:
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_tuple__14);
+    __pyx_r = __pyx_tuple__14;
+    goto __pyx_L0;
+
+    /* "geotess/src/libgeotess.pyx":684
+ *         """
+ *         nv = self.getNVertices()
+ *         if vertex >= nv or vertex < 0:             # <<<<<<<<<<<<<<
+ *             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
+ *             return -1, -1
+ */
+  }
+
+  /* "geotess/src/libgeotess.pyx":687
+ *             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
+ *             return -1, -1
+ *         nl = self.getNLayers()             # <<<<<<<<<<<<<<
+ *         if layer >= nl or layer < 0:
+ *             print("Error, layer {} outside of range (0 - {})".format(layer, nl-1))
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getNLayers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 687, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_9 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_9)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_9);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 687, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_nl = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":688
+ *             return -1, -1
+ *         nl = self.getNLayers()
+ *         if layer >= nl or layer < 0:             # <<<<<<<<<<<<<<
+ *             print("Error, layer {} outside of range (0 - {})".format(layer, nl-1))
+ *             return -2, -2
+ */
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_layer); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 688, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_v_nl, Py_GE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 688, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 688, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!__pyx_t_5) {
+  } else {
+    __pyx_t_4 = __pyx_t_5;
+    goto __pyx_L7_bool_binop_done;
+  }
+  __pyx_t_5 = ((__pyx_v_layer < 0) != 0);
+  __pyx_t_4 = __pyx_t_5;
+  __pyx_L7_bool_binop_done:;
+  if (__pyx_t_4) {
+
+    /* "geotess/src/libgeotess.pyx":689
+ *         nl = self.getNLayers()
+ *         if layer >= nl or layer < 0:
+ *             print("Error, layer {} outside of range (0 - {})".format(layer, nl-1))             # <<<<<<<<<<<<<<
+ *             return -2, -2
+ *         cdef float *r
+ */
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Error_layer_outside_of_range_0, __pyx_n_s_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 689, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_layer); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 689, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_6 = __Pyx_PyInt_SubtractObjC(__pyx_v_nl, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 689, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_3 = NULL;
+    __pyx_t_8 = 0;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_1, function);
+        __pyx_t_8 = 1;
+      }
+    }
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_1)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_9, __pyx_t_6};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 689, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_9, __pyx_t_6};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 689, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_7 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 689, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      if (__pyx_t_3) {
+        __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3); __pyx_t_3 = NULL;
+      }
+      __Pyx_GIVEREF(__pyx_t_9);
+      PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_8, __pyx_t_9);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_8, __pyx_t_6);
+      __pyx_t_9 = 0;
+      __pyx_t_6 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 689, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 689, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "geotess/src/libgeotess.pyx":690
+ *         if layer >= nl or layer < 0:
+ *             print("Error, layer {} outside of range (0 - {})".format(layer, nl-1))
+ *             return -2, -2             # <<<<<<<<<<<<<<
+ *         cdef float *r
+ *         A = self.thisptr.getProfile(vertex, layer)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_tuple__15);
+    __pyx_r = __pyx_tuple__15;
+    goto __pyx_L0;
+
+    /* "geotess/src/libgeotess.pyx":688
+ *             return -1, -1
+ *         nl = self.getNLayers()
+ *         if layer >= nl or layer < 0:             # <<<<<<<<<<<<<<
+ *             print("Error, layer {} outside of range (0 - {})".format(layer, nl-1))
+ *             return -2, -2
+ */
+  }
+
+  /* "geotess/src/libgeotess.pyx":692
+ *             return -2, -2
+ *         cdef float *r
+ *         A = self.thisptr.getProfile(vertex, layer)             # <<<<<<<<<<<<<<
+ *         nradii = A.getNRadii()
+ *         ndata = A.getNData()
+ */
+  __pyx_v_A = __pyx_v_self->thisptr->getProfile(__pyx_v_vertex, __pyx_v_layer);
+
+  /* "geotess/src/libgeotess.pyx":693
+ *         cdef float *r
+ *         A = self.thisptr.getProfile(vertex, layer)
+ *         nradii = A.getNRadii()             # <<<<<<<<<<<<<<
+ *         ndata = A.getNData()
+ *         r = A.getRadii()
+ */
+  __pyx_v_nradii = __pyx_v_A->getNRadii();
+
+  /* "geotess/src/libgeotess.pyx":694
+ *         A = self.thisptr.getProfile(vertex, layer)
+ *         nradii = A.getNRadii()
+ *         ndata = A.getNData()             # <<<<<<<<<<<<<<
+ *         r = A.getRadii()
+ *         nparams = self.getNAttributes()
+ */
+  __pyx_v_ndata = __pyx_v_A->getNData();
+
+  /* "geotess/src/libgeotess.pyx":695
+ *         nradii = A.getNRadii()
+ *         ndata = A.getNData()
+ *         r = A.getRadii()             # <<<<<<<<<<<<<<
+ *         nparams = self.getNAttributes()
+ *         radiusPy = np.zeros((nradii,))
+ */
+  __pyx_v_r = __pyx_v_A->getRadii();
+
+  /* "geotess/src/libgeotess.pyx":696
+ *         ndata = A.getNData()
+ *         r = A.getRadii()
+ *         nparams = self.getNAttributes()             # <<<<<<<<<<<<<<
+ *         radiusPy = np.zeros((nradii,))
+ *         if ndata > 0:
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getNAttributes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 696, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 696, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_nparams = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":697
+ *         r = A.getRadii()
+ *         nparams = self.getNAttributes()
+ *         radiusPy = np.zeros((nradii,))             # <<<<<<<<<<<<<<
+ *         if ndata > 0:
+ *             attributesPy = np.zeros((nradii, nparams))
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_nradii); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_7);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_7, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_2, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_v_radiusPy = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":698
+ *         nparams = self.getNAttributes()
+ *         radiusPy = np.zeros((nradii,))
+ *         if ndata > 0:             # <<<<<<<<<<<<<<
+ *             attributesPy = np.zeros((nradii, nparams))
+ *             for idx in range(nradii):
+ */
+  __pyx_t_4 = ((__pyx_v_ndata > 0) != 0);
+  if (__pyx_t_4) {
+
+    /* "geotess/src/libgeotess.pyx":699
+ *         radiusPy = np.zeros((nradii,))
+ *         if ndata > 0:
+ *             attributesPy = np.zeros((nradii, nparams))             # <<<<<<<<<<<<<<
+ *             for idx in range(nradii):
+ *                 B = A.getData(idx)
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 699, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_zeros); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 699, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_nradii); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 699, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 699, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_7);
+    __Pyx_INCREF(__pyx_v_nparams);
+    __Pyx_GIVEREF(__pyx_v_nparams);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_nparams);
+    __pyx_t_7 = 0;
+    __pyx_t_7 = NULL;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_2);
+    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 699, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_v_attributesPy = __pyx_t_1;
+    __pyx_t_1 = 0;
+
+    /* "geotess/src/libgeotess.pyx":700
+ *         if ndata > 0:
+ *             attributesPy = np.zeros((nradii, nparams))
+ *             for idx in range(nradii):             # <<<<<<<<<<<<<<
+ *                 B = A.getData(idx)
+ *                 for jdx in range(B.size()):
+ */
+    __pyx_t_8 = __pyx_v_nradii;
+    __pyx_t_10 = __pyx_t_8;
+    for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
+      __pyx_v_idx = __pyx_t_11;
+
+      /* "geotess/src/libgeotess.pyx":701
+ *             attributesPy = np.zeros((nradii, nparams))
+ *             for idx in range(nradii):
+ *                 B = A.getData(idx)             # <<<<<<<<<<<<<<
+ *                 for jdx in range(B.size()):
+ *                     attributesPy[idx, jdx] = B.getDouble(jdx)
+ */
+      __pyx_v_B = __pyx_v_A->getData(__pyx_v_idx);
+
+      /* "geotess/src/libgeotess.pyx":702
+ *             for idx in range(nradii):
+ *                 B = A.getData(idx)
+ *                 for jdx in range(B.size()):             # <<<<<<<<<<<<<<
+ *                     attributesPy[idx, jdx] = B.getDouble(jdx)
+ *                 radiusPy[idx] = r[idx]
+ */
+      __pyx_t_12 = __pyx_v_B->size();
+      __pyx_t_13 = __pyx_t_12;
+      for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
+        __pyx_v_jdx = __pyx_t_14;
+
+        /* "geotess/src/libgeotess.pyx":703
+ *                 B = A.getData(idx)
+ *                 for jdx in range(B.size()):
+ *                     attributesPy[idx, jdx] = B.getDouble(jdx)             # <<<<<<<<<<<<<<
+ *                 radiusPy[idx] = r[idx]
+ *         else:
+ */
+        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_B->getDouble(__pyx_v_jdx)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 703, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 703, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_jdx); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 703, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 703, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_2);
+        PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_2);
+        __pyx_t_6 = 0;
+        __pyx_t_2 = 0;
+        if (unlikely(PyObject_SetItem(__pyx_v_attributesPy, __pyx_t_7, __pyx_t_1) < 0)) __PYX_ERR(0, 703, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      }
+
+      /* "geotess/src/libgeotess.pyx":704
+ *                 for jdx in range(B.size()):
+ *                     attributesPy[idx, jdx] = B.getDouble(jdx)
+ *                 radiusPy[idx] = r[idx]             # <<<<<<<<<<<<<<
+ *         else:
+ *             for idx in range(nradii):
+ */
+      __pyx_t_1 = PyFloat_FromDouble((__pyx_v_r[__pyx_v_idx])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 704, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_radiusPy, __pyx_v_idx, __pyx_t_1, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 704, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    }
+
+    /* "geotess/src/libgeotess.pyx":698
+ *         nparams = self.getNAttributes()
+ *         radiusPy = np.zeros((nradii,))
+ *         if ndata > 0:             # <<<<<<<<<<<<<<
+ *             attributesPy = np.zeros((nradii, nparams))
+ *             for idx in range(nradii):
+ */
+    goto __pyx_L9;
+  }
+
+  /* "geotess/src/libgeotess.pyx":706
+ *                 radiusPy[idx] = r[idx]
+ *         else:
+ *             for idx in range(nradii):             # <<<<<<<<<<<<<<
+ *                 radiusPy[idx] = r[idx]
+ *             attributesPy = None
+ */
+  /*else*/ {
+    __pyx_t_8 = __pyx_v_nradii;
+    __pyx_t_10 = __pyx_t_8;
+    for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
+      __pyx_v_idx = __pyx_t_11;
+
+      /* "geotess/src/libgeotess.pyx":707
+ *         else:
+ *             for idx in range(nradii):
+ *                 radiusPy[idx] = r[idx]             # <<<<<<<<<<<<<<
+ *             attributesPy = None
+ *         return radiusPy, attributesPy
+ */
+      __pyx_t_1 = PyFloat_FromDouble((__pyx_v_r[__pyx_v_idx])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 707, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_radiusPy, __pyx_v_idx, __pyx_t_1, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 707, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    }
+
+    /* "geotess/src/libgeotess.pyx":708
+ *             for idx in range(nradii):
+ *                 radiusPy[idx] = r[idx]
+ *             attributesPy = None             # <<<<<<<<<<<<<<
+ *         return radiusPy, attributesPy
+ * 
+ */
+    __Pyx_INCREF(Py_None);
+    __pyx_v_attributesPy = Py_None;
+  }
+  __pyx_L9:;
+
+  /* "geotess/src/libgeotess.pyx":709
+ *                 radiusPy[idx] = r[idx]
+ *             attributesPy = None
+ *         return radiusPy, attributesPy             # <<<<<<<<<<<<<<
+ * 
+ *     def getNLayers(self):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 709, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(__pyx_v_radiusPy);
+  __Pyx_GIVEREF(__pyx_v_radiusPy);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_radiusPy);
+  __Pyx_INCREF(__pyx_v_attributesPy);
+  __Pyx_GIVEREF(__pyx_v_attributesPy);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_attributesPy);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":678
+ *         return
+ * 
+ *     def getProfile(self, int vertex, int layer):             # <<<<<<<<<<<<<<
+ *         """
+ *         Gets values in a profile given the vertex and layer.
+ */
+
   /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getProfile", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_nv);
+  __Pyx_XDECREF(__pyx_v_nl);
+  __Pyx_XDECREF(__pyx_v_nparams);
+  __Pyx_XDECREF(__pyx_v_radiusPy);
+  __Pyx_XDECREF(__pyx_v_attributesPy);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":663
- *         pass
+/* "geotess/src/libgeotess.pyx":711
+ *         return radiusPy, attributesPy
  * 
  *     def getNLayers(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getNLayers()
@@ -10058,20 +11152,20 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_18getProfile(CYTH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_21getNLayers(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_20getNLayers[] = "GeoTessModel.getNLayers(self)";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_21getNLayers(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getNLayers(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_24getNLayers[] = "GeoTessModel.getNLayers(self)";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getNLayers(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("getNLayers (wrapper)", 0);
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_20getNLayers(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getNLayers(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20getNLayers(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getNLayers(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -10080,7 +11174,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20getNLayers(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getNLayers", 0);
 
-  /* "geotess/src/libgeotess.pyx":664
+  /* "geotess/src/libgeotess.pyx":712
  * 
  *     def getNLayers(self):
  *         return self.thisptr.getNLayers()             # <<<<<<<<<<<<<<
@@ -10088,14 +11182,14 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20getNLayers(stru
  *     def getNVertices(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNLayers()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 664, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNLayers()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 712, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":663
- *         pass
+  /* "geotess/src/libgeotess.pyx":711
+ *         return radiusPy, attributesPy
  * 
  *     def getNLayers(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getNLayers()
@@ -10113,7 +11207,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20getNLayers(stru
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":666
+/* "geotess/src/libgeotess.pyx":714
  *         return self.thisptr.getNLayers()
  * 
  *     def getNVertices(self):             # <<<<<<<<<<<<<<
@@ -10122,20 +11216,20 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_20getNLayers(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_23getNVertices(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_22getNVertices[] = "GeoTessModel.getNVertices(self)";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_23getNVertices(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getNVertices(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_26getNVertices[] = "GeoTessModel.getNVertices(self)";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getNVertices(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("getNVertices (wrapper)", 0);
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getNVertices(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getNVertices(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getNVertices(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getNVertices(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -10144,7 +11238,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getNVertices(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getNVertices", 0);
 
-  /* "geotess/src/libgeotess.pyx":667
+  /* "geotess/src/libgeotess.pyx":715
  * 
  *     def getNVertices(self):
  *         return self.thisptr.getNVertices()             # <<<<<<<<<<<<<<
@@ -10152,13 +11246,13 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getNVertices(st
  *     def getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNVertices()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 667, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->getNVertices()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 715, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":666
+  /* "geotess/src/libgeotess.pyx":714
  *         return self.thisptr.getNLayers()
  * 
  *     def getNVertices(self):             # <<<<<<<<<<<<<<
@@ -10177,7 +11271,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getNVertices(st
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":669
+/* "geotess/src/libgeotess.pyx":717
  *         return self.thisptr.getNVertices()
  * 
  *     def getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):             # <<<<<<<<<<<<<<
@@ -10186,9 +11280,9 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_22getNVertices(st
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_24getWeights[] = "GeoTessModel.getWeights(self, const double[::1] pointA, const double[::1] pointB, double pointSpacing, double radius, unicode horizontalType)\n Compute the weights on each model point that results from interpolating positions along the specified ray path.\n\n        This method is only applicable to 2D GeoTessModels.\n\n        Parameters\n        ----------\n        pointA, pointB : array_like\n            The 3-element unit vector of floats defining the beginning, end of the great circle path\n            C-contiguous layout of floats.\n        pointSpacing : float\n            The maximum spacing between points, in radians. The actual spacing will generally be\n            slightly less than the specified value in order for there to be an integral number of\n            uniform intervals along the great circle path.\n        radius : float\n            The radius of the great circle path, in km. If the value is less than or equal to zero\n            then the radius of the Earth determined by the current EarthShape is used. \n            See getEarthShape() and setEarathShape() for more information about EarthShapes.\n        horizontalType : str {'LINEAR', 'NATURAL_NEIGHBOR'}\n\n        Returns\n        -------\n        weights : dict\n            Integer keys to float values. (output) map from pointIndex to weight.\n            The sum of the weights will equal the length of the ray path in km.\n\n        Notes\n        -----\n        The following procedure is implemented:\n        1. divide the great circle path from pointA to pointB into nIntervals which each are of length less than or equal to pointSpacing.\n        2.  multiply the length of each interval by the radius of the earth at the center of the interval, which converts the length of the interval into km.\n        3. interpolate the value of the specified attribute at the center of the interval.\n        4. sum the length of the interval times the attribute value, along the path.\n\n        ";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_28getWeights[] = "GeoTessModel.getWeights(self, const double[::1] pointA, const double[::1] pointB, double pointSpacing, double radius, unicode horizontalType)\n Compute the weights on each model point that results from interpolating positions along the specified ray path.\n\n        This method is only applicable to 2D GeoTessModels.\n\n        Parameters\n        ----------\n        pointA, pointB : array_like\n            The 3-element unit vector of floats defining the beginning, end of the great circle path\n            C-contiguous layout of floats.\n        pointSpacing : float\n            The maximum spacing between points, in radians. The actual spacing will generally be\n            slightly less than the specified value in order for there to be an integral number of\n            uniform intervals along the great circle path.\n        radius : float\n            The radius of the great circle path, in km. If the value is less than or equal to zero\n            then the radius of the Earth determined by the current EarthShape is used. \n            See getEarthShape() and setEarathShape() for more information about EarthShapes.\n        horizontalType : str {'LINEAR', 'NATURAL_NEIGHBOR'}\n\n        Returns\n        -------\n        weights : dict\n            Integer keys to float values. (output) map from pointIndex to weight.\n            The sum of the weights will equal the length of the ray path in km.\n\n        Notes\n        -----\n        The following procedure is implemented:\n        1. divide the great circle path from pointA to pointB into nIntervals which each are of length less than or equal to pointSpacing.\n        2.  multiply the length of each interval by the radius of the earth at the center of the interval, which converts the length of the interval into km.\n        3. interpolate the value of the specified attribute at the center of the interval.\n        4. sum the length of the interval times the attribute value, along the path.\n\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_pointA = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_pointB = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_pointSpacing;
@@ -10229,29 +11323,29 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getWeights(PyOb
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pointB)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 1); __PYX_ERR(0, 669, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 1); __PYX_ERR(0, 717, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pointSpacing)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 2); __PYX_ERR(0, 669, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 2); __PYX_ERR(0, 717, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_radius)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 3); __PYX_ERR(0, 669, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 3); __PYX_ERR(0, 717, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_horizontalType)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 4); __PYX_ERR(0, 669, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, 4); __PYX_ERR(0, 717, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getWeights") < 0)) __PYX_ERR(0, 669, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getWeights") < 0)) __PYX_ERR(0, 717, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -10262,22 +11356,22 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getWeights(PyOb
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
     }
-    __pyx_v_pointA = __Pyx_PyObject_to_MemoryviewSlice_dc_double__const__(values[0], 0); if (unlikely(!__pyx_v_pointA.memview)) __PYX_ERR(0, 669, __pyx_L3_error)
-    __pyx_v_pointB = __Pyx_PyObject_to_MemoryviewSlice_dc_double__const__(values[1], 0); if (unlikely(!__pyx_v_pointB.memview)) __PYX_ERR(0, 669, __pyx_L3_error)
-    __pyx_v_pointSpacing = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_pointSpacing == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 669, __pyx_L3_error)
-    __pyx_v_radius = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 669, __pyx_L3_error)
+    __pyx_v_pointA = __Pyx_PyObject_to_MemoryviewSlice_dc_double__const__(values[0], 0); if (unlikely(!__pyx_v_pointA.memview)) __PYX_ERR(0, 717, __pyx_L3_error)
+    __pyx_v_pointB = __Pyx_PyObject_to_MemoryviewSlice_dc_double__const__(values[1], 0); if (unlikely(!__pyx_v_pointB.memview)) __PYX_ERR(0, 717, __pyx_L3_error)
+    __pyx_v_pointSpacing = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_pointSpacing == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 717, __pyx_L3_error)
+    __pyx_v_radius = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 717, __pyx_L3_error)
     __pyx_v_horizontalType = ((PyObject*)values[4]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 669, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getWeights", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 717, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getWeights", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_horizontalType), (&PyUnicode_Type), 1, "horizontalType", 1))) __PYX_ERR(0, 669, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointA, __pyx_v_pointB, __pyx_v_pointSpacing, __pyx_v_radius, __pyx_v_horizontalType);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_horizontalType), (&PyUnicode_Type), 1, "horizontalType", 1))) __PYX_ERR(0, 717, __pyx_L1_error)
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getWeights(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointA, __pyx_v_pointB, __pyx_v_pointSpacing, __pyx_v_radius, __pyx_v_horizontalType);
 
   /* function exit code */
   goto __pyx_L0;
@@ -10288,7 +11382,7 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getWeights(PyOb
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_pointA, __Pyx_memviewslice __pyx_v_pointB, double __pyx_v_pointSpacing, double __pyx_v_radius, PyObject *__pyx_v_horizontalType) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_pointA, __Pyx_memviewslice __pyx_v_pointB, double __pyx_v_pointSpacing, double __pyx_v_radius, PyObject *__pyx_v_horizontalType) {
   geotess::GeoTessInterpolatorType const *__pyx_v_interpolator;
   std::map<int,double>  __pyx_v_weights;
   PyObject *__pyx_v_msg = NULL;
@@ -10308,7 +11402,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getWeights", 0);
 
-  /* "geotess/src/libgeotess.pyx":716
+  /* "geotess/src/libgeotess.pyx":764
  *         cdef cmap[int, double] weights
  * 
  *         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):             # <<<<<<<<<<<<<<
@@ -10317,14 +11411,14 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
  */
   __Pyx_INCREF(__pyx_v_horizontalType);
   __pyx_t_1 = __pyx_v_horizontalType;
-  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_LINEAR, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 716, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_LINEAR, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 764, __pyx_L1_error)
   __pyx_t_4 = (__pyx_t_3 != 0);
   if (!__pyx_t_4) {
   } else {
     __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_NATURAL_NEIGHBOR, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 716, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_NATURAL_NEIGHBOR, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 764, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_4 != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
@@ -10332,17 +11426,17 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (likely(__pyx_t_3)) {
 
-    /* "geotess/src/libgeotess.pyx":717
+    /* "geotess/src/libgeotess.pyx":765
  * 
  *         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
  *             interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)             # <<<<<<<<<<<<<<
  *         else:
  *             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
  */
-    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_horizontalType); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 717, __pyx_L1_error)
+    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_horizontalType); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 765, __pyx_L1_error)
     __pyx_v_interpolator = geotess::GeoTessInterpolatorType::valueOf(__pyx_t_5);
 
-    /* "geotess/src/libgeotess.pyx":716
+    /* "geotess/src/libgeotess.pyx":764
  *         cdef cmap[int, double] weights
  * 
  *         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):             # <<<<<<<<<<<<<<
@@ -10352,7 +11446,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
     goto __pyx_L3;
   }
 
-  /* "geotess/src/libgeotess.pyx":719
+  /* "geotess/src/libgeotess.pyx":767
  *             interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  *         else:
  *             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."             # <<<<<<<<<<<<<<
@@ -10363,22 +11457,22 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
     __Pyx_INCREF(__pyx_kp_u_horizontalType_must_be_either_LI);
     __pyx_v_msg = __pyx_kp_u_horizontalType_must_be_either_LI;
 
-    /* "geotess/src/libgeotess.pyx":720
+    /* "geotess/src/libgeotess.pyx":768
  *         else:
  *             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
  *             raise ValueError(msg)             # <<<<<<<<<<<<<<
  * 
  *         self.thisptr.getWeights(&pointA[0], &pointB[0], pointSpacing, radius,
  */
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_v_msg); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 720, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_v_msg); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 768, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 720, __pyx_L1_error)
+    __PYX_ERR(0, 768, __pyx_L1_error)
   }
   __pyx_L3:;
 
-  /* "geotess/src/libgeotess.pyx":722
+  /* "geotess/src/libgeotess.pyx":770
  *             raise ValueError(msg)
  * 
  *         self.thisptr.getWeights(&pointA[0], &pointB[0], pointSpacing, radius,             # <<<<<<<<<<<<<<
@@ -10393,7 +11487,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
   } else if (unlikely(__pyx_t_7 >= __pyx_v_pointA.shape[0])) __pyx_t_8 = 0;
   if (unlikely(__pyx_t_8 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_8);
-    __PYX_ERR(0, 722, __pyx_L1_error)
+    __PYX_ERR(0, 770, __pyx_L1_error)
   }
   __pyx_t_9 = 0;
   __pyx_t_8 = -1;
@@ -10403,10 +11497,10 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
   } else if (unlikely(__pyx_t_9 >= __pyx_v_pointB.shape[0])) __pyx_t_8 = 0;
   if (unlikely(__pyx_t_8 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_8);
-    __PYX_ERR(0, 722, __pyx_L1_error)
+    __PYX_ERR(0, 770, __pyx_L1_error)
   }
 
-  /* "geotess/src/libgeotess.pyx":724
+  /* "geotess/src/libgeotess.pyx":772
  *         self.thisptr.getWeights(&pointA[0], &pointB[0], pointSpacing, radius,
  *                                 deref(interpolator),
  *                                 weights)             # <<<<<<<<<<<<<<
@@ -10417,10 +11511,10 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
     __pyx_v_self->thisptr->getWeights((&(*((double const  *) ( /* dim=0 */ ((char *) (((double const  *) __pyx_v_pointA.data) + __pyx_t_7)) )))), (&(*((double const  *) ( /* dim=0 */ ((char *) (((double const  *) __pyx_v_pointB.data) + __pyx_t_9)) )))), __pyx_v_pointSpacing, __pyx_v_radius, (*__pyx_v_interpolator), __pyx_v_weights);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 722, __pyx_L1_error)
+    __PYX_ERR(0, 770, __pyx_L1_error)
   }
 
-  /* "geotess/src/libgeotess.pyx":726
+  /* "geotess/src/libgeotess.pyx":774
  *                                 weights)
  * 
  *         return weights             # <<<<<<<<<<<<<<
@@ -10428,13 +11522,13 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
  *     def getPointWeights(self, double lat, double lon, double radius, str horizontalType="LINEAR"):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = __pyx_convert_map_to_py_int____double(__pyx_v_weights); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 726, __pyx_L1_error)
+  __pyx_t_6 = __pyx_convert_map_to_py_int____double(__pyx_v_weights); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 774, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":669
+  /* "geotess/src/libgeotess.pyx":717
  *         return self.thisptr.getNVertices()
  * 
  *     def getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):             # <<<<<<<<<<<<<<
@@ -10457,7 +11551,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":728
+/* "geotess/src/libgeotess.pyx":776
  *         return weights
  * 
  *     def getPointWeights(self, double lat, double lon, double radius, str horizontalType="LINEAR"):             # <<<<<<<<<<<<<<
@@ -10466,9 +11560,9 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_24getWeights(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getPointWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_26getPointWeights[] = "GeoTessModel.getPointWeights(self, double lat, double lon, double radius, unicode horizontalType=u'LINEAR')";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getPointWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getPointWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_30getPointWeights[] = "GeoTessModel.getPointWeights(self, double lat, double lon, double radius, unicode horizontalType=u'LINEAR')";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getPointWeights(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   double __pyx_v_lat;
   double __pyx_v_lon;
   double __pyx_v_radius;
@@ -10507,13 +11601,13 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getPointWeights
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_lon)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getPointWeights", 0, 3, 4, 1); __PYX_ERR(0, 728, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getPointWeights", 0, 3, 4, 1); __PYX_ERR(0, 776, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_radius)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getPointWeights", 0, 3, 4, 2); __PYX_ERR(0, 728, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getPointWeights", 0, 3, 4, 2); __PYX_ERR(0, 776, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -10523,7 +11617,7 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getPointWeights
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getPointWeights") < 0)) __PYX_ERR(0, 728, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getPointWeights") < 0)) __PYX_ERR(0, 776, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -10536,21 +11630,21 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getPointWeights
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_lat = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_lat == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 728, __pyx_L3_error)
-    __pyx_v_lon = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_lon == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 728, __pyx_L3_error)
-    __pyx_v_radius = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 728, __pyx_L3_error)
+    __pyx_v_lat = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_lat == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 776, __pyx_L3_error)
+    __pyx_v_lon = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_lon == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 776, __pyx_L3_error)
+    __pyx_v_radius = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 776, __pyx_L3_error)
     __pyx_v_horizontalType = ((PyObject*)values[3]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getPointWeights", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 728, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getPointWeights", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 776, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointWeights", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_horizontalType), (&PyUnicode_Type), 1, "horizontalType", 1))) __PYX_ERR(0, 728, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_lat, __pyx_v_lon, __pyx_v_radius, __pyx_v_horizontalType);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_horizontalType), (&PyUnicode_Type), 1, "horizontalType", 1))) __PYX_ERR(0, 776, __pyx_L1_error)
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getPointWeights(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_lat, __pyx_v_lon, __pyx_v_radius, __pyx_v_horizontalType);
 
   /* function exit code */
   goto __pyx_L0;
@@ -10561,7 +11655,7 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getPointWeights
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, double __pyx_v_lat, double __pyx_v_lon, double __pyx_v_radius, PyObject *__pyx_v_horizontalType) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getPointWeights(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, double __pyx_v_lat, double __pyx_v_lon, double __pyx_v_radius, PyObject *__pyx_v_horizontalType) {
   geotess::GeoTessInterpolatorType const *__pyx_v_interpolator;
   geotess::GeoTessPosition *__pyx_v_pos;
   std::map<int,double>  __pyx_v_weights;
@@ -10578,7 +11672,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getPointWeights", 0);
 
-  /* "geotess/src/libgeotess.pyx":730
+  /* "geotess/src/libgeotess.pyx":778
  *     def getPointWeights(self, double lat, double lon, double radius, str horizontalType="LINEAR"):
  * 
  *         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):             # <<<<<<<<<<<<<<
@@ -10587,14 +11681,14 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
  */
   __Pyx_INCREF(__pyx_v_horizontalType);
   __pyx_t_1 = __pyx_v_horizontalType;
-  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_LINEAR, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 730, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_LINEAR, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 778, __pyx_L1_error)
   __pyx_t_4 = (__pyx_t_3 != 0);
   if (__pyx_t_4) {
   } else {
     __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_NATURAL_NEIGHBOR, Py_NE)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 730, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_NATURAL_NEIGHBOR, Py_NE)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 778, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_4 != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
@@ -10602,20 +11696,20 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "geotess/src/libgeotess.pyx":731
+    /* "geotess/src/libgeotess.pyx":779
  * 
  *         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
  *             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")             # <<<<<<<<<<<<<<
  * 
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 731, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 779, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 731, __pyx_L1_error)
+    __PYX_ERR(0, 779, __pyx_L1_error)
 
-    /* "geotess/src/libgeotess.pyx":730
+    /* "geotess/src/libgeotess.pyx":778
  *     def getPointWeights(self, double lat, double lon, double radius, str horizontalType="LINEAR"):
  * 
  *         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):             # <<<<<<<<<<<<<<
@@ -10624,17 +11718,17 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
  */
   }
 
-  /* "geotess/src/libgeotess.pyx":733
+  /* "geotess/src/libgeotess.pyx":781
  *             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
  * 
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)             # <<<<<<<<<<<<<<
  *         pos = self.thisptr.getPosition(deref(interpolator))
  *         pos.set(lat, lon, radius)
  */
-  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_v_horizontalType); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 733, __pyx_L1_error)
+  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_v_horizontalType); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 781, __pyx_L1_error)
   __pyx_v_interpolator = geotess::GeoTessInterpolatorType::valueOf(__pyx_t_6);
 
-  /* "geotess/src/libgeotess.pyx":734
+  /* "geotess/src/libgeotess.pyx":782
  * 
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  *         pos = self.thisptr.getPosition(deref(interpolator))             # <<<<<<<<<<<<<<
@@ -10643,7 +11737,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
  */
   __pyx_v_pos = __pyx_v_self->thisptr->getPosition((*__pyx_v_interpolator));
 
-  /* "geotess/src/libgeotess.pyx":735
+  /* "geotess/src/libgeotess.pyx":783
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  *         pos = self.thisptr.getPosition(deref(interpolator))
  *         pos.set(lat, lon, radius)             # <<<<<<<<<<<<<<
@@ -10652,7 +11746,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
  */
   __pyx_v_pos->set(__pyx_v_lat, __pyx_v_lon, __pyx_v_radius);
 
-  /* "geotess/src/libgeotess.pyx":739
+  /* "geotess/src/libgeotess.pyx":787
  *         cdef cmap[int, double] weights
  * 
  *         pos.getWeights(weights,radius)             # <<<<<<<<<<<<<<
@@ -10663,10 +11757,10 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
     __pyx_v_pos->getWeights(__pyx_v_weights, __pyx_v_radius);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 739, __pyx_L1_error)
+    __PYX_ERR(0, 787, __pyx_L1_error)
   }
 
-  /* "geotess/src/libgeotess.pyx":740
+  /* "geotess/src/libgeotess.pyx":788
  * 
  *         pos.getWeights(weights,radius)
  *         return weights             # <<<<<<<<<<<<<<
@@ -10674,13 +11768,13 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
  *     def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __pyx_convert_map_to_py_int____double(__pyx_v_weights); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 740, __pyx_L1_error)
+  __pyx_t_5 = __pyx_convert_map_to_py_int____double(__pyx_v_weights); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 788, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":728
+  /* "geotess/src/libgeotess.pyx":776
  *         return weights
  * 
  *     def getPointWeights(self, double lat, double lon, double radius, str horizontalType="LINEAR"):             # <<<<<<<<<<<<<<
@@ -10700,7 +11794,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":742
+/* "geotess/src/libgeotess.pyx":790
  *         return weights
  * 
  *     def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):             # <<<<<<<<<<<<<<
@@ -10709,9 +11803,9 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_26getPointWeights
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getPointWeightsVector(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_28getPointWeightsVector[] = "GeoTessModel.getPointWeightsVector(self, double[:] v, double radius, unicode horizontalType=u'LINEAR')";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getPointWeightsVector(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_33getPointWeightsVector(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_32getPointWeightsVector[] = "GeoTessModel.getPointWeightsVector(self, double[:] v, double radius, unicode horizontalType=u'LINEAR')";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_33getPointWeightsVector(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_v = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_radius;
   PyObject *__pyx_v_horizontalType = 0;
@@ -10747,7 +11841,7 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getPointWeights
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_radius)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getPointWeightsVector", 0, 2, 3, 1); __PYX_ERR(0, 742, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getPointWeightsVector", 0, 2, 3, 1); __PYX_ERR(0, 790, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -10757,7 +11851,7 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getPointWeights
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getPointWeightsVector") < 0)) __PYX_ERR(0, 742, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getPointWeightsVector") < 0)) __PYX_ERR(0, 790, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -10769,20 +11863,20 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getPointWeights
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_v = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_v.memview)) __PYX_ERR(0, 742, __pyx_L3_error)
-    __pyx_v_radius = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 742, __pyx_L3_error)
+    __pyx_v_v = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_v.memview)) __PYX_ERR(0, 790, __pyx_L3_error)
+    __pyx_v_radius = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 790, __pyx_L3_error)
     __pyx_v_horizontalType = ((PyObject*)values[2]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getPointWeightsVector", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 742, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getPointWeightsVector", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 790, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointWeightsVector", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_horizontalType), (&PyUnicode_Type), 1, "horizontalType", 1))) __PYX_ERR(0, 742, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeightsVector(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_v, __pyx_v_radius, __pyx_v_horizontalType);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_horizontalType), (&PyUnicode_Type), 1, "horizontalType", 1))) __PYX_ERR(0, 790, __pyx_L1_error)
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_32getPointWeightsVector(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_v, __pyx_v_radius, __pyx_v_horizontalType);
 
   /* function exit code */
   goto __pyx_L0;
@@ -10793,7 +11887,7 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getPointWeights
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeightsVector(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_v, double __pyx_v_radius, PyObject *__pyx_v_horizontalType) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_32getPointWeightsVector(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, __Pyx_memviewslice __pyx_v_v, double __pyx_v_radius, PyObject *__pyx_v_horizontalType) {
   geotess::GeoTessInterpolatorType const *__pyx_v_interpolator;
   geotess::GeoTessPosition *__pyx_v_pos;
   std::map<int,double>  __pyx_v_weights;
@@ -10812,7 +11906,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getPointWeightsVector", 0);
 
-  /* "geotess/src/libgeotess.pyx":744
+  /* "geotess/src/libgeotess.pyx":792
  *     def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):
  * 
  *         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):             # <<<<<<<<<<<<<<
@@ -10821,14 +11915,14 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
  */
   __Pyx_INCREF(__pyx_v_horizontalType);
   __pyx_t_1 = __pyx_v_horizontalType;
-  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_LINEAR, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 744, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_LINEAR, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 792, __pyx_L1_error)
   __pyx_t_4 = (__pyx_t_3 != 0);
   if (__pyx_t_4) {
   } else {
     __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_NATURAL_NEIGHBOR, Py_NE)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 744, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_t_1, __pyx_n_u_NATURAL_NEIGHBOR, Py_NE)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 792, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_4 != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
@@ -10836,20 +11930,20 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "geotess/src/libgeotess.pyx":745
+    /* "geotess/src/libgeotess.pyx":793
  * 
  *         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
  *             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")             # <<<<<<<<<<<<<<
  * 
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 745, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 793, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 745, __pyx_L1_error)
+    __PYX_ERR(0, 793, __pyx_L1_error)
 
-    /* "geotess/src/libgeotess.pyx":744
+    /* "geotess/src/libgeotess.pyx":792
  *     def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):
  * 
  *         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):             # <<<<<<<<<<<<<<
@@ -10858,17 +11952,17 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
  */
   }
 
-  /* "geotess/src/libgeotess.pyx":747
+  /* "geotess/src/libgeotess.pyx":795
  *             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
  * 
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)             # <<<<<<<<<<<<<<
  *         pos = self.thisptr.getPosition(deref(interpolator))
  *         pos.set(&v[0], radius)
  */
-  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_v_horizontalType); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 747, __pyx_L1_error)
+  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_v_horizontalType); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 795, __pyx_L1_error)
   __pyx_v_interpolator = geotess::GeoTessInterpolatorType::valueOf(__pyx_t_6);
 
-  /* "geotess/src/libgeotess.pyx":748
+  /* "geotess/src/libgeotess.pyx":796
  * 
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  *         pos = self.thisptr.getPosition(deref(interpolator))             # <<<<<<<<<<<<<<
@@ -10877,7 +11971,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
  */
   __pyx_v_pos = __pyx_v_self->thisptr->getPosition((*__pyx_v_interpolator));
 
-  /* "geotess/src/libgeotess.pyx":749
+  /* "geotess/src/libgeotess.pyx":797
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  *         pos = self.thisptr.getPosition(deref(interpolator))
  *         pos.set(&v[0], radius)             # <<<<<<<<<<<<<<
@@ -10892,11 +11986,11 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
   } else if (unlikely(__pyx_t_7 >= __pyx_v_v.shape[0])) __pyx_t_8 = 0;
   if (unlikely(__pyx_t_8 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_8);
-    __PYX_ERR(0, 749, __pyx_L1_error)
+    __PYX_ERR(0, 797, __pyx_L1_error)
   }
   __pyx_v_pos->set((&(*((double *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_7 * __pyx_v_v.strides[0]) )))), __pyx_v_radius);
 
-  /* "geotess/src/libgeotess.pyx":753
+  /* "geotess/src/libgeotess.pyx":801
  *         cdef cmap[int, double] weights
  * 
  *         pos.getWeights(weights,1.)             # <<<<<<<<<<<<<<
@@ -10907,24 +12001,24 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
     __pyx_v_pos->getWeights(__pyx_v_weights, 1.);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 753, __pyx_L1_error)
+    __PYX_ERR(0, 801, __pyx_L1_error)
   }
 
-  /* "geotess/src/libgeotess.pyx":754
+  /* "geotess/src/libgeotess.pyx":802
  * 
  *         pos.getWeights(weights,1.)
  *         return weights             # <<<<<<<<<<<<<<
  * 
- * 
+ *     def getConnectedVertices(self, int layerid):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __pyx_convert_map_to_py_int____double(__pyx_v_weights); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 754, __pyx_L1_error)
+  __pyx_t_5 = __pyx_convert_map_to_py_int____double(__pyx_v_weights); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 802, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":742
+  /* "geotess/src/libgeotess.pyx":790
  *         return weights
  * 
  *     def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):             # <<<<<<<<<<<<<<
@@ -10945,8 +12039,3622 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":757
+/* "geotess/src/libgeotess.pyx":804
+ *         return weights
  * 
+ *     def getConnectedVertices(self, int layerid):             # <<<<<<<<<<<<<<
+ *         """
+ *         Function fo find which vertices are connected
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_35getConnectedVertices(PyObject *__pyx_v_self, PyObject *__pyx_arg_layerid); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_34getConnectedVertices[] = "GeoTessModel.getConnectedVertices(self, int layerid)\n\n        Function fo find which vertices are connected\n        if a vertex is not connected, then it won't have a set profile\n        Argument:\n            layerID: integer layer index\n        Returns:\n            ndarray of connected vertices at this layer\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_35getConnectedVertices(PyObject *__pyx_v_self, PyObject *__pyx_arg_layerid) {
+  int __pyx_v_layerid;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getConnectedVertices (wrapper)", 0);
+  assert(__pyx_arg_layerid); {
+    __pyx_v_layerid = __Pyx_PyInt_As_int(__pyx_arg_layerid); if (unlikely((__pyx_v_layerid == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 804, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getConnectedVertices", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_34getConnectedVertices(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((int)__pyx_v_layerid));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_34getConnectedVertices(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_layerid) {
+  PyObject *__pyx_v_cv = 0;
+  PyObject *__pyx_v_nvertices = NULL;
+  PyObject *__pyx_v_i = NULL;
+  PyObject *__pyx_v_vertices = NULL;
+  PyObject *__pyx_v_idx = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  Py_ssize_t __pyx_t_8;
+  PyObject *(*__pyx_t_9)(PyObject *);
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getConnectedVertices", 0);
+
+  /* "geotess/src/libgeotess.pyx":813
+ *             ndarray of connected vertices at this layer
+ *         """
+ *         if layerid < 0 or layerid >= self.getNLayers():             # <<<<<<<<<<<<<<
+ *             print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
+ *             return -1
+ */
+  __pyx_t_2 = ((__pyx_v_layerid < 0) != 0);
+  if (!__pyx_t_2) {
+  } else {
+    __pyx_t_1 = __pyx_t_2;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_layerid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 813, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getNLayers); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 813, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 813, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_GE); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 813, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 813, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_1 = __pyx_t_2;
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "geotess/src/libgeotess.pyx":814
+ *         """
+ *         if layerid < 0 or layerid >= self.getNLayers():
+ *             print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))             # <<<<<<<<<<<<<<
+ *             return -1
+ *         cdef cv = self.thisptr.getConnectedVertices(layerid)
+ */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Error_layerid_must_be_between_0, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 814, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getNLayers); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 814, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+      }
+    }
+    __pyx_t_3 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 814, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = __Pyx_PyInt_SubtractObjC(__pyx_t_3, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 814, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_4, function);
+      }
+    }
+    __pyx_t_5 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_6);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 814, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 814, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+    /* "geotess/src/libgeotess.pyx":815
+ *         if layerid < 0 or layerid >= self.getNLayers():
+ *             print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
+ *             return -1             # <<<<<<<<<<<<<<
+ *         cdef cv = self.thisptr.getConnectedVertices(layerid)
+ *         nvertices = 0
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_int_neg_1);
+    __pyx_r = __pyx_int_neg_1;
+    goto __pyx_L0;
+
+    /* "geotess/src/libgeotess.pyx":813
+ *             ndarray of connected vertices at this layer
+ *         """
+ *         if layerid < 0 or layerid >= self.getNLayers():             # <<<<<<<<<<<<<<
+ *             print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
+ *             return -1
+ */
+  }
+
+  /* "geotess/src/libgeotess.pyx":816
+ *             print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
+ *             return -1
+ *         cdef cv = self.thisptr.getConnectedVertices(layerid)             # <<<<<<<<<<<<<<
+ *         nvertices = 0
+ *         for i in cv:
+ */
+  __pyx_t_4 = __pyx_convert_set_to_py_int(__pyx_v_self->thisptr->getConnectedVertices(__pyx_v_layerid)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 816, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_v_cv = __pyx_t_4;
+  __pyx_t_4 = 0;
+
+  /* "geotess/src/libgeotess.pyx":817
+ *             return -1
+ *         cdef cv = self.thisptr.getConnectedVertices(layerid)
+ *         nvertices = 0             # <<<<<<<<<<<<<<
+ *         for i in cv:
+ *             nvertices += 1
+ */
+  __Pyx_INCREF(__pyx_int_0);
+  __pyx_v_nvertices = __pyx_int_0;
+
+  /* "geotess/src/libgeotess.pyx":818
+ *         cdef cv = self.thisptr.getConnectedVertices(layerid)
+ *         nvertices = 0
+ *         for i in cv:             # <<<<<<<<<<<<<<
+ *             nvertices += 1
+ *         vertices = np.zeros((nvertices,), dtype='int')
+ */
+  if (likely(PyList_CheckExact(__pyx_v_cv)) || PyTuple_CheckExact(__pyx_v_cv)) {
+    __pyx_t_4 = __pyx_v_cv; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
+    __pyx_t_9 = NULL;
+  } else {
+    __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_cv); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 818, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 818, __pyx_L1_error)
+  }
+  for (;;) {
+    if (likely(!__pyx_t_9)) {
+      if (likely(PyList_CheckExact(__pyx_t_4))) {
+        if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_5); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 818, __pyx_L1_error)
+        #else
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 818, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        #endif
+      } else {
+        if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_5); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 818, __pyx_L1_error)
+        #else
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 818, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        #endif
+      }
+    } else {
+      __pyx_t_5 = __pyx_t_9(__pyx_t_4);
+      if (unlikely(!__pyx_t_5)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 818, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_5);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_5);
+    __pyx_t_5 = 0;
+
+    /* "geotess/src/libgeotess.pyx":819
+ *         nvertices = 0
+ *         for i in cv:
+ *             nvertices += 1             # <<<<<<<<<<<<<<
+ *         vertices = np.zeros((nvertices,), dtype='int')
+ *         for idx, i in enumerate(cv):
+ */
+    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_nvertices, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 819, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF_SET(__pyx_v_nvertices, __pyx_t_5);
+    __pyx_t_5 = 0;
+
+    /* "geotess/src/libgeotess.pyx":818
+ *         cdef cv = self.thisptr.getConnectedVertices(layerid)
+ *         nvertices = 0
+ *         for i in cv:             # <<<<<<<<<<<<<<
+ *             nvertices += 1
+ *         vertices = np.zeros((nvertices,), dtype='int')
+ */
+  }
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "geotess/src/libgeotess.pyx":820
+ *         for i in cv:
+ *             nvertices += 1
+ *         vertices = np.zeros((nvertices,), dtype='int')             # <<<<<<<<<<<<<<
+ *         for idx, i in enumerate(cv):
+ *             vertices[idx] = i
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 820, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 820, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 820, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_INCREF(__pyx_v_nvertices);
+  __Pyx_GIVEREF(__pyx_v_nvertices);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_nvertices);
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 820, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 820, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_n_u_int) < 0) __PYX_ERR(0, 820, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 820, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_v_vertices = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "geotess/src/libgeotess.pyx":821
+ *             nvertices += 1
+ *         vertices = np.zeros((nvertices,), dtype='int')
+ *         for idx, i in enumerate(cv):             # <<<<<<<<<<<<<<
+ *             vertices[idx] = i
+ * 
+ */
+  __Pyx_INCREF(__pyx_int_0);
+  __pyx_t_3 = __pyx_int_0;
+  if (likely(PyList_CheckExact(__pyx_v_cv)) || PyTuple_CheckExact(__pyx_v_cv)) {
+    __pyx_t_4 = __pyx_v_cv; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
+    __pyx_t_9 = NULL;
+  } else {
+    __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_cv); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 821, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 821, __pyx_L1_error)
+  }
+  for (;;) {
+    if (likely(!__pyx_t_9)) {
+      if (likely(PyList_CheckExact(__pyx_t_4))) {
+        if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_6 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 821, __pyx_L1_error)
+        #else
+        __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 821, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        #endif
+      } else {
+        if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 821, __pyx_L1_error)
+        #else
+        __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 821, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        #endif
+      }
+    } else {
+      __pyx_t_6 = __pyx_t_9(__pyx_t_4);
+      if (unlikely(!__pyx_t_6)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 821, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_6);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_6);
+    __pyx_t_6 = 0;
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_3);
+    __pyx_t_6 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 821, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_3);
+    __pyx_t_3 = __pyx_t_6;
+    __pyx_t_6 = 0;
+
+    /* "geotess/src/libgeotess.pyx":822
+ *         vertices = np.zeros((nvertices,), dtype='int')
+ *         for idx, i in enumerate(cv):
+ *             vertices[idx] = i             # <<<<<<<<<<<<<<
+ * 
+ *         return vertices
+ */
+    if (unlikely(PyObject_SetItem(__pyx_v_vertices, __pyx_v_idx, __pyx_v_i) < 0)) __PYX_ERR(0, 822, __pyx_L1_error)
+
+    /* "geotess/src/libgeotess.pyx":821
+ *             nvertices += 1
+ *         vertices = np.zeros((nvertices,), dtype='int')
+ *         for idx, i in enumerate(cv):             # <<<<<<<<<<<<<<
+ *             vertices[idx] = i
+ * 
+ */
+  }
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "geotess/src/libgeotess.pyx":824
+ *             vertices[idx] = i
+ * 
+ *         return vertices             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointLatitude(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_vertices);
+  __pyx_r = __pyx_v_vertices;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":804
+ *         return weights
+ * 
+ *     def getConnectedVertices(self, int layerid):             # <<<<<<<<<<<<<<
+ *         """
+ *         Function fo find which vertices are connected
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getConnectedVertices", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_cv);
+  __Pyx_XDECREF(__pyx_v_nvertices);
+  __Pyx_XDECREF(__pyx_v_i);
+  __Pyx_XDECREF(__pyx_v_vertices);
+  __Pyx_XDECREF(__pyx_v_idx);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":826
+ *         return vertices
+ * 
+ *     def getPointLatitude(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Use the pointMap object to find the latitude given a pointIndex value
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_37getPointLatitude(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_36getPointLatitude[] = "GeoTessModel.getPointLatitude(self, pointIndex)\n\n        Use the pointMap object to find the latitude given a pointIndex value\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_37getPointLatitude(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointLatitude (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_36getPointLatitude(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_36getPointLatitude(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  std::string __pyx_v_loc;
+  PyObject *__pyx_v_floatLocation = NULL;
+  PyObject *__pyx_7genexpr__pyx_v_x = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  Py_ssize_t __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointLatitude", 0);
+
+  /* "geotess/src/libgeotess.pyx":830
+ *         Use the pointMap object to find the latitude given a pointIndex value
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":831
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         loc = ptMap.getPointLatLonString(pointIndex)             # <<<<<<<<<<<<<<
+ *         floatLocation = [float(x) for x in loc.split()]
+ *         return floatLocation[0]
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 831, __pyx_L1_error)
+  __pyx_v_loc = __pyx_v_ptMap->getPointLatLonString(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":832
+ *         ptMap = self.thisptr.getPointMap()
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]             # <<<<<<<<<<<<<<
+ *         return floatLocation[0]
+ * 
+ */
+  { /* enter inner scope */
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 832, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __pyx_convert_PyUnicode_string_to_py_std__in_string(__pyx_v_loc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 832, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = PyUnicode_Split(((PyObject*)__pyx_t_3), ((PyObject *)NULL), -1L); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 832, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __pyx_t_4; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    for (;;) {
+      if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
+      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+      __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_4); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 832, __pyx_L5_error)
+      #else
+      __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 832, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      #endif
+      __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_x, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __pyx_t_4 = __Pyx_PyNumber_Float(__pyx_7genexpr__pyx_v_x); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 832, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 832, __pyx_L5_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_x); __pyx_7genexpr__pyx_v_x = 0;
+    goto __pyx_L8_exit_scope;
+    __pyx_L5_error:;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_x); __pyx_7genexpr__pyx_v_x = 0;
+    goto __pyx_L1_error;
+    __pyx_L8_exit_scope:;
+  } /* exit inner scope */
+  __pyx_v_floatLocation = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":833
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]
+ *         return floatLocation[0]             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointLongitude(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_floatLocation, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 833, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":826
+ *         return vertices
+ * 
+ *     def getPointLatitude(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Use the pointMap object to find the latitude given a pointIndex value
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointLatitude", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_floatLocation);
+  __Pyx_XDECREF(__pyx_7genexpr__pyx_v_x);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":835
+ *         return floatLocation[0]
+ * 
+ *     def getPointLongitude(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Use the pointMap object to find the longitude given a pointIndex value
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_39getPointLongitude(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_38getPointLongitude[] = "GeoTessModel.getPointLongitude(self, pointIndex)\n\n        Use the pointMap object to find the longitude given a pointIndex value\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_39getPointLongitude(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointLongitude (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_38getPointLongitude(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_38getPointLongitude(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  std::string __pyx_v_loc;
+  PyObject *__pyx_v_floatLocation = NULL;
+  PyObject *__pyx_8genexpr1__pyx_v_x = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  Py_ssize_t __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointLongitude", 0);
+
+  /* "geotess/src/libgeotess.pyx":839
+ *         Use the pointMap object to find the longitude given a pointIndex value
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":840
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         loc = ptMap.getPointLatLonString(pointIndex)             # <<<<<<<<<<<<<<
+ *         floatLocation = [float(x) for x in loc.split()]
+ *         return floatLocation[1]
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 840, __pyx_L1_error)
+  __pyx_v_loc = __pyx_v_ptMap->getPointLatLonString(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":841
+ *         ptMap = self.thisptr.getPointMap()
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]             # <<<<<<<<<<<<<<
+ *         return floatLocation[1]
+ * 
+ */
+  { /* enter inner scope */
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 841, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __pyx_convert_PyUnicode_string_to_py_std__in_string(__pyx_v_loc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 841, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = PyUnicode_Split(((PyObject*)__pyx_t_3), ((PyObject *)NULL), -1L); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 841, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __pyx_t_4; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    for (;;) {
+      if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
+      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+      __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_4); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 841, __pyx_L5_error)
+      #else
+      __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 841, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      #endif
+      __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_x, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __pyx_t_4 = __Pyx_PyNumber_Float(__pyx_8genexpr1__pyx_v_x); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 841, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 841, __pyx_L5_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_x); __pyx_8genexpr1__pyx_v_x = 0;
+    goto __pyx_L8_exit_scope;
+    __pyx_L5_error:;
+    __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_x); __pyx_8genexpr1__pyx_v_x = 0;
+    goto __pyx_L1_error;
+    __pyx_L8_exit_scope:;
+  } /* exit inner scope */
+  __pyx_v_floatLocation = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":842
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]
+ *         return floatLocation[1]             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointLocation(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_floatLocation, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 842, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":835
+ *         return floatLocation[0]
+ * 
+ *     def getPointLongitude(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Use the pointMap object to find the longitude given a pointIndex value
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointLongitude", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_floatLocation);
+  __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_x);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":844
+ *         return floatLocation[1]
+ * 
+ *     def getPointLocation(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_41getPointLocation(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_40getPointLocation[] = "GeoTessModel.getPointLocation(self, pointIndex)\n\n        Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_41getPointLocation(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointLocation (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_40getPointLocation(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_40getPointLocation(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  std::string __pyx_v_loc;
+  PyObject *__pyx_v_floatLocation = NULL;
+  PyObject *__pyx_v_lat = NULL;
+  PyObject *__pyx_v_lon = NULL;
+  PyObject *__pyx_v_depth = NULL;
+  PyObject *__pyx_v_radius = NULL;
+  PyObject *__pyx_8genexpr2__pyx_v_x = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  Py_ssize_t __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointLocation", 0);
+
+  /* "geotess/src/libgeotess.pyx":848
+ *         Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":849
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         loc = ptMap.getPointLatLonString(pointIndex)             # <<<<<<<<<<<<<<
+ *         floatLocation = [float(x) for x in loc.split()]
+ *         lat = floatLocation[0]
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 849, __pyx_L1_error)
+  __pyx_v_loc = __pyx_v_ptMap->getPointLatLonString(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":850
+ *         ptMap = self.thisptr.getPointMap()
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]             # <<<<<<<<<<<<<<
+ *         lat = floatLocation[0]
+ *         lon = floatLocation[1]
+ */
+  { /* enter inner scope */
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 850, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __pyx_convert_PyUnicode_string_to_py_std__in_string(__pyx_v_loc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 850, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = PyUnicode_Split(((PyObject*)__pyx_t_3), ((PyObject *)NULL), -1L); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 850, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __pyx_t_4; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    for (;;) {
+      if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
+      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+      __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_4); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 850, __pyx_L5_error)
+      #else
+      __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 850, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      #endif
+      __Pyx_XDECREF_SET(__pyx_8genexpr2__pyx_v_x, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __pyx_t_4 = __Pyx_PyNumber_Float(__pyx_8genexpr2__pyx_v_x); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 850, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 850, __pyx_L5_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_XDECREF(__pyx_8genexpr2__pyx_v_x); __pyx_8genexpr2__pyx_v_x = 0;
+    goto __pyx_L8_exit_scope;
+    __pyx_L5_error:;
+    __Pyx_XDECREF(__pyx_8genexpr2__pyx_v_x); __pyx_8genexpr2__pyx_v_x = 0;
+    goto __pyx_L1_error;
+    __pyx_L8_exit_scope:;
+  } /* exit inner scope */
+  __pyx_v_floatLocation = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":851
+ *         loc = ptMap.getPointLatLonString(pointIndex)
+ *         floatLocation = [float(x) for x in loc.split()]
+ *         lat = floatLocation[0]             # <<<<<<<<<<<<<<
+ *         lon = floatLocation[1]
+ *         depth = self.getPointDepth(pointIndex)
+ */
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_floatLocation, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_v_lat = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":852
+ *         floatLocation = [float(x) for x in loc.split()]
+ *         lat = floatLocation[0]
+ *         lon = floatLocation[1]             # <<<<<<<<<<<<<<
+ *         depth = self.getPointDepth(pointIndex)
+ *         radius = self.getPointRadius(pointIndex)
+ */
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_floatLocation, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_v_lon = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":853
+ *         lat = floatLocation[0]
+ *         lon = floatLocation[1]
+ *         depth = self.getPointDepth(pointIndex)             # <<<<<<<<<<<<<<
+ *         radius = self.getPointRadius(pointIndex)
+ *         return lat, lon, radius, depth
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getPointDepth); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 853, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_pointIndex) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_pointIndex);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_depth = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":854
+ *         lon = floatLocation[1]
+ *         depth = self.getPointDepth(pointIndex)
+ *         radius = self.getPointRadius(pointIndex)             # <<<<<<<<<<<<<<
+ *         return lat, lon, radius, depth
+ * 
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getPointRadius); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 854, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_pointIndex) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_pointIndex);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_radius = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":855
+ *         depth = self.getPointDepth(pointIndex)
+ *         radius = self.getPointRadius(pointIndex)
+ *         return lat, lon, radius, depth             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointVertex(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = PyTuple_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_lat);
+  __Pyx_GIVEREF(__pyx_v_lat);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_lat);
+  __Pyx_INCREF(__pyx_v_lon);
+  __Pyx_GIVEREF(__pyx_v_lon);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_lon);
+  __Pyx_INCREF(__pyx_v_radius);
+  __Pyx_GIVEREF(__pyx_v_radius);
+  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_v_radius);
+  __Pyx_INCREF(__pyx_v_depth);
+  __Pyx_GIVEREF(__pyx_v_depth);
+  PyTuple_SET_ITEM(__pyx_t_2, 3, __pyx_v_depth);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":844
+ *         return floatLocation[1]
+ * 
+ *     def getPointLocation(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointLocation", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_floatLocation);
+  __Pyx_XDECREF(__pyx_v_lat);
+  __Pyx_XDECREF(__pyx_v_lon);
+  __Pyx_XDECREF(__pyx_v_depth);
+  __Pyx_XDECREF(__pyx_v_radius);
+  __Pyx_XDECREF(__pyx_8genexpr2__pyx_v_x);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":857
+ *         return lat, lon, radius, depth
+ * 
+ *     def getPointVertex(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the vertex given a point index
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_43getPointVertex(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_42getPointVertex[] = "GeoTessModel.getPointVertex(self, pointIndex)\n\n        Returns the vertex given a point index\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_43getPointVertex(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointVertex (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_42getPointVertex(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_42getPointVertex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_idx;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointVertex", 0);
+
+  /* "geotess/src/libgeotess.pyx":861
+ *         Returns the vertex given a point index
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         idx = ptMap.getVertexIndex(pointIndex)
+ *         return idx
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":862
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getVertexIndex(pointIndex)             # <<<<<<<<<<<<<<
+ *         return idx
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 862, __pyx_L1_error)
+  __pyx_v_idx = __pyx_v_ptMap->getVertexIndex(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":863
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getVertexIndex(pointIndex)
+ *         return idx             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointTessId(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 863, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":857
+ *         return lat, lon, radius, depth
+ * 
+ *     def getPointVertex(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the vertex given a point index
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointVertex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":865
+ *         return idx
+ * 
+ *     def getPointTessId(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the Tesselation ID given a pointIndex
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_45getPointTessId(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_44getPointTessId[] = "GeoTessModel.getPointTessId(self, pointIndex)\n\n        Returns the Tesselation ID given a pointIndex\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_45getPointTessId(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointTessId (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_44getPointTessId(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_44getPointTessId(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_idx;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointTessId", 0);
+
+  /* "geotess/src/libgeotess.pyx":869
+ *         Returns the Tesselation ID given a pointIndex
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         idx = ptMap.getTessId(pointIndex)
+ *         return idx
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":870
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getTessId(pointIndex)             # <<<<<<<<<<<<<<
+ *         return idx
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 870, __pyx_L1_error)
+  __pyx_v_idx = __pyx_v_ptMap->getTessId(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":871
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getTessId(pointIndex)
+ *         return idx             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointLayerIndex(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 871, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":865
+ *         return idx
+ * 
+ *     def getPointTessId(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the Tesselation ID given a pointIndex
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointTessId", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":873
+ *         return idx
+ * 
+ *     def getPointLayerIndex(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the layer index given a pointIndex
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_47getPointLayerIndex(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_46getPointLayerIndex[] = "GeoTessModel.getPointLayerIndex(self, pointIndex)\n\n        Returns the layer index given a pointIndex\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_47getPointLayerIndex(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointLayerIndex (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_46getPointLayerIndex(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_46getPointLayerIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_idx;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointLayerIndex", 0);
+
+  /* "geotess/src/libgeotess.pyx":877
+ *         Returns the layer index given a pointIndex
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         idx = ptMap.getLayerIndex(pointIndex)
+ *         return idx
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":878
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getLayerIndex(pointIndex)             # <<<<<<<<<<<<<<
+ *         return idx
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 878, __pyx_L1_error)
+  __pyx_v_idx = __pyx_v_ptMap->getLayerIndex(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":879
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getLayerIndex(pointIndex)
+ *         return idx             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointNodeIndex(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 879, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":873
+ *         return idx
+ * 
+ *     def getPointLayerIndex(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the layer index given a pointIndex
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointLayerIndex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":881
+ *         return idx
+ * 
+ *     def getPointNodeIndex(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the node index (in a profile) given a point index
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_49getPointNodeIndex(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_48getPointNodeIndex[] = "GeoTessModel.getPointNodeIndex(self, pointIndex)\n\n        Returns the node index (in a profile) given a point index\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_49getPointNodeIndex(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointNodeIndex (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_48getPointNodeIndex(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_48getPointNodeIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_idx;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointNodeIndex", 0);
+
+  /* "geotess/src/libgeotess.pyx":885
+ *         Returns the node index (in a profile) given a point index
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         idx = ptMap.getNodeIndex(pointIndex)
+ *         return idx
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":886
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getNodeIndex(pointIndex)             # <<<<<<<<<<<<<<
+ *         return idx
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 886, __pyx_L1_error)
+  __pyx_v_idx = __pyx_v_ptMap->getNodeIndex(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":887
+ *         ptMap = self.thisptr.getPointMap()
+ *         idx = ptMap.getNodeIndex(pointIndex)
+ *         return idx             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointVertexTessLayerNode(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 887, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":881
+ *         return idx
+ * 
+ *     def getPointNodeIndex(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the node index (in a profile) given a point index
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointNodeIndex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":889
+ *         return idx
+ * 
+ *     def getPointVertexTessLayerNode(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Parameters
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_51getPointVertexTessLayerNode(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_50getPointVertexTessLayerNode[] = "GeoTessModel.getPointVertexTessLayerNode(self, pointIndex)\n\n        Parameters\n        ----------\n        pointIndex : Integer from 0 to self.getNPoints()-1\n\n        Returns\n        -------\n        ints for: vertex, tessID, layerID, and Node\n\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_51getPointVertexTessLayerNode(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointVertexTessLayerNode (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_50getPointVertexTessLayerNode(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_50getPointVertexTessLayerNode(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_vertex;
+  int __pyx_v_tessID;
+  int __pyx_v_layerID;
+  int __pyx_v_node;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointVertexTessLayerNode", 0);
+
+  /* "geotess/src/libgeotess.pyx":900
+ * 
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         vertex = ptMap.getVertexIndex(pointIndex)
+ *         tessID = ptMap.getTessId(pointIndex)
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":901
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         vertex = ptMap.getVertexIndex(pointIndex)             # <<<<<<<<<<<<<<
+ *         tessID = ptMap.getTessId(pointIndex)
+ *         layerID = ptMap.getLayerIndex(pointIndex)
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 901, __pyx_L1_error)
+  __pyx_v_vertex = __pyx_v_ptMap->getVertexIndex(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":902
+ *         ptMap = self.thisptr.getPointMap()
+ *         vertex = ptMap.getVertexIndex(pointIndex)
+ *         tessID = ptMap.getTessId(pointIndex)             # <<<<<<<<<<<<<<
+ *         layerID = ptMap.getLayerIndex(pointIndex)
+ *         node = ptMap.getNodeIndex(pointIndex)
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 902, __pyx_L1_error)
+  __pyx_v_tessID = __pyx_v_ptMap->getTessId(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":903
+ *         vertex = ptMap.getVertexIndex(pointIndex)
+ *         tessID = ptMap.getTessId(pointIndex)
+ *         layerID = ptMap.getLayerIndex(pointIndex)             # <<<<<<<<<<<<<<
+ *         node = ptMap.getNodeIndex(pointIndex)
+ *         return vertex, tessID, layerID, node
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 903, __pyx_L1_error)
+  __pyx_v_layerID = __pyx_v_ptMap->getLayerIndex(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":904
+ *         tessID = ptMap.getTessId(pointIndex)
+ *         layerID = ptMap.getLayerIndex(pointIndex)
+ *         node = ptMap.getNodeIndex(pointIndex)             # <<<<<<<<<<<<<<
+ *         return vertex, tessID, layerID, node
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 904, __pyx_L1_error)
+  __pyx_v_node = __pyx_v_ptMap->getNodeIndex(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":905
+ *         layerID = ptMap.getLayerIndex(pointIndex)
+ *         node = ptMap.getNodeIndex(pointIndex)
+ *         return vertex, tessID, layerID, node             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointData(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_vertex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 905, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_tessID); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 905, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_layerID); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 905, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_node); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 905, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = PyTuple_New(4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 905, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_6, 3, __pyx_t_5);
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_5 = 0;
+  __pyx_r = __pyx_t_6;
+  __pyx_t_6 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":889
+ *         return idx
+ * 
+ *     def getPointVertexTessLayerNode(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Parameters
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointVertexTessLayerNode", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":907
+ *         return vertex, tessID, layerID, node
+ * 
+ *     def getPointData(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given point index, returns a vector of attribute values
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_53getPointData(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_52getPointData[] = "GeoTessModel.getPointData(self, pointIndex)\n\n        For a given point index, returns a vector of attribute values\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_53getPointData(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointData (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_52getPointData(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_52getPointData(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  geotess::GeoTessData *__pyx_v_geotessdata;
+  int __pyx_v_npts;
+  PyObject *__pyx_v_dataOut = NULL;
+  int __pyx_v_i;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointData", 0);
+
+  /* "geotess/src/libgeotess.pyx":911
+ *         For a given point index, returns a vector of attribute values
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         geotessdata = ptMap.getPointData(pointIndex)
+ *         npts = geotessdata.size()
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":912
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         geotessdata = ptMap.getPointData(pointIndex)             # <<<<<<<<<<<<<<
+ *         npts = geotessdata.size()
+ *         dataOut = np.zeros((npts,))
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 912, __pyx_L1_error)
+  __pyx_v_geotessdata = __pyx_v_ptMap->getPointData(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":913
+ *         ptMap = self.thisptr.getPointMap()
+ *         geotessdata = ptMap.getPointData(pointIndex)
+ *         npts = geotessdata.size()             # <<<<<<<<<<<<<<
+ *         dataOut = np.zeros((npts,))
+ *         for i in range(npts):
+ */
+  __pyx_v_npts = __pyx_v_geotessdata->size();
+
+  /* "geotess/src/libgeotess.pyx":914
+ *         geotessdata = ptMap.getPointData(pointIndex)
+ *         npts = geotessdata.size()
+ *         dataOut = np.zeros((npts,))             # <<<<<<<<<<<<<<
+ *         for i in range(npts):
+ *             dataOut[i] = geotessdata.getDouble(i)
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 914, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 914, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_npts); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 914, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 914, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_4, function);
+    }
+  }
+  __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_3, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 914, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_v_dataOut = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":915
+ *         npts = geotessdata.size()
+ *         dataOut = np.zeros((npts,))
+ *         for i in range(npts):             # <<<<<<<<<<<<<<
+ *             dataOut[i] = geotessdata.getDouble(i)
+ *         return dataOut
+ */
+  __pyx_t_1 = __pyx_v_npts;
+  __pyx_t_6 = __pyx_t_1;
+  for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+    __pyx_v_i = __pyx_t_7;
+
+    /* "geotess/src/libgeotess.pyx":916
+ *         dataOut = np.zeros((npts,))
+ *         for i in range(npts):
+ *             dataOut[i] = geotessdata.getDouble(i)             # <<<<<<<<<<<<<<
+ *         return dataOut
+ * 
+ */
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_geotessdata->getDouble(__pyx_v_i)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 916, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_dataOut, __pyx_v_i, __pyx_t_2, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  }
+
+  /* "geotess/src/libgeotess.pyx":917
+ *         for i in range(npts):
+ *             dataOut[i] = geotessdata.getDouble(i)
+ *         return dataOut             # <<<<<<<<<<<<<<
+ * 
+ *     def setPointData(self, pointIndex, values):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_dataOut);
+  __pyx_r = __pyx_v_dataOut;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":907
+ *         return vertex, tessID, layerID, node
+ * 
+ *     def getPointData(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given point index, returns a vector of attribute values
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointData", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_dataOut);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":919
+ *         return dataOut
+ * 
+ *     def setPointData(self, pointIndex, values):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given pointIndex, sets the values in the GeoTess Model
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_55setPointData(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_54setPointData[] = "GeoTessModel.setPointData(self, pointIndex, values)\n\n        For a given pointIndex, sets the values in the GeoTess Model\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_55setPointData(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_pointIndex = 0;
+  PyObject *__pyx_v_values = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("setPointData (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pointIndex,&__pyx_n_s_values,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pointIndex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_values)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setPointData", 1, 2, 2, 1); __PYX_ERR(0, 919, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "setPointData") < 0)) __PYX_ERR(0, 919, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_pointIndex = values[0];
+    __pyx_v_values = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("setPointData", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 919, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointData", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_54setPointData(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointIndex, __pyx_v_values);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_54setPointData(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_values) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  geotess::GeoTessData *__pyx_v_geoData;
+  PyObject *__pyx_v_ival = NULL;
+  PyObject *__pyx_v_val = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  PyObject *__pyx_t_6 = NULL;
+  double __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("setPointData", 0);
+
+  /* "geotess/src/libgeotess.pyx":923
+ *         For a given pointIndex, sets the values in the GeoTess Model
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":925
+ *         ptMap = self.thisptr.getPointMap()
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)             # <<<<<<<<<<<<<<
+ *         for ival, val in enumerate(values):
+ *             # The reference of the pointer is followed in the setter!
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 925, __pyx_L1_error)
+  __pyx_v_geoData = __pyx_v_ptMap->getPointData(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":926
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         for ival, val in enumerate(values):             # <<<<<<<<<<<<<<
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)
+ */
+  __Pyx_INCREF(__pyx_int_0);
+  __pyx_t_2 = __pyx_int_0;
+  if (likely(PyList_CheckExact(__pyx_v_values)) || PyTuple_CheckExact(__pyx_v_values)) {
+    __pyx_t_3 = __pyx_v_values; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
+    __pyx_t_5 = NULL;
+  } else {
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 926, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 926, __pyx_L1_error)
+  }
+  for (;;) {
+    if (likely(!__pyx_t_5)) {
+      if (likely(PyList_CheckExact(__pyx_t_3))) {
+        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_6 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_6); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 926, __pyx_L1_error)
+        #else
+        __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 926, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        #endif
+      } else {
+        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_6); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 926, __pyx_L1_error)
+        #else
+        __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 926, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        #endif
+      }
+    } else {
+      __pyx_t_6 = __pyx_t_5(__pyx_t_3);
+      if (unlikely(!__pyx_t_6)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 926, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_6);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_6);
+    __pyx_t_6 = 0;
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_XDECREF_SET(__pyx_v_ival, __pyx_t_2);
+    __pyx_t_6 = __Pyx_PyInt_AddObjC(__pyx_t_2, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 926, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_2);
+    __pyx_t_2 = __pyx_t_6;
+    __pyx_t_6 = 0;
+
+    /* "geotess/src/libgeotess.pyx":928
+ *         for ival, val in enumerate(values):
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)             # <<<<<<<<<<<<<<
+ *         return
+ *     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
+ */
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ival); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 928, __pyx_L1_error)
+    __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_val); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 928, __pyx_L1_error)
+    __pyx_v_geoData->setValue(__pyx_t_1, __pyx_t_7);
+
+    /* "geotess/src/libgeotess.pyx":926
+ *         # below returns a point to values in a point map.
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         for ival, val in enumerate(values):             # <<<<<<<<<<<<<<
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)
+ */
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":929
+ *             # The reference of the pointer is followed in the setter!
+ *             geoData.setValue(ival, val)
+ *         return             # <<<<<<<<<<<<<<
+ *     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
+ *         """
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":919
+ *         return dataOut
+ * 
+ *     def setPointData(self, pointIndex, values):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given pointIndex, sets the values in the GeoTess Model
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointData", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_ival);
+  __Pyx_XDECREF(__pyx_v_val);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":930
+ *             geoData.setValue(ival, val)
+ *         return
+ *     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):             # <<<<<<<<<<<<<<
+ *         """
+ *         Set profile values at a vertex and layer.
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_57setProfile(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_56setProfile[] = "GeoTessModel.setProfile(self, int vertex, int layer, vector[float] radii, vector[vector[float]] values)\n\n        Set profile values at a vertex and layer.\n        This version works with c++ style vector types.\n        Use setProfileND to push ndarrays instead.\n\n        Parameters\n        ----------\n        vertex, layer : int\n            vertex and layer number of the profile.\n        radii : list\n            Radius values of profile data.\n        values : list of lists\n            List of corresponding attribute values at the provided radii.\n\n        Returns:\n            -1 on failure\n\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_57setProfile(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_v_vertex;
+  int __pyx_v_layer;
+  std::vector<float>  __pyx_v_radii;
+  std::vector<std::vector<float> >  __pyx_v_values;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("setProfile (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_vertex,&__pyx_n_s_layer,&__pyx_n_s_radii,&__pyx_n_s_values,0};
+    PyObject* values[4] = {0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_vertex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_layer)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setProfile", 1, 4, 4, 1); __PYX_ERR(0, 930, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_radii)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setProfile", 1, 4, 4, 2); __PYX_ERR(0, 930, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_values)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setProfile", 1, 4, 4, 3); __PYX_ERR(0, 930, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "setProfile") < 0)) __PYX_ERR(0, 930, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+    }
+    __pyx_v_vertex = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_vertex == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 930, __pyx_L3_error)
+    __pyx_v_layer = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_layer == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 930, __pyx_L3_error)
+    __pyx_v_radii = __pyx_convert_vector_from_py_float(values[2]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 930, __pyx_L3_error)
+    __pyx_v_values = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_float_3e___(values[3]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 930, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("setProfile", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 930, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setProfile", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_56setProfile(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_vertex, __pyx_v_layer, __pyx_v_radii, __pyx_v_values);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_56setProfile(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_vertex, int __pyx_v_layer, std::vector<float>  __pyx_v_radii, std::vector<std::vector<float> >  __pyx_v_values) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_RefNannySetupContext("setProfile", 0);
+
+  /* "geotess/src/libgeotess.pyx":950
+ *         """
+ * 
+ *         try:             # <<<<<<<<<<<<<<
+ *             self.thisptr.setProfile(vertex, layer, radii, values)
+ *             return
+ */
+  {
+    (void)__pyx_t_1; (void)__pyx_t_2; (void)__pyx_t_3; /* mark used */
+    /*try:*/ {
+
+      /* "geotess/src/libgeotess.pyx":951
+ * 
+ *         try:
+ *             self.thisptr.setProfile(vertex, layer, radii, values)             # <<<<<<<<<<<<<<
+ *             return
+ *         except:
+ */
+      __pyx_v_self->thisptr->setProfile(__pyx_v_vertex, __pyx_v_layer, __pyx_v_radii, __pyx_v_values);
+
+      /* "geotess/src/libgeotess.pyx":952
+ *         try:
+ *             self.thisptr.setProfile(vertex, layer, radii, values)
+ *             return             # <<<<<<<<<<<<<<
+ *         except:
+ *             raise ValueError('setProfile failed')
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+      goto __pyx_L7_try_return;
+
+      /* "geotess/src/libgeotess.pyx":950
+ *         """
+ * 
+ *         try:             # <<<<<<<<<<<<<<
+ *             self.thisptr.setProfile(vertex, layer, radii, values)
+ *             return
+ */
+    }
+    __pyx_L7_try_return:;
+    goto __pyx_L0;
+  }
+
+  /* "geotess/src/libgeotess.pyx":930
+ *             geoData.setValue(ival, val)
+ *         return
+ *     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):             # <<<<<<<<<<<<<<
+ *         """
+ *         Set profile values at a vertex and layer.
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1015
+ * #             return -3
+ * 
+ *     def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given point index and attribute index, sets the value
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_59setPointDataSingleAttribute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_58setPointDataSingleAttribute[] = "GeoTessModel.setPointDataSingleAttribute(self, pointIndex, attributeIndex, value)\n\n        For a given point index and attribute index, sets the value\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_59setPointDataSingleAttribute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_pointIndex = 0;
+  PyObject *__pyx_v_attributeIndex = 0;
+  PyObject *__pyx_v_value = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("setPointDataSingleAttribute (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pointIndex,&__pyx_n_s_attributeIndex,&__pyx_n_s_value,0};
+    PyObject* values[3] = {0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pointIndex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_attributeIndex)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setPointDataSingleAttribute", 1, 3, 3, 1); __PYX_ERR(0, 1015, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("setPointDataSingleAttribute", 1, 3, 3, 2); __PYX_ERR(0, 1015, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "setPointDataSingleAttribute") < 0)) __PYX_ERR(0, 1015, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+    }
+    __pyx_v_pointIndex = values[0];
+    __pyx_v_attributeIndex = values[1];
+    __pyx_v_value = values[2];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("setPointDataSingleAttribute", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1015, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointDataSingleAttribute", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_58setPointDataSingleAttribute(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointIndex, __pyx_v_attributeIndex, __pyx_v_value);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_58setPointDataSingleAttribute(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex, PyObject *__pyx_v_attributeIndex, PyObject *__pyx_v_value) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  geotess::GeoTessData *__pyx_v_geoData;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  double __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("setPointDataSingleAttribute", 0);
+
+  /* "geotess/src/libgeotess.pyx":1019
+ *         For a given point index and attribute index, sets the value
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         geoData.setValue(attributeIndex, value)
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":1020
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         geoData = ptMap.getPointData(pointIndex)             # <<<<<<<<<<<<<<
+ *         geoData.setValue(attributeIndex, value)
+ *         return
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1020, __pyx_L1_error)
+  __pyx_v_geoData = __pyx_v_ptMap->getPointData(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":1021
+ *         ptMap = self.thisptr.getPointMap()
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         geoData.setValue(attributeIndex, value)             # <<<<<<<<<<<<<<
+ *         return
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_attributeIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1021, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_value); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1021, __pyx_L1_error)
+  __pyx_v_geoData->setValue(__pyx_t_1, __pyx_t_2);
+
+  /* "geotess/src/libgeotess.pyx":1022
+ *         geoData = ptMap.getPointData(pointIndex)
+ *         geoData.setValue(attributeIndex, value)
+ *         return             # <<<<<<<<<<<<<<
+ * 
+ *     def getNearestPointIndex(self, float latitude, float longitude, float radius):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":1015
+ * #             return -3
+ * 
+ *     def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):             # <<<<<<<<<<<<<<
+ *         """
+ *         For a given point index and attribute index, sets the value
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.setPointDataSingleAttribute", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1024
+ *         return
+ * 
+ *     def getNearestPointIndex(self, float latitude, float longitude, float radius):             # <<<<<<<<<<<<<<
+ *         """
+ *         Warning! This does not always work. Layer definitions need to be included before it will work properly!
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_61getNearestPointIndex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_60getNearestPointIndex[] = "GeoTessModel.getNearestPointIndex(self, float latitude, float longitude, float radius)\n\n        Warning! This does not always work. Layer definitions need to be included before it will work properly!\n        This is also quite slow.\n\n        Parameters\n        ----------\n        float latitude :\n            floating point from -90 to 90\n            Defines the latitude of the lookup point\n        float longitude : floating point from -180 to 360\n            Defines the longitude of the lookup point.\n        float radius : floating point from 0 to ~6371 (earth's radius out from center')\n            Defines the radius of the lookup point.\n\n        Returns\n        -------\n        (int) pointIndex used to map the given location to the nearest point in the tesselation.\n\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_61getNearestPointIndex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  float __pyx_v_latitude;
+  float __pyx_v_longitude;
+  float __pyx_v_radius;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getNearestPointIndex (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_latitude,&__pyx_n_s_longitude,&__pyx_n_s_radius,0};
+    PyObject* values[3] = {0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_latitude)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_longitude)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("getNearestPointIndex", 1, 3, 3, 1); __PYX_ERR(0, 1024, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_radius)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("getNearestPointIndex", 1, 3, 3, 2); __PYX_ERR(0, 1024, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getNearestPointIndex") < 0)) __PYX_ERR(0, 1024, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+    }
+    __pyx_v_latitude = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_latitude == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 1024, __pyx_L3_error)
+    __pyx_v_longitude = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_longitude == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 1024, __pyx_L3_error)
+    __pyx_v_radius = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_radius == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 1024, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("getNearestPointIndex", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1024, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getNearestPointIndex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_60getNearestPointIndex(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_latitude, __pyx_v_longitude, __pyx_v_radius);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_60getNearestPointIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, float __pyx_v_latitude, float __pyx_v_longitude, float __pyx_v_radius) {
+  PyObject *__pyx_v_ellipsoid = NULL;
+  PyObject *__pyx_v_inputUnitVector = NULL;
+  PyObject *__pyx_v_npoints = NULL;
+  PyObject *__pyx_v_ptOut = NULL;
+  PyObject *__pyx_v_mindh = NULL;
+  PyObject *__pyx_v_pt = NULL;
+  PyObject *__pyx_v_lat = NULL;
+  PyObject *__pyx_v_lon = NULL;
+  CYTHON_UNUSED PyObject *__pyx_v__ = NULL;
+  PyObject *__pyx_v_testUnitVector = NULL;
+  PyObject *__pyx_v_dh = NULL;
+  PyObject *__pyx_v_vtx = NULL;
+  PyObject *__pyx_v_mindr = NULL;
+  PyObject *__pyx_v_vtmp = NULL;
+  PyObject *__pyx_v_rad = NULL;
+  PyObject *__pyx_v_dr = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  Py_ssize_t __pyx_t_8;
+  PyObject *(*__pyx_t_9)(PyObject *);
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *(*__pyx_t_11)(PyObject *);
+  int __pyx_t_12;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getNearestPointIndex", 0);
+
+  /* "geotess/src/libgeotess.pyx":1046
+ *         #ptMap = self.thisptr.getPointMap()
+ *         # V2: use the unit vector from the EarthShape class
+ *         ellipsoid = self.getEarthShape()             # <<<<<<<<<<<<<<
+ *         inputUnitVector = ellipsoid.getVectorDegrees(latitude, longitude)
+ *         npoints = self.getNPoints()
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getEarthShape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1046, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1046, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_ellipsoid = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":1047
+ *         # V2: use the unit vector from the EarthShape class
+ *         ellipsoid = self.getEarthShape()
+ *         inputUnitVector = ellipsoid.getVectorDegrees(latitude, longitude)             # <<<<<<<<<<<<<<
+ *         npoints = self.getNPoints()
+ *         # First, loop to get nearest vertex (ie horizontal coordinate, h)
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_ellipsoid, __pyx_n_s_getVectorDegrees); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1047, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_latitude); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1047, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_longitude); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1047, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = NULL;
+  __pyx_t_6 = 0;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __pyx_t_6 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1047, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1047, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1047, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    if (__pyx_t_5) {
+      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_3);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
+    __pyx_t_3 = 0;
+    __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1047, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_inputUnitVector = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":1048
+ *         ellipsoid = self.getEarthShape()
+ *         inputUnitVector = ellipsoid.getVectorDegrees(latitude, longitude)
+ *         npoints = self.getNPoints()             # <<<<<<<<<<<<<<
+ *         # First, loop to get nearest vertex (ie horizontal coordinate, h)
+ *         ptOut = -1
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getNPoints); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1048, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1048, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_npoints = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":1050
+ *         npoints = self.getNPoints()
+ *         # First, loop to get nearest vertex (ie horizontal coordinate, h)
+ *         ptOut = -1             # <<<<<<<<<<<<<<
+ *         mindh = 9001
+ *         for pt in range(npoints):
+ */
+  __Pyx_INCREF(__pyx_int_neg_1);
+  __pyx_v_ptOut = __pyx_int_neg_1;
+
+  /* "geotess/src/libgeotess.pyx":1051
+ *         # First, loop to get nearest vertex (ie horizontal coordinate, h)
+ *         ptOut = -1
+ *         mindh = 9001             # <<<<<<<<<<<<<<
+ *         for pt in range(npoints):
+ *             lat, lon, _, _ = self.getPointLocation(pt)
+ */
+  __Pyx_INCREF(__pyx_int_9001);
+  __pyx_v_mindh = __pyx_int_9001;
+
+  /* "geotess/src/libgeotess.pyx":1052
+ *         ptOut = -1
+ *         mindh = 9001
+ *         for pt in range(npoints):             # <<<<<<<<<<<<<<
+ *             lat, lon, _, _ = self.getPointLocation(pt)
+ *             testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+ */
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_npoints); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1052, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
+    __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_8 = 0;
+    __pyx_t_9 = NULL;
+  } else {
+    __pyx_t_8 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1052, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1052, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_9)) {
+      if (likely(PyList_CheckExact(__pyx_t_2))) {
+        if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 1052, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1052, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      } else {
+        if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 1052, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1052, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      }
+    } else {
+      __pyx_t_1 = __pyx_t_9(__pyx_t_2);
+      if (unlikely(!__pyx_t_1)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 1052, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_1);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_pt, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "geotess/src/libgeotess.pyx":1053
+ *         mindh = 9001
+ *         for pt in range(npoints):
+ *             lat, lon, _, _ = self.getPointLocation(pt)             # <<<<<<<<<<<<<<
+ *             testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+ *             dh = np.linalg.norm(inputUnitVector - testUnitVector)
+ */
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getPointLocation); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1053, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_4 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_7);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_7, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_4, __pyx_v_pt) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_pt);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1053, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
+      PyObject* sequence = __pyx_t_1;
+      Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+      if (unlikely(size != 4)) {
+        if (size > 4) __Pyx_RaiseTooManyValuesError(4);
+        else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+        __PYX_ERR(0, 1053, __pyx_L1_error)
+      }
+      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+      if (likely(PyTuple_CheckExact(sequence))) {
+        __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+        __pyx_t_4 = PyTuple_GET_ITEM(sequence, 1); 
+        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 2); 
+        __pyx_t_5 = PyTuple_GET_ITEM(sequence, 3); 
+      } else {
+        __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+        __pyx_t_4 = PyList_GET_ITEM(sequence, 1); 
+        __pyx_t_3 = PyList_GET_ITEM(sequence, 2); 
+        __pyx_t_5 = PyList_GET_ITEM(sequence, 3); 
+      }
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_5);
+      #else
+      {
+        Py_ssize_t i;
+        PyObject** temps[4] = {&__pyx_t_7,&__pyx_t_4,&__pyx_t_3,&__pyx_t_5};
+        for (i=0; i < 4; i++) {
+          PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 1053, __pyx_L1_error)
+          __Pyx_GOTREF(item);
+          *(temps[i]) = item;
+        }
+      }
+      #endif
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    } else {
+      Py_ssize_t index = -1;
+      PyObject** temps[4] = {&__pyx_t_7,&__pyx_t_4,&__pyx_t_3,&__pyx_t_5};
+      __pyx_t_10 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 1053, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_11 = Py_TYPE(__pyx_t_10)->tp_iternext;
+      for (index=0; index < 4; index++) {
+        PyObject* item = __pyx_t_11(__pyx_t_10); if (unlikely(!item)) goto __pyx_L5_unpacking_failed;
+        __Pyx_GOTREF(item);
+        *(temps[index]) = item;
+      }
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 4) < 0) __PYX_ERR(0, 1053, __pyx_L1_error)
+      __pyx_t_11 = NULL;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      goto __pyx_L6_unpacking_done;
+      __pyx_L5_unpacking_failed:;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __pyx_t_11 = NULL;
+      if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+      __PYX_ERR(0, 1053, __pyx_L1_error)
+      __pyx_L6_unpacking_done:;
+    }
+    __Pyx_XDECREF_SET(__pyx_v_lat, __pyx_t_7);
+    __pyx_t_7 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_lon, __pyx_t_4);
+    __pyx_t_4 = 0;
+    __Pyx_XDECREF_SET(__pyx_v__, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __Pyx_DECREF_SET(__pyx_v__, __pyx_t_5);
+    __pyx_t_5 = 0;
+
+    /* "geotess/src/libgeotess.pyx":1054
+ *         for pt in range(npoints):
+ *             lat, lon, _, _ = self.getPointLocation(pt)
+ *             testUnitVector = ellipsoid.getVectorDegrees(lat, lon)             # <<<<<<<<<<<<<<
+ *             dh = np.linalg.norm(inputUnitVector - testUnitVector)
+ *             if dh < mindh:
+ */
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ellipsoid, __pyx_n_s_getVectorDegrees); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1054, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_3 = NULL;
+    __pyx_t_6 = 0;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_5, function);
+        __pyx_t_6 = 1;
+      }
+    }
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_5)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_lat, __pyx_v_lon};
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_GOTREF(__pyx_t_1);
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_lat, __pyx_v_lon};
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_GOTREF(__pyx_t_1);
+    } else
+    #endif
+    {
+      __pyx_t_4 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1054, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (__pyx_t_3) {
+        __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
+      }
+      __Pyx_INCREF(__pyx_v_lat);
+      __Pyx_GIVEREF(__pyx_v_lat);
+      PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_6, __pyx_v_lat);
+      __Pyx_INCREF(__pyx_v_lon);
+      __Pyx_GIVEREF(__pyx_v_lon);
+      PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_6, __pyx_v_lon);
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_testUnitVector, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "geotess/src/libgeotess.pyx":1055
+ *             lat, lon, _, _ = self.getPointLocation(pt)
+ *             testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+ *             dh = np.linalg.norm(inputUnitVector - testUnitVector)             # <<<<<<<<<<<<<<
+ *             if dh < mindh:
+ *                 mindh = dh
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_linalg); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_norm); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = PyNumber_Subtract(__pyx_v_inputUnitVector, __pyx_v_testUnitVector); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_3 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_5, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_dh, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "geotess/src/libgeotess.pyx":1056
+ *             testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+ *             dh = np.linalg.norm(inputUnitVector - testUnitVector)
+ *             if dh < mindh:             # <<<<<<<<<<<<<<
+ *                 mindh = dh
+ *                 vtx = self.getPointVertex(pt)
+ */
+    __pyx_t_1 = PyObject_RichCompare(__pyx_v_dh, __pyx_v_mindh, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1056, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 1056, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (__pyx_t_12) {
+
+      /* "geotess/src/libgeotess.pyx":1057
+ *             dh = np.linalg.norm(inputUnitVector - testUnitVector)
+ *             if dh < mindh:
+ *                 mindh = dh             # <<<<<<<<<<<<<<
+ *                 vtx = self.getPointVertex(pt)
+ * 
+ */
+      __Pyx_INCREF(__pyx_v_dh);
+      __Pyx_DECREF_SET(__pyx_v_mindh, __pyx_v_dh);
+
+      /* "geotess/src/libgeotess.pyx":1058
+ *             if dh < mindh:
+ *                 mindh = dh
+ *                 vtx = self.getPointVertex(pt)             # <<<<<<<<<<<<<<
+ * 
+ *         # Second, loop to get nearest node (ie vertical coordinate, r)
+ */
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getPointVertex); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1058, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_4 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_4)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_4);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_5, function);
+        }
+      }
+      __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_v_pt) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_pt);
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1058, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_vtx, __pyx_t_1);
+      __pyx_t_1 = 0;
+
+      /* "geotess/src/libgeotess.pyx":1056
+ *             testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+ *             dh = np.linalg.norm(inputUnitVector - testUnitVector)
+ *             if dh < mindh:             # <<<<<<<<<<<<<<
+ *                 mindh = dh
+ *                 vtx = self.getPointVertex(pt)
+ */
+    }
+
+    /* "geotess/src/libgeotess.pyx":1052
+ *         ptOut = -1
+ *         mindh = 9001
+ *         for pt in range(npoints):             # <<<<<<<<<<<<<<
+ *             lat, lon, _, _ = self.getPointLocation(pt)
+ *             testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+ */
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "geotess/src/libgeotess.pyx":1062
+ *         # Second, loop to get nearest node (ie vertical coordinate, r)
+ *         # So this is failing when radius is deeper than what is available in connected vertices
+ *         mindr = 9001             # <<<<<<<<<<<<<<
+ *         for pt in range(npoints):
+ *             vtmp = self.getPointVertex(pt)
+ */
+  __Pyx_INCREF(__pyx_int_9001);
+  __pyx_v_mindr = __pyx_int_9001;
+
+  /* "geotess/src/libgeotess.pyx":1063
+ *         # So this is failing when radius is deeper than what is available in connected vertices
+ *         mindr = 9001
+ *         for pt in range(npoints):             # <<<<<<<<<<<<<<
+ *             vtmp = self.getPointVertex(pt)
+ *             if vtmp == vtx:
+ */
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_npoints); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1063, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
+    __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_8 = 0;
+    __pyx_t_9 = NULL;
+  } else {
+    __pyx_t_8 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1063, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1063, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_9)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_8); __Pyx_INCREF(__pyx_t_2); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 1063, __pyx_L1_error)
+        #else
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1063, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        #endif
+      } else {
+        if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_8); __Pyx_INCREF(__pyx_t_2); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 1063, __pyx_L1_error)
+        #else
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1063, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        #endif
+      }
+    } else {
+      __pyx_t_2 = __pyx_t_9(__pyx_t_1);
+      if (unlikely(!__pyx_t_2)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 1063, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_pt, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "geotess/src/libgeotess.pyx":1064
+ *         mindr = 9001
+ *         for pt in range(npoints):
+ *             vtmp = self.getPointVertex(pt)             # <<<<<<<<<<<<<<
+ *             if vtmp == vtx:
+ *                 _, _, rad, _ = self.getPointLocation(pt)
+ */
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getPointVertex); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1064, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_4 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_5, function);
+      }
+    }
+    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_v_pt) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_pt);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1064, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_vtmp, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "geotess/src/libgeotess.pyx":1065
+ *         for pt in range(npoints):
+ *             vtmp = self.getPointVertex(pt)
+ *             if vtmp == vtx:             # <<<<<<<<<<<<<<
+ *                 _, _, rad, _ = self.getPointLocation(pt)
+ *                 dr = np.abs(rad - radius)
+ */
+    if (unlikely(!__pyx_v_vtx)) { __Pyx_RaiseUnboundLocalError("vtx"); __PYX_ERR(0, 1065, __pyx_L1_error) }
+    __pyx_t_2 = PyObject_RichCompare(__pyx_v_vtmp, __pyx_v_vtx, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1065, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 1065, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (__pyx_t_12) {
+
+      /* "geotess/src/libgeotess.pyx":1066
+ *             vtmp = self.getPointVertex(pt)
+ *             if vtmp == vtx:
+ *                 _, _, rad, _ = self.getPointLocation(pt)             # <<<<<<<<<<<<<<
+ *                 dr = np.abs(rad - radius)
+ *                 if dr < mindr:
+ */
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_getPointLocation); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1066, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_4 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_4)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_4);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_5, function);
+        }
+      }
+      __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_v_pt) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_pt);
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1066, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if ((likely(PyTuple_CheckExact(__pyx_t_2))) || (PyList_CheckExact(__pyx_t_2))) {
+        PyObject* sequence = __pyx_t_2;
+        Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+        if (unlikely(size != 4)) {
+          if (size > 4) __Pyx_RaiseTooManyValuesError(4);
+          else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+          __PYX_ERR(0, 1066, __pyx_L1_error)
+        }
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        if (likely(PyTuple_CheckExact(sequence))) {
+          __pyx_t_5 = PyTuple_GET_ITEM(sequence, 0); 
+          __pyx_t_4 = PyTuple_GET_ITEM(sequence, 1); 
+          __pyx_t_3 = PyTuple_GET_ITEM(sequence, 2); 
+          __pyx_t_7 = PyTuple_GET_ITEM(sequence, 3); 
+        } else {
+          __pyx_t_5 = PyList_GET_ITEM(sequence, 0); 
+          __pyx_t_4 = PyList_GET_ITEM(sequence, 1); 
+          __pyx_t_3 = PyList_GET_ITEM(sequence, 2); 
+          __pyx_t_7 = PyList_GET_ITEM(sequence, 3); 
+        }
+        __Pyx_INCREF(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_7);
+        #else
+        {
+          Py_ssize_t i;
+          PyObject** temps[4] = {&__pyx_t_5,&__pyx_t_4,&__pyx_t_3,&__pyx_t_7};
+          for (i=0; i < 4; i++) {
+            PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 1066, __pyx_L1_error)
+            __Pyx_GOTREF(item);
+            *(temps[i]) = item;
+          }
+        }
+        #endif
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      } else {
+        Py_ssize_t index = -1;
+        PyObject** temps[4] = {&__pyx_t_5,&__pyx_t_4,&__pyx_t_3,&__pyx_t_7};
+        __pyx_t_10 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 1066, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_t_11 = Py_TYPE(__pyx_t_10)->tp_iternext;
+        for (index=0; index < 4; index++) {
+          PyObject* item = __pyx_t_11(__pyx_t_10); if (unlikely(!item)) goto __pyx_L11_unpacking_failed;
+          __Pyx_GOTREF(item);
+          *(temps[index]) = item;
+        }
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 4) < 0) __PYX_ERR(0, 1066, __pyx_L1_error)
+        __pyx_t_11 = NULL;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        goto __pyx_L12_unpacking_done;
+        __pyx_L11_unpacking_failed:;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __pyx_t_11 = NULL;
+        if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+        __PYX_ERR(0, 1066, __pyx_L1_error)
+        __pyx_L12_unpacking_done:;
+      }
+      __Pyx_XDECREF_SET(__pyx_v__, __pyx_t_5);
+      __pyx_t_5 = 0;
+      __Pyx_DECREF_SET(__pyx_v__, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_rad, __pyx_t_3);
+      __pyx_t_3 = 0;
+      __Pyx_DECREF_SET(__pyx_v__, __pyx_t_7);
+      __pyx_t_7 = 0;
+
+      /* "geotess/src/libgeotess.pyx":1067
+ *             if vtmp == vtx:
+ *                 _, _, rad, _ = self.getPointLocation(pt)
+ *                 dr = np.abs(rad - radius)             # <<<<<<<<<<<<<<
+ *                 if dr < mindr:
+ *                     mindr = dr
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1067, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_abs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1067, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_7 = PyFloat_FromDouble(__pyx_v_radius); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1067, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_4 = PyNumber_Subtract(__pyx_v_rad, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1067, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_7 = NULL;
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_7)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
+        }
+      }
+      __pyx_t_2 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_7, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
+      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1067, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_dr, __pyx_t_2);
+      __pyx_t_2 = 0;
+
+      /* "geotess/src/libgeotess.pyx":1068
+ *                 _, _, rad, _ = self.getPointLocation(pt)
+ *                 dr = np.abs(rad - radius)
+ *                 if dr < mindr:             # <<<<<<<<<<<<<<
+ *                     mindr = dr
+ *                     ptOut = pt
+ */
+      __pyx_t_2 = PyObject_RichCompare(__pyx_v_dr, __pyx_v_mindr, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1068, __pyx_L1_error)
+      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 1068, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (__pyx_t_12) {
+
+        /* "geotess/src/libgeotess.pyx":1069
+ *                 dr = np.abs(rad - radius)
+ *                 if dr < mindr:
+ *                     mindr = dr             # <<<<<<<<<<<<<<
+ *                     ptOut = pt
+ * 
+ */
+        __Pyx_INCREF(__pyx_v_dr);
+        __Pyx_DECREF_SET(__pyx_v_mindr, __pyx_v_dr);
+
+        /* "geotess/src/libgeotess.pyx":1070
+ *                 if dr < mindr:
+ *                     mindr = dr
+ *                     ptOut = pt             # <<<<<<<<<<<<<<
+ * 
+ *         return ptOut
+ */
+        __Pyx_INCREF(__pyx_v_pt);
+        __Pyx_DECREF_SET(__pyx_v_ptOut, __pyx_v_pt);
+
+        /* "geotess/src/libgeotess.pyx":1068
+ *                 _, _, rad, _ = self.getPointLocation(pt)
+ *                 dr = np.abs(rad - radius)
+ *                 if dr < mindr:             # <<<<<<<<<<<<<<
+ *                     mindr = dr
+ *                     ptOut = pt
+ */
+      }
+
+      /* "geotess/src/libgeotess.pyx":1065
+ *         for pt in range(npoints):
+ *             vtmp = self.getPointVertex(pt)
+ *             if vtmp == vtx:             # <<<<<<<<<<<<<<
+ *                 _, _, rad, _ = self.getPointLocation(pt)
+ *                 dr = np.abs(rad - radius)
+ */
+    }
+
+    /* "geotess/src/libgeotess.pyx":1063
+ *         # So this is failing when radius is deeper than what is available in connected vertices
+ *         mindr = 9001
+ *         for pt in range(npoints):             # <<<<<<<<<<<<<<
+ *             vtmp = self.getPointVertex(pt)
+ *             if vtmp == vtx:
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "geotess/src/libgeotess.pyx":1072
+ *                     ptOut = pt
+ * 
+ *         return ptOut             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointDepth(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_ptOut);
+  __pyx_r = __pyx_v_ptOut;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":1024
+ *         return
+ * 
+ *     def getNearestPointIndex(self, float latitude, float longitude, float radius):             # <<<<<<<<<<<<<<
+ *         """
+ *         Warning! This does not always work. Layer definitions need to be included before it will work properly!
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getNearestPointIndex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_ellipsoid);
+  __Pyx_XDECREF(__pyx_v_inputUnitVector);
+  __Pyx_XDECREF(__pyx_v_npoints);
+  __Pyx_XDECREF(__pyx_v_ptOut);
+  __Pyx_XDECREF(__pyx_v_mindh);
+  __Pyx_XDECREF(__pyx_v_pt);
+  __Pyx_XDECREF(__pyx_v_lat);
+  __Pyx_XDECREF(__pyx_v_lon);
+  __Pyx_XDECREF(__pyx_v__);
+  __Pyx_XDECREF(__pyx_v_testUnitVector);
+  __Pyx_XDECREF(__pyx_v_dh);
+  __Pyx_XDECREF(__pyx_v_vtx);
+  __Pyx_XDECREF(__pyx_v_mindr);
+  __Pyx_XDECREF(__pyx_v_vtmp);
+  __Pyx_XDECREF(__pyx_v_rad);
+  __Pyx_XDECREF(__pyx_v_dr);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1074
+ *         return ptOut
+ * 
+ *     def getPointDepth(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Given a point index, return the depth
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_63getPointDepth(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_62getPointDepth[] = "GeoTessModel.getPointDepth(self, pointIndex)\n\n        Given a point index, return the depth\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_63getPointDepth(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointDepth (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_62getPointDepth(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_62getPointDepth(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  float __pyx_v_depth;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointDepth", 0);
+
+  /* "geotess/src/libgeotess.pyx":1079
+ *         """
+ *         cdef float depth
+ *         depth = self.thisptr.getDepth(pointIndex)             # <<<<<<<<<<<<<<
+ *         return depth
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1079, __pyx_L1_error)
+  __pyx_v_depth = __pyx_v_self->thisptr->getDepth(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":1080
+ *         cdef float depth
+ *         depth = self.thisptr.getDepth(pointIndex)
+ *         return depth             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointRadius(self, pointIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_depth); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1080, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":1074
+ *         return ptOut
+ * 
+ *     def getPointDepth(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Given a point index, return the depth
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointDepth", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1082
+ *         return depth
+ * 
+ *     def getPointRadius(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Given a point index, return the radius
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_65getPointRadius(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_64getPointRadius[] = "GeoTessModel.getPointRadius(self, pointIndex)\n\n        Given a point index, return the radius\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_65getPointRadius(PyObject *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointRadius (wrapper)", 0);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_64getPointRadius(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v_pointIndex));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_64getPointRadius(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_pointIndex) {
+  float __pyx_v_radius;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointRadius", 0);
+
+  /* "geotess/src/libgeotess.pyx":1087
+ *         """
+ *         cdef float radius
+ *         radius = self.thisptr.getRadius(pointIndex)             # <<<<<<<<<<<<<<
+ *         return radius
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_pointIndex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1087, __pyx_L1_error)
+  __pyx_v_radius = __pyx_v_self->thisptr->getRadius(__pyx_t_1);
+
+  /* "geotess/src/libgeotess.pyx":1088
+ *         cdef float radius
+ *         radius = self.thisptr.getRadius(pointIndex)
+ *         return radius             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointIndex(self, vertex, layer, node):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1088, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":1082
+ *         return depth
+ * 
+ *     def getPointRadius(self, pointIndex):             # <<<<<<<<<<<<<<
+ *         """
+ *         Given a point index, return the radius
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointRadius", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1090
+ *         return radius
+ * 
+ *     def getPointIndex(self, vertex, layer, node):             # <<<<<<<<<<<<<<
+ *         """
+ *         Given a vertex, layer, and node, returns the point index
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_67getPointIndex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_66getPointIndex[] = "GeoTessModel.getPointIndex(self, vertex, layer, node)\n\n        Given a vertex, layer, and node, returns the point index\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_67getPointIndex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_vertex = 0;
+  PyObject *__pyx_v_layer = 0;
+  PyObject *__pyx_v_node = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointIndex (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_vertex,&__pyx_n_s_layer,&__pyx_n_s_node,0};
+    PyObject* values[3] = {0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_vertex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_layer)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("getPointIndex", 1, 3, 3, 1); __PYX_ERR(0, 1090, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_node)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("getPointIndex", 1, 3, 3, 2); __PYX_ERR(0, 1090, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getPointIndex") < 0)) __PYX_ERR(0, 1090, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+    }
+    __pyx_v_vertex = values[0];
+    __pyx_v_layer = values[1];
+    __pyx_v_node = values[2];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("getPointIndex", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1090, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointIndex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_66getPointIndex(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_vertex, __pyx_v_layer, __pyx_v_node);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_66getPointIndex(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_vertex, PyObject *__pyx_v_layer, PyObject *__pyx_v_node) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_pt;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointIndex", 0);
+
+  /* "geotess/src/libgeotess.pyx":1094
+ *         Given a vertex, layer, and node, returns the point index
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         pt = ptMap.getPointIndex(vertex, layer, node)
+ *         return pt
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":1095
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         pt = ptMap.getPointIndex(vertex, layer, node)             # <<<<<<<<<<<<<<
+ *         return pt
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_vertex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1095, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_layer); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1095, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_node); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1095, __pyx_L1_error)
+  __pyx_v_pt = __pyx_v_ptMap->getPointIndex(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+
+  /* "geotess/src/libgeotess.pyx":1096
+ *         ptMap = self.thisptr.getPointMap()
+ *         pt = ptMap.getPointIndex(vertex, layer, node)
+ *         return pt             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointIndexLast(self, vertex, layer):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_pt); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1096, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":1090
+ *         return radius
+ * 
+ *     def getPointIndex(self, vertex, layer, node):             # <<<<<<<<<<<<<<
+ *         """
+ *         Given a vertex, layer, and node, returns the point index
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointIndex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1098
+ *         return pt
+ * 
+ *     def getPointIndexLast(self, vertex, layer):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the point index of the shallowest node in the profile defined by vertex and layer
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_69getPointIndexLast(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_68getPointIndexLast[] = "GeoTessModel.getPointIndexLast(self, vertex, layer)\n\n        Returns the point index of the shallowest node in the profile defined by vertex and layer\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_69getPointIndexLast(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_vertex = 0;
+  PyObject *__pyx_v_layer = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointIndexLast (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_vertex,&__pyx_n_s_layer,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_vertex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_layer)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("getPointIndexLast", 1, 2, 2, 1); __PYX_ERR(0, 1098, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getPointIndexLast") < 0)) __PYX_ERR(0, 1098, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_vertex = values[0];
+    __pyx_v_layer = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("getPointIndexLast", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1098, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointIndexLast", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_68getPointIndexLast(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_vertex, __pyx_v_layer);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_68getPointIndexLast(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_vertex, PyObject *__pyx_v_layer) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_pt;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointIndexLast", 0);
+
+  /* "geotess/src/libgeotess.pyx":1102
+ *         Returns the point index of the shallowest node in the profile defined by vertex and layer
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         pt = ptMap.getPointIndexLast(vertex, layer)
+ *         return pt
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":1103
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         pt = ptMap.getPointIndexLast(vertex, layer)             # <<<<<<<<<<<<<<
+ *         return pt
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_vertex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1103, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_layer); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1103, __pyx_L1_error)
+  __pyx_v_pt = __pyx_v_ptMap->getPointIndexLast(__pyx_t_1, __pyx_t_2);
+
+  /* "geotess/src/libgeotess.pyx":1104
+ *         ptMap = self.thisptr.getPointMap()
+ *         pt = ptMap.getPointIndexLast(vertex, layer)
+ *         return pt             # <<<<<<<<<<<<<<
+ * 
+ *     def getPointIndexFirst(self, vertex, layer):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_pt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1104, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":1098
+ *         return pt
+ * 
+ *     def getPointIndexLast(self, vertex, layer):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the point index of the shallowest node in the profile defined by vertex and layer
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointIndexLast", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1106
+ *         return pt
+ * 
+ *     def getPointIndexFirst(self, vertex, layer):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the point index of the deepest node in the profile defined by vertex and layer
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_71getPointIndexFirst(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_70getPointIndexFirst[] = "GeoTessModel.getPointIndexFirst(self, vertex, layer)\n\n        Returns the point index of the deepest node in the profile defined by vertex and layer\n        ";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_71getPointIndexFirst(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_vertex = 0;
+  PyObject *__pyx_v_layer = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("getPointIndexFirst (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_vertex,&__pyx_n_s_layer,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_vertex)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_layer)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("getPointIndexFirst", 1, 2, 2, 1); __PYX_ERR(0, 1106, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getPointIndexFirst") < 0)) __PYX_ERR(0, 1106, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_vertex = values[0];
+    __pyx_v_layer = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("getPointIndexFirst", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1106, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointIndexFirst", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_70getPointIndexFirst(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_vertex, __pyx_v_layer);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_70getPointIndexFirst(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, PyObject *__pyx_v_vertex, PyObject *__pyx_v_layer) {
+  geotess::GeoTessPointMap *__pyx_v_ptMap;
+  int __pyx_v_pt;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("getPointIndexFirst", 0);
+
+  /* "geotess/src/libgeotess.pyx":1110
+ *         Returns the point index of the deepest node in the profile defined by vertex and layer
+ *         """
+ *         ptMap = self.thisptr.getPointMap()             # <<<<<<<<<<<<<<
+ *         pt = ptMap.getPointIndexFirst(vertex, layer)
+ *         return pt
+ */
+  __pyx_v_ptMap = __pyx_v_self->thisptr->getPointMap();
+
+  /* "geotess/src/libgeotess.pyx":1111
+ *         """
+ *         ptMap = self.thisptr.getPointMap()
+ *         pt = ptMap.getPointIndexFirst(vertex, layer)             # <<<<<<<<<<<<<<
+ *         return pt
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_vertex); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1111, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_layer); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1111, __pyx_L1_error)
+  __pyx_v_pt = __pyx_v_ptMap->getPointIndexFirst(__pyx_t_1, __pyx_t_2);
+
+  /* "geotess/src/libgeotess.pyx":1112
+ *         ptMap = self.thisptr.getPointMap()
+ *         pt = ptMap.getPointIndexFirst(vertex, layer)
+ *         return pt             # <<<<<<<<<<<<<<
+ * 
+ *     def getValueFloat(self, int pointIndex, int attributeIndex):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_pt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1112, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "geotess/src/libgeotess.pyx":1106
+ *         return pt
+ * 
+ *     def getPointIndexFirst(self, vertex, layer):             # <<<<<<<<<<<<<<
+ *         """
+ *         Returns the point index of the deepest node in the profile defined by vertex and layer
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getPointIndexFirst", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "geotess/src/libgeotess.pyx":1114
+ *         return pt
  * 
  *     def getValueFloat(self, int pointIndex, int attributeIndex):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getValueFloat(pointIndex, attributeIndex)
@@ -10954,9 +15662,9 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_28getPointWeights
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getValueFloat(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_30getValueFloat[] = "GeoTessModel.getValueFloat(self, int pointIndex, int attributeIndex)";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getValueFloat(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_73getValueFloat(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_72getValueFloat[] = "GeoTessModel.getValueFloat(self, int pointIndex, int attributeIndex)";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_73getValueFloat(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_pointIndex;
   int __pyx_v_attributeIndex;
   int __pyx_lineno = 0;
@@ -10988,11 +15696,11 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getValueFloat(P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_attributeIndex)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getValueFloat", 1, 2, 2, 1); __PYX_ERR(0, 757, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getValueFloat", 1, 2, 2, 1); __PYX_ERR(0, 1114, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getValueFloat") < 0)) __PYX_ERR(0, 757, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getValueFloat") < 0)) __PYX_ERR(0, 1114, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -11000,25 +15708,25 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getValueFloat(P
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_pointIndex = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_pointIndex == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 757, __pyx_L3_error)
-    __pyx_v_attributeIndex = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_attributeIndex == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 757, __pyx_L3_error)
+    __pyx_v_pointIndex = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_pointIndex == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1114, __pyx_L3_error)
+    __pyx_v_attributeIndex = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_attributeIndex == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1114, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getValueFloat", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 757, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getValueFloat", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1114, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.GeoTessModel.getValueFloat", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getValueFloat(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointIndex, __pyx_v_attributeIndex);
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_72getValueFloat(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), __pyx_v_pointIndex, __pyx_v_attributeIndex);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getValueFloat(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_pointIndex, int __pyx_v_attributeIndex) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_72getValueFloat(struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, int __pyx_v_pointIndex, int __pyx_v_attributeIndex) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11027,7 +15735,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getValueFloat(s
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getValueFloat", 0);
 
-  /* "geotess/src/libgeotess.pyx":758
+  /* "geotess/src/libgeotess.pyx":1115
  * 
  *     def getValueFloat(self, int pointIndex, int attributeIndex):
  *         return self.thisptr.getValueFloat(pointIndex, attributeIndex)             # <<<<<<<<<<<<<<
@@ -11035,14 +15743,14 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getValueFloat(s
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->getValueFloat(__pyx_v_pointIndex, __pyx_v_attributeIndex)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 758, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->getValueFloat(__pyx_v_pointIndex, __pyx_v_attributeIndex)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":757
- * 
+  /* "geotess/src/libgeotess.pyx":1114
+ *         return pt
  * 
  *     def getValueFloat(self, int pointIndex, int attributeIndex):             # <<<<<<<<<<<<<<
  *         return self.thisptr.getValueFloat(pointIndex, attributeIndex)
@@ -11067,20 +15775,20 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_30getValueFloat(s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_33__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_32__reduce_cython__[] = "GeoTessModel.__reduce_cython__(self)";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_33__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_75__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_74__reduce_cython__[] = "GeoTessModel.__reduce_cython__(self)";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_75__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_32__reduce_cython__(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_74__reduce_cython__(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_32__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_74__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11095,7 +15803,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_32__reduce_cython
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -11125,20 +15833,20 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_32__reduce_cython
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_35__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_34__setstate_cython__[] = "GeoTessModel.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_35__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_77__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_7geotess_10libgeotess_12GeoTessModel_76__setstate_cython__[] = "GeoTessModel.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_7geotess_10libgeotess_12GeoTessModel_77__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_34__setstate_cython__(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_7geotess_10libgeotess_12GeoTessModel_76__setstate_cython__(((struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_34__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_76__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7geotess_10libgeotess_GeoTessModel *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11152,7 +15860,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_34__setstate_cyth
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -11175,7 +15883,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_12GeoTessModel_34__setstate_cyth
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":764
+/* "geotess/src/libgeotess.pyx":1121
  *     cdef clib.AK135Model *thisptr
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -11208,7 +15916,7 @@ static int __pyx_pf_7geotess_10libgeotess_10AK135Model___cinit__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "geotess/src/libgeotess.pyx":765
+  /* "geotess/src/libgeotess.pyx":1122
  * 
  *     def __cinit__(self):
  *         self.thisptr = new clib.AK135Model()             # <<<<<<<<<<<<<<
@@ -11219,11 +15927,11 @@ static int __pyx_pf_7geotess_10libgeotess_10AK135Model___cinit__(struct __pyx_ob
     __pyx_t_1 = new geotess::AK135Model();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 765, __pyx_L1_error)
+    __PYX_ERR(0, 1122, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "geotess/src/libgeotess.pyx":764
+  /* "geotess/src/libgeotess.pyx":1121
  *     cdef clib.AK135Model *thisptr
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -11242,7 +15950,7 @@ static int __pyx_pf_7geotess_10libgeotess_10AK135Model___cinit__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":767
+/* "geotess/src/libgeotess.pyx":1124
  *         self.thisptr = new clib.AK135Model()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -11266,7 +15974,7 @@ static void __pyx_pf_7geotess_10libgeotess_10AK135Model_2__dealloc__(struct __py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "geotess/src/libgeotess.pyx":768
+  /* "geotess/src/libgeotess.pyx":1125
  * 
  *     def __dealloc__(self):
  *         if self.thisptr != NULL:             # <<<<<<<<<<<<<<
@@ -11276,7 +15984,7 @@ static void __pyx_pf_7geotess_10libgeotess_10AK135Model_2__dealloc__(struct __py
   __pyx_t_1 = ((__pyx_v_self->thisptr != NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "geotess/src/libgeotess.pyx":769
+    /* "geotess/src/libgeotess.pyx":1126
  *     def __dealloc__(self):
  *         if self.thisptr != NULL:
  *             del self.thisptr             # <<<<<<<<<<<<<<
@@ -11285,7 +15993,7 @@ static void __pyx_pf_7geotess_10libgeotess_10AK135Model_2__dealloc__(struct __py
  */
     delete __pyx_v_self->thisptr;
 
-    /* "geotess/src/libgeotess.pyx":768
+    /* "geotess/src/libgeotess.pyx":1125
  * 
  *     def __dealloc__(self):
  *         if self.thisptr != NULL:             # <<<<<<<<<<<<<<
@@ -11294,7 +16002,7 @@ static void __pyx_pf_7geotess_10libgeotess_10AK135Model_2__dealloc__(struct __py
  */
   }
 
-  /* "geotess/src/libgeotess.pyx":767
+  /* "geotess/src/libgeotess.pyx":1124
  *         self.thisptr = new clib.AK135Model()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -11306,7 +16014,7 @@ static void __pyx_pf_7geotess_10libgeotess_10AK135Model_2__dealloc__(struct __py
   __Pyx_RefNannyFinishContext();
 }
 
-/* "geotess/src/libgeotess.pyx":771
+/* "geotess/src/libgeotess.pyx":1128
  *             del self.thisptr
  * 
  *     def getLayerProfile(self, const double &lat, const double &lon, const int &layer):             # <<<<<<<<<<<<<<
@@ -11352,17 +16060,17 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_10AK135Model_5getLayerProfile(Py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_lon)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getLayerProfile", 1, 3, 3, 1); __PYX_ERR(0, 771, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getLayerProfile", 1, 3, 3, 1); __PYX_ERR(0, 1128, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_layer)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getLayerProfile", 1, 3, 3, 2); __PYX_ERR(0, 771, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getLayerProfile", 1, 3, 3, 2); __PYX_ERR(0, 1128, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getLayerProfile") < 0)) __PYX_ERR(0, 771, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getLayerProfile") < 0)) __PYX_ERR(0, 1128, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -11371,13 +16079,13 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_10AK135Model_5getLayerProfile(Py
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_lat = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_lat == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 771, __pyx_L3_error)
-    __pyx_v_lon = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_lon == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 771, __pyx_L3_error)
-    __pyx_v_layer = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_layer == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 771, __pyx_L3_error)
+    __pyx_v_lat = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_lat == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1128, __pyx_L3_error)
+    __pyx_v_lon = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_lon == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1128, __pyx_L3_error)
+    __pyx_v_layer = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_layer == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1128, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getLayerProfile", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 771, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getLayerProfile", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1128, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.AK135Model.getLayerProfile", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11420,7 +16128,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
   __pyx_pybuffernd_np_nodeData.data = NULL;
   __pyx_pybuffernd_np_nodeData.rcbuffer = &__pyx_pybuffer_np_nodeData;
 
-  /* "geotess/src/libgeotess.pyx":775
+  /* "geotess/src/libgeotess.pyx":1132
  *         cdef vector[vector[float]] nodeData
  * 
  *         self.thisptr.getLayerProfile(lat, lon, layer, r, nodeData)             # <<<<<<<<<<<<<<
@@ -11429,19 +16137,19 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
  */
   __pyx_v_self->thisptr->getLayerProfile(__pyx_v_lat, __pyx_v_lon, __pyx_v_layer, __pyx_v_r, __pyx_v_nodeData);
 
-  /* "geotess/src/libgeotess.pyx":777
+  /* "geotess/src/libgeotess.pyx":1134
  *         self.thisptr.getLayerProfile(lat, lon, layer, r, nodeData)
  * 
  *         cdef np.ndarray[double, ndim=1, mode="c"] np_r = np.array(r)             # <<<<<<<<<<<<<<
  *         cdef np.ndarray[double, ndim=2, mode="c"] np_nodeData = np.array(nodeData)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 777, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 777, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_convert_vector_to_py_float(__pyx_v_r); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 777, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_float(__pyx_v_r); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -11456,16 +16164,16 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 777, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 777, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1134, __pyx_L1_error)
   __pyx_t_5 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_np_r.rcbuffer->pybuffer, (PyObject*)__pyx_t_5, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_np_r = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_np_r.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 777, __pyx_L1_error)
+      __PYX_ERR(0, 1134, __pyx_L1_error)
     } else {__pyx_pybuffernd_np_r.diminfo[0].strides = __pyx_pybuffernd_np_r.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_np_r.diminfo[0].shape = __pyx_pybuffernd_np_r.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -11473,19 +16181,19 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
   __pyx_v_np_r = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "geotess/src/libgeotess.pyx":778
+  /* "geotess/src/libgeotess.pyx":1135
  * 
  *         cdef np.ndarray[double, ndim=1, mode="c"] np_r = np.array(r)
  *         cdef np.ndarray[double, ndim=2, mode="c"] np_nodeData = np.array(nodeData)             # <<<<<<<<<<<<<<
  * 
  *         return np_r, np_nodeData
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 778, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 778, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_float_3e___(__pyx_v_nodeData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 778, __pyx_L1_error)
+  __pyx_t_3 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_float_3e___(__pyx_v_nodeData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -11500,16 +16208,16 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 778, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 778, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1135, __pyx_L1_error)
   __pyx_t_6 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_np_nodeData.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_np_nodeData = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_np_nodeData.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 778, __pyx_L1_error)
+      __PYX_ERR(0, 1135, __pyx_L1_error)
     } else {__pyx_pybuffernd_np_nodeData.diminfo[0].strides = __pyx_pybuffernd_np_nodeData.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_np_nodeData.diminfo[0].shape = __pyx_pybuffernd_np_nodeData.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_np_nodeData.diminfo[1].strides = __pyx_pybuffernd_np_nodeData.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_np_nodeData.diminfo[1].shape = __pyx_pybuffernd_np_nodeData.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -11517,7 +16225,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
   __pyx_v_np_nodeData = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "geotess/src/libgeotess.pyx":780
+  /* "geotess/src/libgeotess.pyx":1137
  *         cdef np.ndarray[double, ndim=2, mode="c"] np_nodeData = np.array(nodeData)
  * 
  *         return np_r, np_nodeData             # <<<<<<<<<<<<<<
@@ -11525,7 +16233,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 780, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_np_r));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_np_r));
@@ -11537,7 +16245,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_4getLayerProfile(st
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":771
+  /* "geotess/src/libgeotess.pyx":1128
  *             del self.thisptr
  * 
  *     def getLayerProfile(self, const double &lat, const double &lon, const int &layer):             # <<<<<<<<<<<<<<
@@ -11607,7 +16315,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_6__reduce_cython__(
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -11664,7 +16372,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_8__setstate_cython_
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -11687,7 +16395,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_10AK135Model_8__setstate_cython_
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":790
+/* "geotess/src/libgeotess.pyx":1147
  *     cdef clib.GeoTessModelAmplitude *thisampptr
  * 
  *     def __cinit__(self, modelInputFile=None):             # <<<<<<<<<<<<<<
@@ -11727,7 +16435,7 @@ static int __pyx_pw_7geotess_10libgeotess_21GeoTessModelAmplitude_1__cinit__(PyO
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 790, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 1147, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -11741,7 +16449,7 @@ static int __pyx_pw_7geotess_10libgeotess_21GeoTessModelAmplitude_1__cinit__(PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 790, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.GeoTessModelAmplitude.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11766,7 +16474,7 @@ static int __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude___cinit__(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "geotess/src/libgeotess.pyx":791
+  /* "geotess/src/libgeotess.pyx":1148
  * 
  *     def __cinit__(self, modelInputFile=None):
  *         if modelInputFile is None:             # <<<<<<<<<<<<<<
@@ -11777,7 +16485,7 @@ static int __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude___cinit__(stru
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "geotess/src/libgeotess.pyx":792
+    /* "geotess/src/libgeotess.pyx":1149
  *     def __cinit__(self, modelInputFile=None):
  *         if modelInputFile is None:
  *             self.thisampptr = new clib.GeoTessModelAmplitude()             # <<<<<<<<<<<<<<
@@ -11788,11 +16496,11 @@ static int __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude___cinit__(stru
       __pyx_t_3 = new geotess::GeoTessModelAmplitude();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 792, __pyx_L1_error)
+      __PYX_ERR(0, 1149, __pyx_L1_error)
     }
     __pyx_v_self->thisampptr = __pyx_t_3;
 
-    /* "geotess/src/libgeotess.pyx":791
+    /* "geotess/src/libgeotess.pyx":1148
  * 
  *     def __cinit__(self, modelInputFile=None):
  *         if modelInputFile is None:             # <<<<<<<<<<<<<<
@@ -11802,7 +16510,7 @@ static int __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude___cinit__(stru
     goto __pyx_L3;
   }
 
-  /* "geotess/src/libgeotess.pyx":794
+  /* "geotess/src/libgeotess.pyx":1151
  *             self.thisampptr = new clib.GeoTessModelAmplitude()
  *         else:
  *             self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)             # <<<<<<<<<<<<<<
@@ -11810,12 +16518,12 @@ static int __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude___cinit__(stru
  *     def __dealloc__(self):
  */
   /*else*/ {
-    __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_v_modelInputFile); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 794, __pyx_L1_error)
+    __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_v_modelInputFile); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1151, __pyx_L1_error)
     __pyx_v_self->thisampptr = new geotess::GeoTessModelAmplitude(__pyx_t_4);
   }
   __pyx_L3:;
 
-  /* "geotess/src/libgeotess.pyx":790
+  /* "geotess/src/libgeotess.pyx":1147
  *     cdef clib.GeoTessModelAmplitude *thisampptr
  * 
  *     def __cinit__(self, modelInputFile=None):             # <<<<<<<<<<<<<<
@@ -11834,7 +16542,7 @@ static int __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude___cinit__(stru
   return __pyx_r;
 }
 
-/* "geotess/src/libgeotess.pyx":796
+/* "geotess/src/libgeotess.pyx":1153
  *             self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -11858,7 +16566,7 @@ static void __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_2__dealloc__(
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "geotess/src/libgeotess.pyx":797
+  /* "geotess/src/libgeotess.pyx":1154
  * 
  *     def __dealloc__(self):
  *         if self.thisampptr != NULL:             # <<<<<<<<<<<<<<
@@ -11868,7 +16576,7 @@ static void __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_2__dealloc__(
   __pyx_t_1 = ((__pyx_v_self->thisampptr != NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "geotess/src/libgeotess.pyx":798
+    /* "geotess/src/libgeotess.pyx":1155
  *     def __dealloc__(self):
  *         if self.thisampptr != NULL:
  *             del self.thisampptr             # <<<<<<<<<<<<<<
@@ -11877,7 +16585,7 @@ static void __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_2__dealloc__(
  */
     delete __pyx_v_self->thisampptr;
 
-    /* "geotess/src/libgeotess.pyx":797
+    /* "geotess/src/libgeotess.pyx":1154
  * 
  *     def __dealloc__(self):
  *         if self.thisampptr != NULL:             # <<<<<<<<<<<<<<
@@ -11886,7 +16594,7 @@ static void __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_2__dealloc__(
  */
   }
 
-  /* "geotess/src/libgeotess.pyx":796
+  /* "geotess/src/libgeotess.pyx":1153
  *             self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -11898,7 +16606,7 @@ static void __pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_2__dealloc__(
   __Pyx_RefNannyFinishContext();
 }
 
-/* "geotess/src/libgeotess.pyx":800
+/* "geotess/src/libgeotess.pyx":1157
  *             del self.thisampptr
  * 
  *     def getSiteTrans(self, const string& station, const string& channel, const string& band):             # <<<<<<<<<<<<<<
@@ -11944,17 +16652,17 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_21GeoTessModelAmplitude_5getSite
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_channel)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getSiteTrans", 1, 3, 3, 1); __PYX_ERR(0, 800, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getSiteTrans", 1, 3, 3, 1); __PYX_ERR(0, 1157, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_band)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getSiteTrans", 1, 3, 3, 2); __PYX_ERR(0, 800, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getSiteTrans", 1, 3, 3, 2); __PYX_ERR(0, 1157, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getSiteTrans") < 0)) __PYX_ERR(0, 800, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getSiteTrans") < 0)) __PYX_ERR(0, 1157, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -11963,13 +16671,13 @@ static PyObject *__pyx_pw_7geotess_10libgeotess_21GeoTessModelAmplitude_5getSite
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_station = __pyx_convert_string_from_py_std__in_string(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 800, __pyx_L3_error)
-    __pyx_v_channel = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 800, __pyx_L3_error)
-    __pyx_v_band = __pyx_convert_string_from_py_std__in_string(values[2]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 800, __pyx_L3_error)
+    __pyx_v_station = __pyx_convert_string_from_py_std__in_string(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1157, __pyx_L3_error)
+    __pyx_v_channel = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1157, __pyx_L3_error)
+    __pyx_v_band = __pyx_convert_string_from_py_std__in_string(values[2]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1157, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getSiteTrans", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 800, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getSiteTrans", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1157, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("geotess.libgeotess.GeoTessModelAmplitude.getSiteTrans", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11995,7 +16703,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getSiteTrans", 0);
 
-  /* "geotess/src/libgeotess.pyx":813
+  /* "geotess/src/libgeotess.pyx":1170
  * 
  *         """
  *         cdef float site_trans = self.thisampptr.getSiteTrans(station, channel, band)             # <<<<<<<<<<<<<<
@@ -12004,7 +16712,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
  */
   __pyx_v_site_trans = __pyx_v_self->thisampptr->getSiteTrans(__pyx_v_station, __pyx_v_channel, __pyx_v_band);
 
-  /* "geotess/src/libgeotess.pyx":818
+  /* "geotess/src/libgeotess.pyx":1175
  *         # cast to a float.  Not sure this comparison will work.
  *         # Saw this in https://github.com/cython/cython/blob/master/tests/run/libcpp_all.pyx
  *         cdef float NaN_FLOAT = numeric_limits[float].quiet_NaN()             # <<<<<<<<<<<<<<
@@ -12013,7 +16721,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
  */
   __pyx_v_NaN_FLOAT = std::numeric_limits<float> ::quiet_NaN();
 
-  /* "geotess/src/libgeotess.pyx":819
+  /* "geotess/src/libgeotess.pyx":1176
  *         # Saw this in https://github.com/cython/cython/blob/master/tests/run/libcpp_all.pyx
  *         cdef float NaN_FLOAT = numeric_limits[float].quiet_NaN()
  *         if site_trans == NaN_FLOAT:             # <<<<<<<<<<<<<<
@@ -12023,7 +16731,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
   __pyx_t_1 = ((__pyx_v_site_trans == __pyx_v_NaN_FLOAT) != 0);
   if (__pyx_t_1) {
 
-    /* "geotess/src/libgeotess.pyx":820
+    /* "geotess/src/libgeotess.pyx":1177
  *         cdef float NaN_FLOAT = numeric_limits[float].quiet_NaN()
  *         if site_trans == NaN_FLOAT:
  *             out = None             # <<<<<<<<<<<<<<
@@ -12033,7 +16741,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
     __Pyx_INCREF(Py_None);
     __pyx_v_out = Py_None;
 
-    /* "geotess/src/libgeotess.pyx":819
+    /* "geotess/src/libgeotess.pyx":1176
  *         # Saw this in https://github.com/cython/cython/blob/master/tests/run/libcpp_all.pyx
  *         cdef float NaN_FLOAT = numeric_limits[float].quiet_NaN()
  *         if site_trans == NaN_FLOAT:             # <<<<<<<<<<<<<<
@@ -12043,7 +16751,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
     goto __pyx_L3;
   }
 
-  /* "geotess/src/libgeotess.pyx":822
+  /* "geotess/src/libgeotess.pyx":1179
  *             out = None
  *         else:
  *             out = site_trans             # <<<<<<<<<<<<<<
@@ -12051,14 +16759,14 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
  *         return out
  */
   /*else*/ {
-    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_site_trans); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 822, __pyx_L1_error)
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_site_trans); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1179, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_v_out = __pyx_t_2;
     __pyx_t_2 = 0;
   }
   __pyx_L3:;
 
-  /* "geotess/src/libgeotess.pyx":824
+  /* "geotess/src/libgeotess.pyx":1181
  *             out = site_trans
  * 
  *         return out             # <<<<<<<<<<<<<<
@@ -12068,7 +16776,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_4getSite
   __pyx_r = __pyx_v_out;
   goto __pyx_L0;
 
-  /* "geotess/src/libgeotess.pyx":800
+  /* "geotess/src/libgeotess.pyx":1157
  *             del self.thisampptr
  * 
  *     def getSiteTrans(self, const string& station, const string& channel, const string& band):             # <<<<<<<<<<<<<<
@@ -12123,7 +16831,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_6__reduc
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -12180,7 +16888,7 @@ static PyObject *__pyx_pf_7geotess_10libgeotess_21GeoTessModelAmplitude_8__setst
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -12735,7 +17443,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 944, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 944, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -12867,7 +17575,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 950, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 950, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -12999,7 +17707,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  * 
  * cdef extern from *:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 956, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 956, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -14070,6 +18778,112 @@ static PyObject *__pyx_convert_map_to_py_int____double(std::map<int,double>  con
   return __pyx_r;
 }
 
+/* "set.to_py":129
+ * 
+ * @cname("__pyx_convert_set_to_py_int")
+ * cdef object __pyx_convert_set_to_py_int(const cpp_set[X]& s):             # <<<<<<<<<<<<<<
+ *     o = set()
+ *     cdef cpp_set[X].const_iterator iter = s.begin()
+ */
+
+static PyObject *__pyx_convert_set_to_py_int(std::set<int>  const &__pyx_v_s) {
+  PyObject *__pyx_v_o = NULL;
+  std::set<int> ::const_iterator __pyx_v_iter;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_set_to_py_int", 0);
+
+  /* "set.to_py":130
+ * @cname("__pyx_convert_set_to_py_int")
+ * cdef object __pyx_convert_set_to_py_int(const cpp_set[X]& s):
+ *     o = set()             # <<<<<<<<<<<<<<
+ *     cdef cpp_set[X].const_iterator iter = s.begin()
+ *     while iter != s.end():
+ */
+  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 130, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_o = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "set.to_py":131
+ * cdef object __pyx_convert_set_to_py_int(const cpp_set[X]& s):
+ *     o = set()
+ *     cdef cpp_set[X].const_iterator iter = s.begin()             # <<<<<<<<<<<<<<
+ *     while iter != s.end():
+ *         o.add(cython.operator.dereference(iter))
+ */
+  __pyx_v_iter = __pyx_v_s.begin();
+
+  /* "set.to_py":132
+ *     o = set()
+ *     cdef cpp_set[X].const_iterator iter = s.begin()
+ *     while iter != s.end():             # <<<<<<<<<<<<<<
+ *         o.add(cython.operator.dereference(iter))
+ *         cython.operator.preincrement(iter)
+ */
+  while (1) {
+    __pyx_t_2 = ((__pyx_v_iter != __pyx_v_s.end()) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "set.to_py":133
+ *     cdef cpp_set[X].const_iterator iter = s.begin()
+ *     while iter != s.end():
+ *         o.add(cython.operator.dereference(iter))             # <<<<<<<<<<<<<<
+ *         cython.operator.preincrement(iter)
+ *     return o
+ */
+    __pyx_t_1 = __Pyx_PyInt_From_int((*__pyx_v_iter)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 133, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = PySet_Add(__pyx_v_o, __pyx_t_1); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(1, 133, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "set.to_py":134
+ *     while iter != s.end():
+ *         o.add(cython.operator.dereference(iter))
+ *         cython.operator.preincrement(iter)             # <<<<<<<<<<<<<<
+ *     return o
+ * 
+ */
+    (void)((++__pyx_v_iter));
+  }
+
+  /* "set.to_py":135
+ *         o.add(cython.operator.dereference(iter))
+ *         cython.operator.preincrement(iter)
+ *     return o             # <<<<<<<<<<<<<<
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_o);
+  __pyx_r = __pyx_v_o;
+  goto __pyx_L0;
+
+  /* "set.to_py":129
+ * 
+ * @cname("__pyx_convert_set_to_py_int")
+ * cdef object __pyx_convert_set_to_py_int(const cpp_set[X]& s):             # <<<<<<<<<<<<<<
+ *     o = set()
+ *     cdef cpp_set[X].const_iterator iter = s.begin()
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("set.to_py.__pyx_convert_set_to_py_int", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_o);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "vector.to_py":60
  * 
  * @cname("__pyx_convert_vector_to_py_float")
@@ -14395,7 +19209,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if itemsize <= 0:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 134, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -14427,7 +19241,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if not isinstance(format, bytes):
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 137, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -14554,7 +19368,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 149, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -14828,7 +19642,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *             if self.dtype_is_object:
  */
-      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 177, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 177, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -15072,7 +19886,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
  *         info.buf = self.data
  *         info.len = self.len
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 193, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 193, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -15806,7 +20620,7 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -15862,7 +20676,7 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -17591,7 +22405,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 420, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -18639,7 +23453,7 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
  *         else:
  *             if len(self.view.format) == 1:
  */
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 497, __pyx_L5_except_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 497, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -19001,7 +23815,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
  * 
  *         if flags & PyBUF_ND:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 522, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 522, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -19550,7 +24364,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 572, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 572, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -19667,7 +24481,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 579, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__34, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 579, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__36, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 579, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_3;
@@ -20705,7 +25519,7 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -20761,7 +25575,7 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__38, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -21118,9 +25932,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         __Pyx_GOTREF(__pyx_t_7);
         { Py_ssize_t __pyx_temp;
           for (__pyx_temp=0; __pyx_temp < ((__pyx_v_ndim - __pyx_t_8) + 1); __pyx_temp++) {
-            __Pyx_INCREF(__pyx_slice__37);
-            __Pyx_GIVEREF(__pyx_slice__37);
-            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__37);
+            __Pyx_INCREF(__pyx_slice__39);
+            __Pyx_GIVEREF(__pyx_slice__39);
+            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__39);
           }
         }
         __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 684, __pyx_L1_error)
@@ -21153,7 +25967,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
  *         else:
  */
       /*else*/ {
-        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__37); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 687, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__39); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 687, __pyx_L1_error)
       }
       __pyx_L7:;
 
@@ -21293,9 +26107,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     __Pyx_GOTREF(__pyx_t_3);
     { Py_ssize_t __pyx_temp;
       for (__pyx_temp=0; __pyx_temp < __pyx_v_nslices; __pyx_temp++) {
-        __Pyx_INCREF(__pyx_slice__37);
-        __Pyx_GIVEREF(__pyx_slice__37);
-        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__37);
+        __Pyx_INCREF(__pyx_slice__39);
+        __Pyx_GIVEREF(__pyx_slice__39);
+        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__39);
       }
     }
     __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 698, __pyx_L1_error)
@@ -21422,7 +26236,7 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
  * 
  * 
  */
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__38, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 705, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__40, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 705, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -23606,7 +28420,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__39, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__41, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -23662,7 +28476,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__40, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__42, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -26939,7 +31753,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
  */
   __pyx_t_1 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_t_1, __pyx_tuple__41, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_t_1, __pyx_tuple__43, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
@@ -27828,15 +32642,36 @@ static PyMethodDef __pyx_methods_7geotess_10libgeotess_GeoTessModel[] = {
   {"getMetaData", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_13getMetaData, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_12getMetaData},
   {"getGrid", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_15getGrid, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_14getGrid},
   {"setProfile", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_17setProfile, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_16setProfile},
-  {"getProfile", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19getProfile, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_18getProfile},
-  {"getNLayers", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_21getNLayers, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_20getNLayers},
-  {"getNVertices", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_23getNVertices, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_22getNVertices},
-  {"getWeights", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getWeights, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_24getWeights},
-  {"getPointWeights", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getPointWeights, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_26getPointWeights},
-  {"getPointWeightsVector", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getPointWeightsVector, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_28getPointWeightsVector},
-  {"getValueFloat", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getValueFloat, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_30getValueFloat},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_33__reduce_cython__, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_32__reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_35__setstate_cython__, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_34__setstate_cython__},
+  {"setPointData", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_19setPointData, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_18setPointData},
+  {"setPointDataSingleAttribute", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_21setPointDataSingleAttribute, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_20setPointDataSingleAttribute},
+  {"getProfile", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_23getProfile, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_22getProfile},
+  {"getNLayers", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_25getNLayers, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_24getNLayers},
+  {"getNVertices", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_27getNVertices, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_26getNVertices},
+  {"getWeights", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_29getWeights, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_28getWeights},
+  {"getPointWeights", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_31getPointWeights, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_30getPointWeights},
+  {"getPointWeightsVector", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_33getPointWeightsVector, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_32getPointWeightsVector},
+  {"getConnectedVertices", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_35getConnectedVertices, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_34getConnectedVertices},
+  {"getPointLatitude", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_37getPointLatitude, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_36getPointLatitude},
+  {"getPointLongitude", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_39getPointLongitude, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_38getPointLongitude},
+  {"getPointLocation", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_41getPointLocation, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_40getPointLocation},
+  {"getPointVertex", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_43getPointVertex, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_42getPointVertex},
+  {"getPointTessId", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_45getPointTessId, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_44getPointTessId},
+  {"getPointLayerIndex", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_47getPointLayerIndex, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_46getPointLayerIndex},
+  {"getPointNodeIndex", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_49getPointNodeIndex, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_48getPointNodeIndex},
+  {"getPointVertexTessLayerNode", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_51getPointVertexTessLayerNode, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_50getPointVertexTessLayerNode},
+  {"getPointData", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_53getPointData, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_52getPointData},
+  {"setPointData", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_55setPointData, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_54setPointData},
+  {"setProfile", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_57setProfile, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_56setProfile},
+  {"setPointDataSingleAttribute", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_59setPointDataSingleAttribute, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_58setPointDataSingleAttribute},
+  {"getNearestPointIndex", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_61getNearestPointIndex, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_60getNearestPointIndex},
+  {"getPointDepth", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_63getPointDepth, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_62getPointDepth},
+  {"getPointRadius", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_65getPointRadius, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_64getPointRadius},
+  {"getPointIndex", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_67getPointIndex, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_66getPointIndex},
+  {"getPointIndexLast", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_69getPointIndexLast, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_68getPointIndexLast},
+  {"getPointIndexFirst", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_71getPointIndexFirst, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_70getPointIndexFirst},
+  {"getValueFloat", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_73getValueFloat, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_72getValueFloat},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_75__reduce_cython__, METH_NOARGS, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_74__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_7geotess_10libgeotess_12GeoTessModel_77__setstate_cython__, METH_O, __pyx_doc_7geotess_10libgeotess_12GeoTessModel_76__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -28915,6 +33750,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_EarthShape, __pyx_k_EarthShape, sizeof(__pyx_k_EarthShape), 0, 0, 1, 1},
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
   {&__pyx_kp_s_Empty_shape_tuple_for_cython_arr, __pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 0, 1, 0},
+  {&__pyx_kp_u_Error_layer_outside_of_range_0, __pyx_k_Error_layer_outside_of_range_0, sizeof(__pyx_k_Error_layer_outside_of_range_0), 0, 1, 0, 0},
+  {&__pyx_kp_u_Error_layerid_must_be_between_0, __pyx_k_Error_layerid_must_be_between_0, sizeof(__pyx_k_Error_layerid_must_be_between_0), 0, 1, 0, 0},
+  {&__pyx_kp_u_Error_vertex_outside_of_range_0, __pyx_k_Error_vertex_outside_of_range_0, sizeof(__pyx_k_Error_vertex_outside_of_range_0), 0, 1, 0, 0},
   {&__pyx_n_u_FLOAT, __pyx_k_FLOAT, sizeof(__pyx_k_FLOAT), 0, 1, 0, 1},
   {&__pyx_kp_u_File_not_found, __pyx_k_File_not_found, sizeof(__pyx_k_File_not_found), 0, 1, 0, 0},
   {&__pyx_n_u_GRS80, __pyx_k_GRS80, sizeof(__pyx_k_GRS80), 0, 1, 0, 1},
@@ -28955,7 +33793,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_WGS84, __pyx_k_WGS84, sizeof(__pyx_k_WGS84), 0, 1, 0, 1},
   {&__pyx_n_u_WGS84_RCONST, __pyx_k_WGS84_RCONST, sizeof(__pyx_k_WGS84_RCONST), 0, 1, 0, 1},
   {&__pyx_kp_u__13, __pyx_k__13, sizeof(__pyx_k__13), 0, 1, 0, 0},
-  {&__pyx_n_s__42, __pyx_k__42, sizeof(__pyx_k__42), 0, 0, 1, 1},
+  {&__pyx_n_s__44, __pyx_k__44, sizeof(__pyx_k__44), 0, 0, 1, 1},
+  {&__pyx_n_s_abs, __pyx_k_abs, sizeof(__pyx_k_abs), 0, 0, 1, 1},
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
   {&__pyx_n_s_arr, __pyx_k_arr, sizeof(__pyx_k_arr), 0, 0, 1, 1},
   {&__pyx_n_s_arr_memview, __pyx_k_arr_memview, sizeof(__pyx_k_arr_memview), 0, 0, 1, 1},
@@ -28991,9 +33830,18 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_geotess_libgeotess, __pyx_k_geotess_libgeotess, sizeof(__pyx_k_geotess_libgeotess), 0, 0, 1, 1},
   {&__pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_k_geotess_src_libgeotess_pyx, sizeof(__pyx_k_geotess_src_libgeotess_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_getEarthRadius, __pyx_k_getEarthRadius, sizeof(__pyx_k_getEarthRadius), 0, 0, 1, 1},
+  {&__pyx_n_s_getEarthShape, __pyx_k_getEarthShape, sizeof(__pyx_k_getEarthShape), 0, 0, 1, 1},
   {&__pyx_n_s_getLatDegrees, __pyx_k_getLatDegrees, sizeof(__pyx_k_getLatDegrees), 0, 0, 1, 1},
   {&__pyx_n_s_getLonDegrees, __pyx_k_getLonDegrees, sizeof(__pyx_k_getLonDegrees), 0, 0, 1, 1},
+  {&__pyx_n_s_getNAttributes, __pyx_k_getNAttributes, sizeof(__pyx_k_getNAttributes), 0, 0, 1, 1},
+  {&__pyx_n_s_getNLayers, __pyx_k_getNLayers, sizeof(__pyx_k_getNLayers), 0, 0, 1, 1},
+  {&__pyx_n_s_getNPoints, __pyx_k_getNPoints, sizeof(__pyx_k_getNPoints), 0, 0, 1, 1},
   {&__pyx_n_s_getNTessellations, __pyx_k_getNTessellations, sizeof(__pyx_k_getNTessellations), 0, 0, 1, 1},
+  {&__pyx_n_s_getNVertices, __pyx_k_getNVertices, sizeof(__pyx_k_getNVertices), 0, 0, 1, 1},
+  {&__pyx_n_s_getPointDepth, __pyx_k_getPointDepth, sizeof(__pyx_k_getPointDepth), 0, 0, 1, 1},
+  {&__pyx_n_s_getPointLocation, __pyx_k_getPointLocation, sizeof(__pyx_k_getPointLocation), 0, 0, 1, 1},
+  {&__pyx_n_s_getPointRadius, __pyx_k_getPointRadius, sizeof(__pyx_k_getPointRadius), 0, 0, 1, 1},
+  {&__pyx_n_s_getPointVertex, __pyx_k_getPointVertex, sizeof(__pyx_k_getPointVertex), 0, 0, 1, 1},
   {&__pyx_n_s_getVectorDegrees, __pyx_k_getVectorDegrees, sizeof(__pyx_k_getVectorDegrees), 0, 0, 1, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_kp_s_got_differing_extents_in_dimensi, __pyx_k_got_differing_extents_in_dimensi, sizeof(__pyx_k_got_differing_extents_in_dimensi), 0, 0, 1, 0},
@@ -29003,13 +33851,17 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_inputFile, __pyx_k_inputFile, sizeof(__pyx_k_inputFile), 0, 0, 1, 1},
+  {&__pyx_n_u_int, __pyx_k_int, sizeof(__pyx_k_int), 0, 1, 0, 1},
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
   {&__pyx_n_s_lat, __pyx_k_lat, sizeof(__pyx_k_lat), 0, 0, 1, 1},
+  {&__pyx_n_s_latitude, __pyx_k_latitude, sizeof(__pyx_k_latitude), 0, 0, 1, 1},
   {&__pyx_n_s_layer, __pyx_k_layer, sizeof(__pyx_k_layer), 0, 0, 1, 1},
   {&__pyx_n_s_level, __pyx_k_level, sizeof(__pyx_k_level), 0, 0, 1, 1},
   {&__pyx_kp_u_level_or_tessellation, __pyx_k_level_or_tessellation, sizeof(__pyx_k_level_or_tessellation), 0, 1, 0, 0},
+  {&__pyx_n_s_linalg, __pyx_k_linalg, sizeof(__pyx_k_linalg), 0, 0, 1, 1},
   {&__pyx_n_s_lon, __pyx_k_lon, sizeof(__pyx_k_lon), 0, 0, 1, 1},
+  {&__pyx_n_s_longitude, __pyx_k_longitude, sizeof(__pyx_k_longitude), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_metaData, __pyx_k_metaData, sizeof(__pyx_k_metaData), 0, 0, 1, 1},
@@ -29021,6 +33873,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_new, __pyx_k_new, sizeof(__pyx_k_new), 0, 0, 1, 1},
   {&__pyx_n_s_nms, __pyx_k_nms, sizeof(__pyx_k_nms), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
+  {&__pyx_n_s_node, __pyx_k_node, sizeof(__pyx_k_node), 0, 0, 1, 1},
+  {&__pyx_n_s_norm, __pyx_k_norm, sizeof(__pyx_k_norm), 0, 0, 1, 1},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_num, __pyx_k_num, sizeof(__pyx_k_num), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
@@ -29035,6 +33889,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pointB, __pyx_k_pointB, sizeof(__pyx_k_pointB), 0, 0, 1, 1},
   {&__pyx_n_s_pointIndex, __pyx_k_pointIndex, sizeof(__pyx_k_pointIndex), 0, 0, 1, 1},
   {&__pyx_n_s_pointSpacing, __pyx_k_pointSpacing, sizeof(__pyx_k_pointSpacing), 0, 0, 1, 1},
+  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
@@ -29077,8 +33932,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_unts, __pyx_k_unts, sizeof(__pyx_k_unts), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
   {&__pyx_n_s_v, __pyx_k_v, sizeof(__pyx_k_v), 0, 0, 1, 1},
+  {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
   {&__pyx_n_s_values, __pyx_k_values, sizeof(__pyx_k_values), 0, 0, 1, 1},
   {&__pyx_n_s_vertex, __pyx_k_vertex, sizeof(__pyx_k_vertex), 0, 0, 1, 1},
+  {&__pyx_n_s_zeros, __pyx_k_zeros, sizeof(__pyx_k_zeros), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
@@ -29087,9 +33944,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 281, __pyx_L1_error)
   __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 593, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 664, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 685, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(2, 944, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 149, __pyx_L1_error)
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(1, 152, __pyx_L1_error)
   __pyx_builtin_Ellipsis = __Pyx_GetBuiltinName(__pyx_n_s_Ellipsis); if (!__pyx_builtin_Ellipsis) __PYX_ERR(1, 406, __pyx_L1_error)
   __pyx_builtin_id = __Pyx_GetBuiltinName(__pyx_n_s_id); if (!__pyx_builtin_id) __PYX_ERR(1, 615, __pyx_L1_error)
   __pyx_builtin_IndexError = __Pyx_GetBuiltinName(__pyx_n_s_IndexError); if (!__pyx_builtin_IndexError) __PYX_ERR(1, 834, __pyx_L1_error)
@@ -29222,33 +34080,36 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
 
-  /* "geotess/src/libgeotess.pyx":731
+  /* "geotess/src/libgeotess.pyx":686
+ *         if vertex >= nv or vertex < 0:
+ *             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
+ *             return -1, -1             # <<<<<<<<<<<<<<
+ *         nl = self.getNLayers()
+ *         if layer >= nl or layer < 0:
+ */
+  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_int_neg_1, __pyx_int_neg_1); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 686, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+
+  /* "geotess/src/libgeotess.pyx":690
+ *         if layer >= nl or layer < 0:
+ *             print("Error, layer {} outside of range (0 - {})".format(layer, nl-1))
+ *             return -2, -2             # <<<<<<<<<<<<<<
+ *         cdef float *r
+ *         A = self.thisptr.getProfile(vertex, layer)
+ */
+  __pyx_tuple__15 = PyTuple_Pack(2, __pyx_int_neg_2, __pyx_int_neg_2); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 690, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+
+  /* "geotess/src/libgeotess.pyx":779
  * 
  *         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
  *             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")             # <<<<<<<<<<<<<<
  * 
  *         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_u_horizontalType_must_be_either_LI); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 731, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
-
-  /* "(tree fragment)":2
- * def __reduce_cython__(self):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
- * def __setstate_cython__(self, __pyx_state):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- */
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
-
-  /* "(tree fragment)":4
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- * def __setstate_cython__(self, __pyx_state):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
- */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_horizontalType_must_be_either_LI); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 779, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
 
@@ -29290,6 +34151,25 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
 
+  /* "(tree fragment)":2
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
+
+  /* "(tree fragment)":4
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ */
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+
   /* "../../anaconda3/envs/ampsuite/lib/python3.11/site-packages/numpy/__init__.pxd":944
  *         __pyx_import_array()
  *     except Exception:
@@ -29297,9 +34177,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(2, 944, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__21);
-  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(2, 944, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
 
   /* "../../anaconda3/envs/ampsuite/lib/python3.11/site-packages/numpy/__init__.pxd":950
  *         _import_umath()
@@ -29308,9 +34188,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(2, 950, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(2, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
 
   /* "View.MemoryView":134
  * 
@@ -29319,9 +34199,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if itemsize <= 0:
  */
-  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(1, 134, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__23);
-  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(1, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
 
   /* "View.MemoryView":137
  * 
@@ -29330,9 +34210,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if not isinstance(format, bytes):
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(1, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(1, 137, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
 
   /* "View.MemoryView":149
  * 
@@ -29341,9 +34221,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(1, 149, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__25);
-  __Pyx_GIVEREF(__pyx_tuple__25);
+  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(1, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__27);
+  __Pyx_GIVEREF(__pyx_tuple__27);
 
   /* "View.MemoryView":177
  *             self.data = <char *>malloc(self.len)
@@ -29352,9 +34232,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             if self.dtype_is_object:
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(1, 177, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(1, 177, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
 
   /* "View.MemoryView":193
  *             bufmode = PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
@@ -29363,9 +34243,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         info.buf = self.data
  *         info.len = self.len
  */
-  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(1, 193, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__27);
-  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(1, 193, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__29);
+  __Pyx_GIVEREF(__pyx_tuple__29);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -29373,18 +34253,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
-  __Pyx_GIVEREF(__pyx_tuple__28);
+  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__29);
-  __Pyx_GIVEREF(__pyx_tuple__29);
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
 
   /* "View.MemoryView":420
  *     def __setitem__(memoryview self, object index, object value):
@@ -29393,9 +34273,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(1, 420, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(1, 420, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
 
   /* "View.MemoryView":497
  *             result = struct.unpack(self.view.format, bytesitem)
@@ -29404,9 +34284,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         else:
  *             if len(self.view.format) == 1:
  */
-  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(1, 497, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__31);
-  __Pyx_GIVEREF(__pyx_tuple__31);
+  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(1, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__33);
+  __Pyx_GIVEREF(__pyx_tuple__33);
 
   /* "View.MemoryView":522
  *     def __getbuffer__(self, Py_buffer *info, int flags):
@@ -29415,9 +34295,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if flags & PyBUF_ND:
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(1, 522, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__32);
-  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(1, 522, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
 
   /* "View.MemoryView":572
  *         if self.view.strides == NULL:
@@ -29426,9 +34306,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(1, 572, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__33);
-  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(1, 572, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__35);
+  __Pyx_GIVEREF(__pyx_tuple__35);
 
   /* "View.MemoryView":579
  *     def suboffsets(self):
@@ -29437,12 +34317,12 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([suboffset for suboffset in self.view.suboffsets[:self.view.ndim]])
  */
-  __pyx_tuple__34 = PyTuple_New(1); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(1, 579, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__34);
+  __pyx_tuple__36 = PyTuple_New(1); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(1, 579, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_INCREF(__pyx_int_neg_1);
   __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyTuple_SET_ITEM(__pyx_tuple__34, 0, __pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_tuple__34);
+  PyTuple_SET_ITEM(__pyx_tuple__36, 0, __pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_tuple__36);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -29450,18 +34330,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__35);
-  __Pyx_GIVEREF(__pyx_tuple__35);
+  __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__37);
+  __Pyx_GIVEREF(__pyx_tuple__37);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__36);
-  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__38);
+  __Pyx_GIVEREF(__pyx_tuple__38);
 
   /* "View.MemoryView":684
  *         if item is Ellipsis:
@@ -29470,9 +34350,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *                 seen_ellipsis = True
  *             else:
  */
-  __pyx_slice__37 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__37)) __PYX_ERR(1, 684, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_slice__37);
-  __Pyx_GIVEREF(__pyx_slice__37);
+  __pyx_slice__39 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__39)) __PYX_ERR(1, 684, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice__39);
+  __Pyx_GIVEREF(__pyx_slice__39);
 
   /* "View.MemoryView":705
  *     for suboffset in suboffsets[:ndim]:
@@ -29481,9 +34361,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(1, 705, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__38);
-  __Pyx_GIVEREF(__pyx_tuple__38);
+  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(1, 705, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__40);
+  __Pyx_GIVEREF(__pyx_tuple__40);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -29491,21 +34371,21 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__39 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__39);
-  __Pyx_GIVEREF(__pyx_tuple__39);
+  __pyx_tuple__41 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__41);
+  __Pyx_GIVEREF(__pyx_tuple__41);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__40);
-  __Pyx_GIVEREF(__pyx_tuple__40);
-  __pyx_tuple__41 = PyTuple_Pack(3, __pyx_int_184977713, __pyx_int_136983863, __pyx_int_112105877); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__41);
-  __Pyx_GIVEREF(__pyx_tuple__41);
+  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__42);
+  __Pyx_GIVEREF(__pyx_tuple__42);
+  __pyx_tuple__43 = PyTuple_Pack(3, __pyx_int_184977713, __pyx_int_136983863, __pyx_int_112105877); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__43);
+  __Pyx_GIVEREF(__pyx_tuple__43);
 
   /* "geotess/src/libgeotess.pyx":106
  * 
@@ -29514,10 +34394,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Convert a 3-component unit vector to geographic latitude, in degrees.
  */
-  __pyx_tuple__43 = PyTuple_Pack(1, __pyx_n_s_v); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(0, 106, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__43);
-  __Pyx_GIVEREF(__pyx_tuple__43);
-  __pyx_codeobj__44 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__43, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getLatDegrees, 106, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__44)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_tuple__45 = PyTuple_Pack(1, __pyx_n_s_v); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__45);
+  __Pyx_GIVEREF(__pyx_tuple__45);
+  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getLatDegrees, 106, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(0, 106, __pyx_L1_error)
 
   /* "geotess/src/libgeotess.pyx":137
  * 
@@ -29526,10 +34406,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Convert a 3-component unit vector to geographic longitude, in degrees.
  */
-  __pyx_tuple__45 = PyTuple_Pack(1, __pyx_n_s_v); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__45);
-  __Pyx_GIVEREF(__pyx_tuple__45);
-  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getLonDegrees, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_tuple__47 = PyTuple_Pack(1, __pyx_n_s_v); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__47);
+  __Pyx_GIVEREF(__pyx_tuple__47);
+  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getLonDegrees, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 137, __pyx_L1_error)
 
   /* "geotess/src/libgeotess.pyx":161
  * 
@@ -29538,10 +34418,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         #def getVectorDegrees(const double &lat, const double &lon):
  *         """ Convert geographic lat, lon into a geocentric unit vector.
  */
-  __pyx_tuple__47 = PyTuple_Pack(5, __pyx_n_s_lat, __pyx_n_s_lon, __pyx_n_s_arr, __pyx_n_s_arr_memview, __pyx_n_s_v); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 161, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__47);
-  __Pyx_GIVEREF(__pyx_tuple__47);
-  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getVectorDegrees, 161, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_tuple__49 = PyTuple_Pack(5, __pyx_n_s_lat, __pyx_n_s_lon, __pyx_n_s_arr, __pyx_n_s_arr_memview, __pyx_n_s_v); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__49);
+  __Pyx_GIVEREF(__pyx_tuple__49);
+  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getVectorDegrees, 161, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 161, __pyx_L1_error)
 
   /* "geotess/src/libgeotess.pyx":196
  * 
@@ -29550,10 +34430,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Retrieve the radius of the Earth in km at the position specified by an
  */
-  __pyx_tuple__49 = PyTuple_Pack(1, __pyx_n_s_v); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 196, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__49);
-  __Pyx_GIVEREF(__pyx_tuple__49);
-  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getEarthRadius, 196, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_tuple__51 = PyTuple_Pack(1, __pyx_n_s_v); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__51);
+  __Pyx_GIVEREF(__pyx_tuple__51);
+  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_geotess_src_libgeotess_pyx, __pyx_n_s_getEarthRadius, 196, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 196, __pyx_L1_error)
 
   /* "View.MemoryView":287
  *         return self.name
@@ -29562,9 +34442,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_tuple__51 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(1, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__51);
-  __Pyx_GIVEREF(__pyx_tuple__51);
+  __pyx_tuple__53 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(1, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__53);
+  __Pyx_GIVEREF(__pyx_tuple__53);
 
   /* "View.MemoryView":288
  * 
@@ -29573,9 +34453,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_tuple__52 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__52)) __PYX_ERR(1, 288, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__52);
-  __Pyx_GIVEREF(__pyx_tuple__52);
+  __pyx_tuple__54 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(1, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__54);
+  __Pyx_GIVEREF(__pyx_tuple__54);
 
   /* "View.MemoryView":289
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -29584,9 +34464,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__53 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(1, 289, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__53);
-  __Pyx_GIVEREF(__pyx_tuple__53);
+  __pyx_tuple__55 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(1, 289, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__55);
+  __Pyx_GIVEREF(__pyx_tuple__55);
 
   /* "View.MemoryView":292
  * 
@@ -29595,9 +34475,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_tuple__54 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(1, 292, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__54);
-  __Pyx_GIVEREF(__pyx_tuple__54);
+  __pyx_tuple__56 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__56)) __PYX_ERR(1, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__56);
+  __Pyx_GIVEREF(__pyx_tuple__56);
 
   /* "View.MemoryView":293
  * 
@@ -29606,19 +34486,19 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__55 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(1, 293, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__55);
-  __Pyx_GIVEREF(__pyx_tuple__55);
+  __pyx_tuple__57 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(1, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__57);
+  __Pyx_GIVEREF(__pyx_tuple__57);
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Enum(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_tuple__56 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__56)) __PYX_ERR(1, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__56);
-  __Pyx_GIVEREF(__pyx_tuple__56);
-  __pyx_codeobj__57 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__56, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__57)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_tuple__58 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__58)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__58);
+  __Pyx_GIVEREF(__pyx_tuple__58);
+  __pyx_codeobj__59 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__58, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__59)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -29637,10 +34517,12 @@ if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_9001 = PyInt_FromLong(9001); if (unlikely(!__pyx_int_9001)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_112105877 = PyInt_FromLong(112105877L); if (unlikely(!__pyx_int_112105877)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_136983863 = PyInt_FromLong(136983863L); if (unlikely(!__pyx_int_136983863)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_neg_2 = PyInt_FromLong(-2); if (unlikely(!__pyx_int_neg_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -29749,26 +34631,26 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_GeoTessModel, (PyObject *)&__pyx_type_7geotess_10libgeotess_GeoTessModel) < 0) __PYX_ERR(0, 573, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7geotess_10libgeotess_GeoTessModel) < 0) __PYX_ERR(0, 573, __pyx_L1_error)
   __pyx_ptype_7geotess_10libgeotess_GeoTessModel = &__pyx_type_7geotess_10libgeotess_GeoTessModel;
-  if (PyType_Ready(&__pyx_type_7geotess_10libgeotess_AK135Model) < 0) __PYX_ERR(0, 761, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7geotess_10libgeotess_AK135Model) < 0) __PYX_ERR(0, 1118, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7geotess_10libgeotess_AK135Model.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7geotess_10libgeotess_AK135Model.tp_dictoffset && __pyx_type_7geotess_10libgeotess_AK135Model.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7geotess_10libgeotess_AK135Model.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_AK135Model, (PyObject *)&__pyx_type_7geotess_10libgeotess_AK135Model) < 0) __PYX_ERR(0, 761, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7geotess_10libgeotess_AK135Model) < 0) __PYX_ERR(0, 761, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_AK135Model, (PyObject *)&__pyx_type_7geotess_10libgeotess_AK135Model) < 0) __PYX_ERR(0, 1118, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7geotess_10libgeotess_AK135Model) < 0) __PYX_ERR(0, 1118, __pyx_L1_error)
   __pyx_ptype_7geotess_10libgeotess_AK135Model = &__pyx_type_7geotess_10libgeotess_AK135Model;
   __pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude.tp_base = __pyx_ptype_7geotess_10libgeotess_GeoTessModel;
-  if (PyType_Ready(&__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude) < 0) __PYX_ERR(0, 783, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude) < 0) __PYX_ERR(0, 1140, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude.tp_dictoffset && __pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_GeoTessModelAmplitude, (PyObject *)&__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude) < 0) __PYX_ERR(0, 783, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude) < 0) __PYX_ERR(0, 783, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_GeoTessModelAmplitude, (PyObject *)&__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude) < 0) __PYX_ERR(0, 1140, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude) < 0) __PYX_ERR(0, 1140, __pyx_L1_error)
   __pyx_ptype_7geotess_10libgeotess_GeoTessModelAmplitude = &__pyx_type_7geotess_10libgeotess_GeoTessModelAmplitude;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
@@ -30133,9 +35015,9 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s__42);
-  __Pyx_GIVEREF(__pyx_n_s__42);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s__42);
+  __Pyx_INCREF(__pyx_n_s__44);
+  __Pyx_GIVEREF(__pyx_n_s__44);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s__44);
   __pyx_t_3 = __Pyx_Import(__pyx_n_s_geotess_exc, __pyx_t_1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -30288,7 +35170,7 @@ if (!__Pyx_RefNanny) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__51, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 287, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__53, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(generic);
   __Pyx_DECREF_SET(generic, __pyx_t_3);
@@ -30302,7 +35184,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__52, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 288, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__54, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(strided);
   __Pyx_DECREF_SET(strided, __pyx_t_3);
@@ -30316,7 +35198,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__53, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 289, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__55, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(indirect);
   __Pyx_DECREF_SET(indirect, __pyx_t_3);
@@ -30330,7 +35212,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__54, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 292, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__56, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(contiguous);
   __Pyx_DECREF_SET(contiguous, __pyx_t_3);
@@ -30344,7 +35226,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__55, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 293, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__57, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(indirect_contiguous);
   __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_3);
@@ -32106,6 +36988,303 @@ fail:;
         PyObject_RichCompare(op1, op2, Py_EQ));
 }
 
+/* PyIntBinop */
+  #if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
+    (void)inplace;
+    (void)zerodivision_check;
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long x;
+        long a = PyInt_AS_LONG(op1);
+            x = (long)((unsigned long)a + b);
+            if (likely((x^a) >= 0 || (x^b) >= 0))
+                return PyInt_FromLong(x);
+            return PyLong_Type.tp_as_number->nb_add(op1, op2);
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        const long b = intval;
+        long a, x;
+#ifdef HAVE_LONG_LONG
+        const PY_LONG_LONG llb = intval;
+        PY_LONG_LONG lla, llx;
+#endif
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        const Py_ssize_t size = Py_SIZE(op1);
+        if (likely(__Pyx_sst_abs(size) <= 1)) {
+            a = likely(size) ? digits[0] : 0;
+            if (size == -1) a = -a;
+        } else {
+            switch (size) {
+                case -2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
+            }
+        }
+                x = a + b;
+            return PyLong_FromLong(x);
+#ifdef HAVE_LONG_LONG
+        long_long:
+                llx = lla + llb;
+            return PyLong_FromLongLong(llx);
+#endif
+        
+        
+    }
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+            double result;
+            PyFPE_START_PROTECT("add", return NULL)
+            result = ((double)a) + (double)b;
+            PyFPE_END_PROTECT(result)
+            return PyFloat_FromDouble(result);
+    }
+    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
+}
+#endif
+
+/* PyIntBinop */
+  #if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_SubtractObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
+    (void)inplace;
+    (void)zerodivision_check;
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long x;
+        long a = PyInt_AS_LONG(op1);
+            x = (long)((unsigned long)a - b);
+            if (likely((x^a) >= 0 || (x^~b) >= 0))
+                return PyInt_FromLong(x);
+            return PyLong_Type.tp_as_number->nb_subtract(op1, op2);
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        const long b = intval;
+        long a, x;
+#ifdef HAVE_LONG_LONG
+        const PY_LONG_LONG llb = intval;
+        PY_LONG_LONG lla, llx;
+#endif
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        const Py_ssize_t size = Py_SIZE(op1);
+        if (likely(__Pyx_sst_abs(size) <= 1)) {
+            a = likely(size) ? digits[0] : 0;
+            if (size == -1) a = -a;
+        } else {
+            switch (size) {
+                case -2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                default: return PyLong_Type.tp_as_number->nb_subtract(op1, op2);
+            }
+        }
+                x = a - b;
+            return PyLong_FromLong(x);
+#ifdef HAVE_LONG_LONG
+        long_long:
+                llx = lla - llb;
+            return PyLong_FromLongLong(llx);
+#endif
+        
+        
+    }
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+            double result;
+            PyFPE_START_PROTECT("subtract", return NULL)
+            result = ((double)a) - (double)b;
+            PyFPE_END_PROTECT(result)
+            return PyFloat_FromDouble(result);
+    }
+    return (inplace ? PyNumber_InPlaceSubtract : PyNumber_Subtract)(op1, op2);
+}
+#endif
+
+/* SetItemInt */
+  static int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v) {
+    int r;
+    if (!j) return -1;
+    r = PyObject_SetItem(o, j, v);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v, int is_list,
+                                               CYTHON_NCP_UNUSED int wraparound, CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = (!wraparound) ? i : ((likely(i >= 0)) ? i : i + PyList_GET_SIZE(o));
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o)))) {
+            PyObject* old = PyList_GET_ITEM(o, n);
+            Py_INCREF(v);
+            PyList_SET_ITEM(o, n, v);
+            Py_DECREF(old);
+            return 1;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_ass_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return -1;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_ass_item(o, i, v);
+        }
+    }
+#else
+#if CYTHON_COMPILING_IN_PYPY
+    if (is_list || (PySequence_Check(o) && !PyDict_Check(o)))
+#else
+    if (is_list || PySequence_Check(o))
+#endif
+    {
+        return PySequence_SetItem(o, i, v);
+    }
+#endif
+    return __Pyx_SetItemInt_Generic(o, PyInt_FromSsize_t(i), v);
+}
+
 /* BytesEquals */
   static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
 #if CYTHON_COMPILING_IN_PYPY
@@ -32253,6 +37432,156 @@ return_ne:
     #endif
     return (equals == Py_NE);
 #endif
+}
+
+/* GetItemInt */
+  static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyList_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyTuple_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return NULL;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
+/* RaiseTooManyValuesToUnpack */
+  static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
+    PyErr_Format(PyExc_ValueError,
+                 "too many values to unpack (expected %" CYTHON_FORMAT_SSIZE_T "d)", expected);
+}
+
+/* RaiseNeedMoreValuesToUnpack */
+  static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
+    PyErr_Format(PyExc_ValueError,
+                 "need more than %" CYTHON_FORMAT_SSIZE_T "d value%.1s to unpack",
+                 index, (index == 1) ? "" : "s");
+}
+
+/* IterFinish */
+  static CYTHON_INLINE int __Pyx_IterFinish(void) {
+#if CYTHON_FAST_THREAD_STATE
+    PyThreadState *tstate = __Pyx_PyThreadState_Current;
+    PyObject* exc_type = tstate->curexc_type;
+    if (unlikely(exc_type)) {
+        if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) {
+            PyObject *exc_value, *exc_tb;
+            exc_value = tstate->curexc_value;
+            exc_tb = tstate->curexc_traceback;
+            tstate->curexc_type = 0;
+            tstate->curexc_value = 0;
+            tstate->curexc_traceback = 0;
+            Py_DECREF(exc_type);
+            Py_XDECREF(exc_value);
+            Py_XDECREF(exc_tb);
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#else
+    if (unlikely(PyErr_Occurred())) {
+        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
+            PyErr_Clear();
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#endif
+}
+
+/* UnpackItemEndCheck */
+  static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected) {
+    if (unlikely(retval)) {
+        Py_DECREF(retval);
+        __Pyx_RaiseTooManyValuesError(expected);
+        return -1;
+    }
+    return __Pyx_IterFinish();
+}
+
+/* None */
+  static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
+    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
 }
 
 /* GetTopmostException */
@@ -32431,93 +37760,6 @@ bad:
     return PyObject_GetAttr(o, n);
 }
 
-/* GetItemInt */
-  static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
-    PyObject *r;
-    if (!j) return NULL;
-    r = PyObject_GetItem(o, j);
-    Py_DECREF(j);
-    return r;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyList_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
-        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyTuple_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
-        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
-                                                     CYTHON_NCP_UNUSED int wraparound,
-                                                     CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
-    if (is_list || PyList_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
-        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
-            PyObject *r = PyList_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    }
-    else if (PyTuple_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
-        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
-            PyObject *r = PyTuple_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    } else {
-        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
-        if (likely(m && m->sq_item)) {
-            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
-                Py_ssize_t l = m->sq_length(o);
-                if (likely(l >= 0)) {
-                    i += l;
-                } else {
-                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
-                        return NULL;
-                    PyErr_Clear();
-                }
-            }
-            return m->sq_item(o, i);
-        }
-    }
-#else
-    if (is_list || PySequence_Check(o)) {
-        return PySequence_GetItem(o, i);
-    }
-#endif
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-}
-
 /* ObjectGetItem */
   #if CYTHON_USE_TYPE_SLOTS
 static PyObject *__Pyx_PyObject_GetIndex(PyObject *obj, PyObject* index) {
@@ -32593,19 +37835,6 @@ static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
 static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *o, PyObject *n, PyObject *d) {
     PyObject *r = __Pyx_GetAttr(o, n);
     return (likely(r)) ? r : __Pyx_GetAttr3Default(d);
-}
-
-/* RaiseTooManyValuesToUnpack */
-  static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
-    PyErr_Format(PyExc_ValueError,
-                 "too many values to unpack (expected %" CYTHON_FORMAT_SSIZE_T "d)", expected);
-}
-
-/* RaiseNeedMoreValuesToUnpack */
-  static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
-    PyErr_Format(PyExc_ValueError,
-                 "need more than %" CYTHON_FORMAT_SSIZE_T "d value%.1s to unpack",
-                 index, (index == 1) ? "" : "s");
 }
 
 /* RaiseNoneIterError */
@@ -32812,135 +38041,6 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
     return (PyErr_GivenExceptionMatches(err, exc_type1) || PyErr_GivenExceptionMatches(err, exc_type2));
 }
 #endif
-
-/* PyIntBinop */
-  #if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
-    (void)inplace;
-    (void)zerodivision_check;
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long x;
-        long a = PyInt_AS_LONG(op1);
-            x = (long)((unsigned long)a + b);
-            if (likely((x^a) >= 0 || (x^b) >= 0))
-                return PyInt_FromLong(x);
-            return PyLong_Type.tp_as_number->nb_add(op1, op2);
-    }
-    #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        const long b = intval;
-        long a, x;
-#ifdef HAVE_LONG_LONG
-        const PY_LONG_LONG llb = intval;
-        PY_LONG_LONG lla, llx;
-#endif
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        const Py_ssize_t size = Py_SIZE(op1);
-        if (likely(__Pyx_sst_abs(size) <= 1)) {
-            a = likely(size) ? digits[0] : 0;
-            if (size == -1) a = -a;
-        } else {
-            switch (size) {
-                case -2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
-            }
-        }
-                x = a + b;
-            return PyLong_FromLong(x);
-#ifdef HAVE_LONG_LONG
-        long_long:
-                llx = lla + llb;
-            return PyLong_FromLongLong(llx);
-#endif
-        
-        
-    }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-            double result;
-            PyFPE_START_PROTECT("add", return NULL)
-            result = ((double)a) + (double)b;
-            PyFPE_END_PROTECT(result)
-            return PyFloat_FromDouble(result);
-    }
-    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
-}
-#endif
-
-/* None */
-  static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
-    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
-}
 
 /* DivInt[long] */
   static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
@@ -34519,6 +39619,44 @@ raise_neg_overflow:
     }
 }
 
+/* CIntToPy */
+  static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const long neg_one = (long) -1, const_zero = (long) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
+
 /* CIntFromPy */
   static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *x) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -34909,44 +40047,6 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to long");
     return (long) -1;
-}
-
-/* CIntToPy */
-  static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-    const long neg_one = (long) -1, const_zero = (long) 0;
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic pop
-#endif
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
 }
 
 /* CIntFromPy */
