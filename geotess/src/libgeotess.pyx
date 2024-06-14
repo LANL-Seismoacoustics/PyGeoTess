@@ -714,6 +714,18 @@ cdef class GeoTessModel:
     def getNVertices(self):
         return self.thisptr.getNVertices()
 
+    def getNPoints(self):
+        """
+        Returns the number of points
+        """
+        return self.thisptr.getNPoints()
+
+    def getNRadii(self, int vertex, int layer):
+        """
+        For a given vertex and layer, returns the number of radii (nodes)
+        """
+        return self.thisptr.getNRadii(vertex, layer)
+
     def getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):
         """ Compute the weights on each model point that results from interpolating positions along the specified ray path.
 
@@ -1113,6 +1125,756 @@ cdef class GeoTessModel:
     
     def getValueFloat(self, int pointIndex, int attributeIndex):
         return self.thisptr.getValueFloat(pointIndex, attributeIndex)
+
+    # Series of position methods. They start with defining the interpolator types
+    def positionToString(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns a string for a position object given latitude, longitude, and depth
+        optionally, give horizontalType and/or radialType interpolators
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        return str(pos.toString())
+
+    def positionToStringLayer(self, layerid, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns a string for a position object given layerid, latitude, longitude, and depth
+        optionally, give horizontalType and/or radialType interpolators
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layerid, lat, lon, depth)
+        return str(pos.toString())
+
+    def positionGetLayer(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        returns the layerID as a function of latitude, longitude, and depth.
+        Optionally, give position interpolation methods horizontalType and/or radialType
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        R = pos.getEarthRadius()
+        radius = R-depth
+        layid = pos.getLayerId(radius)
+        return layid
+
+    def positionGetVector(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        For a given latitude, longitude, and depth, get the position vector
+        Optionally, give horizontalType and/or radialType interpolators
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        cdef double* vec = pos.getVector()
+        output = np.zeros((3,))
+        output[0] = vec[0]
+        output[1] = vec[1]
+        output[2] = vec[2]
+        return output
+
+    def positionGetRadiusBottomLayer(self, layer, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Finds the bottom radius (nearest the core) for a position object
+        defined by location and layer
+
+        Parameters
+        ----------
+        layer : int
+            layer index.
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        radius (km) at bottom of layer.
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        rad = pos.getRadiusBottom(layer)
+        return rad
+
+    def positionGetRadiusTopLayer(self, layer, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Finds the top radius (nearest the surface) for a position object
+        defined by location and layer
+
+        Parameters
+        ----------
+        layer : int
+            layer index.
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        radius (km) at top of layer.
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        rad = pos.getRadiusTop(layer)
+        return rad
+
+    def positionGetValue(self, lat, lon, depth, attribute, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute at a position
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        attribute: int
+            attribute index
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        attribute value at position.
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        val = pos.getValue(attribute)
+        return val
+
+    def positionGetValueLayer(self, layer, lat, lon, depth, attribute, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute at a position, but forces it to be in layer
+
+        Parameters
+        ----------
+        layer: int
+            layer index
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        attribute: int
+            attribute index
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+        attribute value at position.
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        val = pos.getValue(attribute)
+        return val
+
+    def positionGetValues(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute values at a position
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            ndarray of attribute values at position
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        nattributes = self.getNAttributes()
+        values = np.zeros((nattributes,))
+        for iatt in range(nattributes):
+            values[iatt] = pos.getValue(iatt)
+        return values
+
+    def positionGetValuesLayer(self, layer, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the attribute at a position, but forces it to be in layer
+
+        Parameters
+        ----------
+        layer: int
+            layer index
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            ndarray of attribute values at position
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layer, lat, lon, depth)
+        nattributes = self.getNAttributes()
+        values = np.zeros((nattributes,))
+        for iatt in range(nattributes):
+            values[iatt] = pos.getValue(iatt)
+        return values
+
+    def positionGetTriangle(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns which triangle number the given location is located within.
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            Integer triangle where position is located
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        tri = pos.getTriangle()
+        return tri
+
+    def positionGetIndexOfClosestVertex(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the closest vertex to the given location
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            integer vertex
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        idx = pos.getIndexOfClosestVertex()
+        return idx
+
+    def positionGetIndexOfClosestVertexLayer(self, layerid, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns the closest vertex to the given location and layer
+
+        Parameters
+        ----------
+        layerid : integer
+            layer index
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        depth : float
+            depth from surface of ellipsoid.
+        Optionally, give horizontalType and/or radialType interpolators
+
+        Returns
+        -------
+            integer vertex
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(layerid, lat, lon, depth)
+        idx = pos.getIndexOfClosestVertex()
+        return idx
+
+    def positionGetDepth(self, lat, lon, radius, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Most position methods take depth. This method takes radius and converts to depth for the model's ellipsoid
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        radius : float
+            radius from center of earth (km).
+
+        Returns
+        -------
+        depth from surface of the earth (km).
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        dtmp = 6380-radius
+        pos.set(lat, lon, dtmp)
+        R = pos.getEarthRadius()
+        depth = R - radius
+        return depth
+
+    def positionGetRadius(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        determines radius from input depth
+
+        Parameters
+        ----------
+        lat : float
+            latitude (deg).
+        lon : float
+            longitude (deg).
+        depth : float
+            depth from ellipsoid surface (km).
+
+        Returns
+        -------
+        radius from center of earth (km).
+
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+        pos.set(lat, lon, depth)
+        R = pos.getEarthRadius()
+        radius = R-depth
+        return radius
+
+    def positionGetBorehole(self, float lat, float lon, float dz=10.0, computeDepth = False, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Returns layerID vector, radii vector, and attribute matrix for the given latitude, longitude position
+
+        Parameters
+        ----------
+        lat : float
+            latitude.
+        lon : float
+            longitude.
+        dz : float
+            regular depth sampling, km, for the borehole
+        Optionally, give horizontalType and/or radialType interpolators
+        set computeDepth=True to convert output from radii to depth
+
+        Returns
+        -------
+            vector layers, vector radii, matrix attributes
+        """
+        cdef vector[int] layers
+        cdef vector[double] radii
+        cdef vector[double] attributes
+        R = self.positionGetRadius(lat, lon, 0)
+        npts = int(np.ceil(R/dz))
+        layers.reserve(npts)
+        radii.reserve(npts)
+        nattributes = self.getNAttributes()
+        attributes.reserve(npts * nattributes)
+
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+
+        pos.set(lat, lon, 0)
+        if computeDepth:
+            computeDepthFlag = 1
+        else:
+            computeDepthFlag = 0
+        i = pos.getBorehole(dz, computeDepthFlag, layers, radii, attributes)
+        layersOut = np.zeros((layers.size(),))
+        radiiOut = np.zeros((radii.size(),))
+        attributesOut = np.zeros((radii.size(), nattributes))
+        for idx in range(layers.size()):
+            layersOut[idx] = layers[idx]
+            radiiOut[idx] = radii[idx]
+            for j in range(nattributes):
+                jdx = j + idx * nattributes
+                attributesOut[idx, j] = attributes[jdx]
+        return layersOut, radiiOut, attributesOut
+
+
+
+    def getGeographicLocationAttribute(self, float lat, float lon, float radius, int attribute, int layer, float dz=1.0, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Uses interpolation to lookup the value of an attribute at a point given latitude, longitude, radius, attribute index, and layer index
+        Optionally give dz for depth search to check the layer
+        Optionally give horizontalType and/or radialType interpolators
+        On success, returns a single value.
+        On failure, returns None object.
+        """
+        cdef const clib.GeoTessInterpolatorType* horizontalInterpolator
+        cdef const clib.GeoTessInterpolatorType* radialInterpolator
+
+        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        else:
+            msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
+            raise ValueError(msg)
+
+        if radialType in ('LINEAR', 'CUBIC_SPLINE'):
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+        else:
+            msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
+            raise ValueError(msg)
+        pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
+
+        # So this is a little weird because we can't just set a depth, but need to know what layer to look in as well
+        depth = self.positionGetDepth(lat, lon, radius, horizontalType=horizontalType, radialType=radialType)
+        pos.set(layer, lat, lon, depth)
+
+        if layer > self.getNLayers():
+            return None
+        else:
+            try:
+                rbot = pos.getRadiusBottom(layer)
+                rtop = pos.getRadiusTop(layer)
+                nradii = np.round((rtop - rbot)/dz)
+                if nradii < 2:
+                    nradii = 2
+                dr = (rtop - rbot) / (nradii-1)
+                offset = 9999.0
+                tmprad = 0.0
+                for i in range(int(nradii)):
+                    r = rbot + i * dr
+                    if np.abs(radius - r) < offset:
+                        offset = np.abs(radius-r)
+                        tmprad = r
+                pos.setRadius(layer, tmprad)
+                v = pos.getValue(attribute)
+                return v
+            except:
+                return None
+
+    #def getVertexLayerPosition(self, float lat, float lon, float depth, horizontalType="LINEAR", radialType="LINEAR"):
+    #    """
+    #    (Placeholder method)
+    #    Given coordinates in latitude, longitude, and depth, finds the vertex and layer indices
+    #    """
+    #    print("Error, this method has not been built yet.")
+    #    return
+
+    # Should get this from GeoTessModelUtils
+    # Needs an update based on updated getGeographicLocationAttribute() method
+    def makeDepthMap(self, float depth, int attribute, int layer, float dLon = 8.0,
+                     float dLat=8.0, float minlon=0, float maxlon=360, float minlat=-90, float maxlat=90,
+                     horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Extracts values for a map at constant depth.
+        The output from this can be used to make a map with other software, such as matplotlib
+        Required positional arguments: depth, attribute index.
+        Optional arguments:
+            dLon: gridding step in longitude
+            dLat: gridding step in latitude
+            minlon: minimum longitude in degrees
+            maxlon: maximum longitude in degrees
+            minlat: minimum latitude in degrees
+            maxlat: maximum latitude in degrees
+        relies on numpy as np
+
+        """
+        import numpy as np
+        lons = np.arange(minlon, maxlon, dLon)
+        lats = np.arange(minlat, maxlat, dLat)
+        outData = np.zeros((len(lons), len(lats)))
+        for ilon, lon in enumerate(lons):
+            for ilat, lat in enumerate(lats):
+                radius = self.positionGetRadius(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+                outData[ilon, ilat] = self.getGeographicLocationAttribute(lat, lon, radius, attribute, layer, horizontalType=horizontalType, radialType=radialType)
+
+        return lons, lats, outData
+
+    # Should get this from GeoTessModelUtils
+    def make1DProfile(self, float lat, float lon, int attribute, float mindepth=0, float maxdepth=6371, float dz = 1, horizontalType="LINEAR", radialType="LINEAR"):
+        """
+        Extracts values as a 1-dimensional array of depth and attribute
+        Returns numpy arrays of depth and value
+        optional parameters:
+            mindepth: minimum depth (km)
+            maxdepth: maximum depth (km)
+            dz: sampling in depth (km)
+        """
+        import numpy as np
+        depths = np.arange(mindepth, maxdepth, dz)
+        outData = np.zeros((len(depths),))
+        for idepth, depth in enumerate(depths):
+            radius = self.positionGetRadius(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+            layer = self.positionGetLayer(lat, lon, depth, horizontalType=horizontalType, radialType=radialType)
+            outData[idepth] = self.getGeographicLocationAttribute(lat, lon, radius, attribute, layer, horizontalType=horizontalType, radialType=radialType)
+
+        return depths, outData
+
+    def convertToNPArray(self):
+        """
+        Extracts from geotess object to a set of 3 location vectors and an attribute matrix
+        returns longitude vector, latitude vector, radius vector, and data matrix
+        """
+        import numpy as np
+        grid = self.getGrid()
+        ellipsoid = self.getEarthShape()
+
+        npts = 0
+        for layer in range(self.getNLayers()):
+            for vtx in range(self.getNVertices()):
+                #print(vtx, layer)
+                rads, att = self.getProfile(vtx, layer)
+                #print(len(rads))
+                npts += len(rads)
+
+        nparams = self.getNAttributes()
+
+        lonsOut = np.zeros((npts,))
+        latsOut = np.zeros((npts,))
+        radsOut = np.zeros((npts,))
+        dataOut = np.zeros((npts, nparams))
+        idx = 0
+        for layer in range(self.getNLayers()):
+            for vtx in range(self.getNVertices()):
+                vertex = grid.getVertex(vtx)
+                lat = ellipsoid.getLatDegrees(vertex)
+                lon = ellipsoid.getLonDegrees(vertex)
+                rads, att = self.getProfile(vtx, layer)
+                # Need proper err
+                for irad, rad in enumerate(rads):
+                    lonsOut[idx] = lon
+                    latsOut[idx] = lat
+                    radsOut[idx] = rad
+                    if att is not None:
+                        for iat in range(nparams):
+                            dataOut[idx, iat] = att[irad, iat]
+                    idx += 1
+        return lonsOut, latsOut, radsOut, dataOut
 
 
 cdef class AK135Model:
