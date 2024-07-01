@@ -207,9 +207,9 @@ cdef extern from "GeoTessPosition.h" namespace "geotess":
         void setTop(int layid)
         void setBottom(int layid)
         double getEarthRadius() const
-        double*	getVector()
-        int	getTriangle()
-        int	getNVertices()
+        double* getVector()
+        int getTriangle()
+        int getNVertices()
         int getIndexOfClosestVertex() const
         const double* getClosestVertex() const
         string toString() const
@@ -218,10 +218,10 @@ cdef extern from "GeoTessPosition.h" namespace "geotess":
         int getVertex(int index)
         ############################
         void setMaxTessLevel(int layid, int maxTess)
-        int	getMaxTessLevel(int layid)
-        int	getTessLevel() const
-        int	getTessLevel(const int& tId)
-        int	getTessID()
+        int getMaxTessLevel(int layid)
+        int getTessLevel() const
+        int getTessLevel(const int& tId)
+        int getTessID()
         double getRadius()
         double getLayerThickness()
         double getLayerThickness(int layid)
@@ -229,7 +229,7 @@ cdef extern from "GeoTessPosition.h" namespace "geotess":
         double getDepthTop(int layid)
         double getDepthBottom()
         double getDepthTop()
-        int	getLayerId()
+        int getLayerId()
         int getBorehole(double rSpacing, int computeDepth, vector[int]& layers, vector[double]& radii, vector[double]& attributes)
         string radialInterpolatorToString()
         void getWeights(cmap[int, double]&, double) except +
