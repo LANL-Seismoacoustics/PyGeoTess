@@ -1712,7 +1712,7 @@ cdef class GeoTessModel:
             computeDepthFlag = 1
         else:
             computeDepthFlag = 0
-        i = pos.getBorehole(dz, computeDepthFlag, layers, radii, attributes)
+        pos.getBorehole(dz, computeDepthFlag, layers, radii, attributes)
         layersOut = np.zeros((layers.size(),))
         radiiOut = np.zeros((radii.size(),))
         attributesOut = np.zeros((radii.size(), nattributes))
