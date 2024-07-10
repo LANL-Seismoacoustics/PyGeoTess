@@ -1683,7 +1683,7 @@ cdef class GeoTessModel:
         """
         cdef vector[int] layers
         cdef vector[double] radii
-        cdef vector[double] attributes
+        cdef vector[vector[double]] attributes
         R = self.positionGetRadius(lat, lon, 0)
         npts = int(np.ceil(R/dz))
         layers.reserve(npts)

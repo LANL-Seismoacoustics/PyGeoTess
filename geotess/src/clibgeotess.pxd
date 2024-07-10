@@ -230,7 +230,7 @@ cdef extern from "GeoTessPosition.h" namespace "geotess":
         double getDepthBottom()
         double getDepthTop()
         int getLayerId()
-        void getBorehole(double rSpacing, int computeDepth, vector[int]& layers, vector[double]& radii, vector[double]& attributes)
+        void getBorehole(double rSpacing, int computeDepth, vector[int]& layers, vector[double]& radii, vector[vector[double]]& attributes)
         string radialInterpolatorToString()
         void getWeights(cmap[int, double]&, double) except +
 
