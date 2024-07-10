@@ -9,7 +9,6 @@ import numpy as np
 # see http://stackoverflow.com/a/4515279/745557
 # and http://stackoverflow.com/a/18418524/745557
 
-CPPFILES = glob('geotess/src/*.cc') # GeoTess c++ source (automatically finds .h files)
 PYXFILES = ['geotess/src/libgeotess.pyx'] # hand-crafted Cython (automatically finds clibgeotess.pxd)
 CYFILES = glob('geotess/src/libgeotess.cpp') # pre-cythonized c++ source files, in case cythonize fails
 
@@ -21,12 +20,14 @@ except ImportError:
 
 if use_cython:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=CPPFILES+PYXFILES, language='c++',
+                  sources=PYXFILES, language='c++',
+                  libraries=['geotesscpp'],
                   include_dirs=[np.get_include()])]
     extensions = cythonize(extensions)
 else:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=CPPFILES+CYFILES, language='c++',
+                  sources=CYFILES, language='c++',
+                  libraries=['geotesscpp'],
                   include_dirs=[np.get_include(), 'geotess/src'])]
 
 
