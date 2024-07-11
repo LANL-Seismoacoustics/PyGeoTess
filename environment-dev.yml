@@ -2,7 +2,7 @@ name: geotess-dev
 channels:
 - conda-forge
 dependencies:
-- geotesscpp=2.7
+- geotesscpp
 - python=3
 - numpy
 - cython
