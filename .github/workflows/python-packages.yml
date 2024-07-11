@@ -28,6 +28,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
         environment-file: environment-dev.yml
         activate-environment: geotess-dev
+    - run: |
+        conda info
+        conda list
 
     - name: Install package
       run: |
