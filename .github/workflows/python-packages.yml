@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
-        os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-13]
         # os: [ubuntu-latest, macOS-latest, windows-latest]
 
     steps:
@@ -28,6 +28,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
         environment-file: environment-dev.yml
         # activate-environment: geotess-dev
+        channels: conda-forge
+        channel-priority: strict
     - run: |
         conda info
         conda list
