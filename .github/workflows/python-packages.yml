@@ -30,19 +30,15 @@ jobs:
         # activate-environment: geotess-dev
         channels: conda-forge
         channel-priority: strict
-    - run: |
-        conda info
-        conda env list
-        conda list -n test
 
     - name: Install package
-      shell: bash -el {0}
       run: |
         conda activate test
+        conda list
+        ls "$CONDA_PREFIX/include"
         pip install .
 
     - name: Test with pytest
-      shell: bash -el {0}
       run: |
         conda activate test
         pytest -v
