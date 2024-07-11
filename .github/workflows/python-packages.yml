@@ -33,6 +33,7 @@ jobs:
 
     - name: Install package
       run: |
+        conda init
         conda activate test
         conda list
         ls "$CONDA_PREFIX/include"
