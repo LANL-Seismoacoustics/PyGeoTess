@@ -17,7 +17,9 @@ jobs:
         python-version: ['3.9', '3.10', '3.11', '3.12']
         os: [ubuntu-latest, macOS-13]
         # os: [ubuntu-latest, macOS-latest, windows-latest]
-
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
@@ -33,7 +35,7 @@ jobs:
 
     - name: Install package
       run: |
-        conda init
+        conda init bash
         conda activate test
         conda list
         ls "$CONDA_PREFIX/include"
