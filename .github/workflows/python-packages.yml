@@ -32,6 +32,7 @@ jobs:
         channel-priority: strict
     - run: |
         conda info
+        conda env list
         conda list
 
     - name: Install package
