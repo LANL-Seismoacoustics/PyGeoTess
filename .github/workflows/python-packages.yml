@@ -38,10 +38,13 @@ jobs:
         conda init bash
         conda activate test
         conda list
-        ls "$CONDA_PREFIX/include/geotesscpp"
         pip install .
 
     - name: Test with pytest
       run: |
+        conda init bash
         conda activate test
+        conda list
+        ls "$CONDA_PREFIX/include/geotesscpp"
+        ls "$CONDA_PREFIX/lib"
         pytest -v
