@@ -33,7 +33,7 @@ jobs:
     - run: |
         conda info
         conda env list
-        conda list
+        conda list -n test
 
     - name: Install package
       run: |
