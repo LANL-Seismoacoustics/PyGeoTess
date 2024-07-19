@@ -3,14 +3,16 @@ import sys
 
 from distutils.core import setup
 from distutils.extension import Extension
+import sysconfig
 
 import numpy as np
 
-# see http://stackoverflow.com/a/4515279/745557
-# and http://stackoverflow.com/a/18418524/745557
-
 PYXFILES = ['geotess/src/libgeotess.pyx'] # hand-crafted Cython (automatically finds clibgeotess.pxd)
-CYFILES = glob('geotess/src/libgeotess.cpp') # pre-cythonized c++ source files, in case cythonize fails
+CYFILES = ['geotess/src/libgeotess.cpp'] # pre-cythonized c++ source files, in case cythonize fails
+
+# LIBDIRS = sysconfig.get_config_vars('LIBDIR')
+# LDFLAGS = sysconfig.get_config_vars('LDFLAGS')
+#'-Wl,-install_name,%s' % library_path
 
 try:
     from Cython.Build import cythonize
@@ -21,13 +23,17 @@ except ImportError:
 if use_cython:
     extensions = [Extension(name='geotess.libgeotess',
                   sources=PYXFILES, language='c++',
-                  libraries=['geotesscpp'],
+                  libraries=['geotesscpp', 'geotessamplitudecpp'],
+                  # library_dirs=LIBDIRS,
+                  # extra_link_args=LDFLAGS,
                   include_dirs=[np.get_include()])]
     extensions = cythonize(extensions)
 else:
     extensions = [Extension(name='geotess.libgeotess',
                   sources=CYFILES, language='c++',
-                  libraries=['geotesscpp'],
+                  libraries=['geotesscpp', 'geotessamplitudecpp'],
+                  # library_dirs=LIBDIRS,
+                  # extra_link_args=LDFLAGS,
                   include_dirs=[np.get_include(), 'geotess/src'])]
 
 
@@ -44,4 +50,3 @@ setup(name = 'pygeotess',
           'numpy',
           ]
       )
-
