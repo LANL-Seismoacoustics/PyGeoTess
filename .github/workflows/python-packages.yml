@@ -29,7 +29,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         environment-file: environment-dev.yml
-        # activate-environment: geotess-dev
         channels: conda-forge
         channel-priority: strict
 
@@ -45,6 +44,4 @@ jobs:
         conda init bash
         conda activate test
         conda list
-        ls "$CONDA_PREFIX/include/geotesscpp"
-        ls "$CONDA_PREFIX/lib"
         pytest -v
