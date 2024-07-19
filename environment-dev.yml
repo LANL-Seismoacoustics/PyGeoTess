@@ -1,11 +1,11 @@
 name: geotess-dev
 channels:
-- defaults
+- conda-forge
 dependencies:
 - python=3
-- numpy
-- cython
+- geotesscpp>=2.7
+- numpy<2
+- cython<3
 - pytest
 - pip
-- pip:
-  - -e . 
+# - cxx-compiler

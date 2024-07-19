@@ -10,42 +10,38 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        os: [macOS-13, ubuntu-latest]
+        # os: [ubuntu-latest, macOS-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install dependencies and package with Miniconda
+      uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install numpy cython pytest
+        environment-file: environment-dev.yml
+        channels: conda-forge
+        channel-priority: strict
 
-#     # https://github.com/pybind/python_example/blob/master/.github/workflows/pip.yml
-#     - name: Prepare for Windows 64 bit
-#       uses: ilammy/msvc-dev-cmd@v1
-#       with:
-#         arch: win64
-# 
-#     - name: Setuptools Windows environment variables
-#       with:
-#         arch: win64
-#       shell: bash
-#       run: |
-#         echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
-#         echo "MSSdk=1" >> $GITHUB_ENV
-
-    - name: Build with Mac/Linux
+    - name: Install package
       run: |
+        conda init bash
+        conda activate test
+        conda list
         pip install .
 
     - name: Test with pytest
       run: |
+        conda init bash
+        conda activate test
+        conda list
         pytest -v

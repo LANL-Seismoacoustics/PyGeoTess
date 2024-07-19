@@ -17,7 +17,7 @@ from libcpp.map cimport map as cmap
 from libcpp.set cimport set
 
 
-cdef extern from "GeoTessModelUtils.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessModelUtils.h" namespace "geotess":
     cdef cppclass GeoTessModelUtils:
         GeoTessModelUtils() except +
         int updatePointsPerLayer(GeoTessPosition& pos, int firstLayer, int lastLayer, double maxSpacing, vector[int]& pointsPerLayer)
@@ -27,7 +27,7 @@ cdef extern from "GeoTessModelUtils.h" namespace "geotess":
         # The rest of the functions use 2D vectors of vectors. I need to make flattened versions for easier passing
 
 
-cdef extern from "GeoTessUtils.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessUtils.h" namespace "geotess":
     cdef cppclass GeoTessUtils:
         GeoTessUtils() except +
         # a lot of these methods are static, so we use @staticmethod
@@ -44,7 +44,7 @@ cdef extern from "GeoTessUtils.h" namespace "geotess":
         @staticmethod
         double getEarthRadius(const double *const v)
 
-cdef extern from "GeoTessGrid.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
     cdef cppclass GeoTessGrid:
         GeoTessGrid() except +
         GeoTessGrid(GeoTessGrid &other) except +
@@ -68,7 +68,7 @@ cdef extern from "GeoTessGrid.h" namespace "geotess":
         # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
         double *const * getVertices() const
 
-cdef extern from "GeoTessMetaData.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
         GeoTessMetaData() except +
         GeoTessMetaData(const GeoTessMetaData &md)
@@ -97,14 +97,14 @@ cdef extern from "GeoTessMetaData.h" namespace "geotess":
         int getModelFileFormat() const
         void setModelFileFormat(int version) const
 
-cdef extern from "EarthShape.h" namespace "geotess":
+cdef extern from "geotesscpp/EarthShape.h" namespace "geotess":
     cdef cppclass EarthShape:
         EarthShape(const string &earthShape) except +
         double getLonDegrees(const double *const v)
         double getLatDegrees(const double *const v)
         void getVectorDegrees(const double &lat, const double &lon, double *v)
 
-cdef extern from "GeoTessModel.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessModel.h" namespace "geotess":
     cdef cppclass GeoTessModel:
         GeoTessModel() except +
         GeoTessModel(const string &gridFileName, GeoTessMetaData *metaData) except +
@@ -134,12 +134,12 @@ cdef extern from "GeoTessModel.h" namespace "geotess":
         GeoTessPosition* getPosition(const GeoTessInterpolatorType& horizontalType)
         GeoTessPosition* getPosition(const GeoTessInterpolatorType& horizontalType, const GeoTessInterpolatorType& radialType)
 
-cdef extern from "AK135Model.h" namespace "geotess":
+cdef extern from "geotesscpp/AK135Model.h" namespace "geotess":
     cdef cppclass AK135Model:
         AK135Model() except +
         void getLayerProfile(const double &lat, const double &lon, const int &layer, vector[float] &r, vector[vector[float]] &nodeData)
 
-cdef extern from "GeoTessData.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessData.h" namespace "geotess":
     cdef cppclass GeoTessData:
         GeoTessData() except +
         double getDouble(int attributeIndex) const
@@ -147,7 +147,7 @@ cdef extern from "GeoTessData.h" namespace "geotess":
         void setValue(int attributeIndex, double v)
         int size() const
 
-cdef extern from "GeoTessProfile.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessProfile.h" namespace "geotess":
     cdef cppclass GeoTessProfile:
         GeoTessProfile() except +
         int getNRadii() const
@@ -156,7 +156,7 @@ cdef extern from "GeoTessProfile.h" namespace "geotess":
         GeoTessData* getData(int i)
         int getTypeInt()
 
-cdef extern from "GeoTessPointMap.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessPointMap.h" namespace "geotess":
     cdef cppclass GeoTessPointMap:
         GeoTessPointMap() except +
         int size() const
@@ -178,7 +178,7 @@ cdef extern from "GeoTessPointMap.h" namespace "geotess":
 # GeoTessPosition objects are called from within the GeoTessModel object
 # Several methods are overloaded, that is flexible on their input parameters, which c++ is ok with, but python freaks out over
 # The setters and getters only operate within GeoTessModel methods and therefore are not sticky in the calling python
-cdef extern from "GeoTessPosition.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessPosition.h" namespace "geotess":
     cdef cppclass GeoTessPosition:
         GeoTessPosition() except +
         GeoTessPosition* getGeoTessPosition(GeoTessModel* model)
@@ -234,7 +234,7 @@ cdef extern from "GeoTessPosition.h" namespace "geotess":
         string radialInterpolatorToString()
         void getWeights(cmap[int, double]&, double) except +
 
-cdef extern from "GeoTessInterpolatorType.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessInterpolatorType.h" namespace "geotess":
     cdef cppclass GeoTessInterpolatorType:
         @staticmethod
         GeoTessInterpolatorType* valueOf(const string &s)
@@ -256,7 +256,7 @@ cdef extern from "GeoTessInterpolatorType.h" namespace "geotess":
 
 # GeoTessModelAmplitude is a subclass of GeoTessModel.  Hence the longer name.
 # https://altugkarakurt.github.io/how-to-wrap-polymorphic-cpp-classes-with-cython
-cdef extern from "GeoTessModelAmplitude.h" namespace "geotess":
+cdef extern from "geotesscpp/GeoTessModelAmplitude.h" namespace "geotess":
     cdef cppclass GeoTessModelAmplitude(GeoTessModel):
         GeoTessModelAmplitude() except +
         GeoTessModelAmplitude(const string& modelInputFile);
