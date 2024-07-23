@@ -13,13 +13,23 @@ and a more Pythonic interface.
 
 ## Installation
 
-### Dependecies
-
-* GeoTessCPP >= 2.7:
-  The underlying C++ library powering PyGeoTess.  Available from conda-forge by:
-  `conda install -c conda-forge geotesscpp`
-
 PyGeoTess currently requires a C++ compiler.  In the future, binary wheels may be available on PyPI.
+
+### GeoTessCPP
+
+First, install GeoTessCPP >= 2.7, the underlying C++ library powering PyGeoTess,
+available from Conda-Forge or directly from the [SNL repository](https://github.com/sandialabs/GeoTessCPP):
+
+With conda:
+
+```bash
+conda install -c conda-forge geotesscpp`
+```
+
+Using PyGeoTess with `geotesscpp` installed from the main repository is currently untested.
+
+
+### PyGeoTess
 
 To install centrally from this repo: `pip install .`
 
