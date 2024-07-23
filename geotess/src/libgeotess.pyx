@@ -421,6 +421,9 @@ cdef class GeoTessMetaData:
     def setModelSoftwareVersion(self, const string& swVersion):
         self.thisptr.setModelSoftwareVersion(swVersion)
 
+    def getModelSoftwareVersion(self):
+        self.thisptr.getModelSoftwareVersion()
+
     def setModelGenerationDate(self, const string& genDate):
         self.thisptr.setModelGenerationDate(genDate)
 
@@ -466,6 +469,15 @@ cdef class GeoTessMetaData:
 
     def getLayerName(self, const int &layerIndex):
         return self.thisptr.getLayerName(layerIndex)
+
+    def getLayerIndex(self, layerName):
+        return self.thisptr.getLayerIndex(layerName)
+
+    def getModelFileFormat(self):
+        return self.thisptr.getModelFileFormat()
+
+    def setModelFileFormat(self, version):
+        self.thisptr.setModelFileFormat(version)
 
 
 cdef class EarthShape:
@@ -614,6 +626,234 @@ cdef class GeoTessModel:
     def writeModel(self, const string& outputFile):
         self.thisptr.writeModel(outputFile)
 
+    def getConnectedVertices(self, int layerid):
+        """
+        Function fo find which vertices are connected
+        if a vertex is not connected, then it won't have a set profile
+        Argument:
+            layerID: integer layer index
+        Returns:
+            ndarray of connected vertices at this layer
+        """
+        if layerid < 0 or layerid >= self.getNLayers():
+            print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
+            return -1
+        cdef cv = self.thisptr.getConnectedVertices(layerid)
+        nvertices = 0
+        for i in cv:
+            nvertices += 1
+        vertices = np.zeros((nvertices,), dtype='int')
+        for idx, i in enumerate(cv):
+            vertices[idx] = i
+
+        return vertices
+
+    def getPointLatitude(self, pointIndex):
+        """
+        Use the pointMap object to find the latitude given a pointIndex value
+        """
+        ptMap = self.thisptr.getPointMap()
+        loc = ptMap.getPointLatLonString(pointIndex)
+        floatLocation = [float(x) for x in loc.split()]
+        return floatLocation[0]
+
+    def getPointLongitude(self, pointIndex):
+        """
+        Use the pointMap object to find the longitude given a pointIndex value
+        """
+        ptMap = self.thisptr.getPointMap()
+        loc = ptMap.getPointLatLonString(pointIndex)
+        floatLocation = [float(x) for x in loc.split()]
+        return floatLocation[1]
+
+    def getPointLocation(self, pointIndex):
+        """
+        Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        loc = ptMap.getPointLatLonString(pointIndex)
+        floatLocation = [float(x) for x in loc.split()]
+        lat = floatLocation[0]
+        lon = floatLocation[1]
+        depth = self.getPointDepth(pointIndex)
+        radius = self.getPointRadius(pointIndex)
+        return lat, lon, radius, depth
+
+
+    def getPointVertex(self, pointIndex):
+        """
+        Returns the vertex given a point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getVertexIndex(pointIndex)
+        return idx
+
+    def getPointTessId(self, pointIndex):
+        """
+        Returns the Tesselation ID given a pointIndex
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getTessId(pointIndex)
+        return idx
+
+    def getPointLayerIndex(self, pointIndex):
+        """
+        Returns the layer index given a pointIndex
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getLayerIndex(pointIndex)
+        return idx
+
+    def getPointNodeIndex(self, pointIndex):
+        """
+        Returns the node index (in a profile) given a point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        idx = ptMap.getNodeIndex(pointIndex)
+        return idx
+
+    def getPointVertexTessLayerNode(self, pointIndex):
+        """
+        Parameters
+        ----------
+        pointIndex : Integer from 0 to self.getNPoints()-1
+
+        Returns
+        -------
+        ints for: vertex, tessID, layerID, and Node
+
+        """
+        ptMap = self.thisptr.getPointMap()
+        vertex = ptMap.getVertexIndex(pointIndex)
+        tessID = ptMap.getTessId(pointIndex)
+        layerID = ptMap.getLayerIndex(pointIndex)
+        node = ptMap.getNodeIndex(pointIndex)
+        return vertex, tessID, layerID, node
+
+    def getPointData(self, pointIndex):
+        """
+        For a given point index, returns a vector of attribute values
+        """
+        ptMap = self.thisptr.getPointMap()
+        geotessdata = ptMap.getPointData(pointIndex)
+        npts = geotessdata.size()
+        dataOut = np.zeros((npts,))
+        for i in range(npts):
+            dataOut[i] = geotessdata.getDouble(i)
+        return dataOut
+
+    def setPointData(self, pointIndex, values):
+        """
+        For a given pointIndex, sets the values in the GeoTess Model
+        """
+        ptMap = self.thisptr.getPointMap()
+        # below returns a point to values in a point map.
+        geoData = ptMap.getPointData(pointIndex)
+        for ival, val in enumerate(values):
+            # The reference of the pointer is followed in the setter!
+            geoData.setValue(ival, val)
+        return
+
+    def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):
+        """
+        For a given point index and attribute index, sets the value
+        """
+        ptMap = self.thisptr.getPointMap()
+        geoData = ptMap.getPointData(pointIndex)
+        geoData.setValue(attributeIndex, value)
+        return
+
+    def getNearestPointIndex(self, float latitude, float longitude, float radius):
+        """
+        Warning! This does not always work. Layer definitions need to be included before it will work properly!
+        This is also quite slow.
+
+        Parameters
+        ----------
+        float latitude :
+            floating point from -90 to 90
+            Defines the latitude of the lookup point
+        float longitude : floating point from -180 to 360
+            Defines the longitude of the lookup point.
+        float radius : floating point from 0 to ~6371 (earth's radius out from center')
+            Defines the radius of the lookup point.
+
+        Returns
+        -------
+        (int) pointIndex used to map the given location to the nearest point in the tesselation.
+
+        """
+        #ptMap = self.thisptr.getPointMap()
+        # V2: use the unit vector from the EarthShape class
+        ellipsoid = self.getEarthShape()
+        inputUnitVector = ellipsoid.getVectorDegrees(latitude, longitude)
+        npoints = self.getNPoints()
+        # First, loop to get nearest vertex (ie horizontal coordinate, h)
+        ptOut = -1
+        mindh = 9001
+        for pt in range(npoints):
+            lat, lon, _, _ = self.getPointLocation(pt)
+            testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
+            dh = np.linalg.norm(inputUnitVector - testUnitVector)
+            if dh < mindh:
+                mindh = dh
+                vtx = self.getPointVertex(pt)
+
+        # Second, loop to get nearest node (ie vertical coordinate, r)
+        # So this is failing when radius is deeper than what is available in connected vertices
+        mindr = 9001
+        for pt in range(npoints):
+            vtmp = self.getPointVertex(pt)
+            if vtmp == vtx:
+                _, _, rad, _ = self.getPointLocation(pt)
+                dr = np.abs(rad - radius)
+                if dr < mindr:
+                    mindr = dr
+                    ptOut = pt
+
+        return ptOut
+
+    def getPointDepth(self, pointIndex):
+        """
+        Given a point index, return the depth
+        """
+        cdef float depth
+        depth = self.thisptr.getDepth(pointIndex)
+        return depth
+
+    def getPointRadius(self, pointIndex):
+        """
+        Given a point index, return the radius
+        """
+        cdef float radius
+        radius = self.thisptr.getRadius(pointIndex)
+        return radius
+
+    def getPointIndex(self, vertex, layer, node):
+        """
+        Given a vertex, layer, and node, returns the point index
+        """
+        ptMap = self.thisptr.getPointMap()
+        pt = ptMap.getPointIndex(vertex, layer, node)
+        return pt
+
+    def getPointIndexLast(self, vertex, layer):
+        """
+        Returns the point index of the shallowest node in the profile defined by vertex and layer
+        """
+        ptMap = self.thisptr.getPointMap()
+        pt = ptMap.getPointIndexLast(vertex, layer)
+        return pt
+
+    def getPointIndexFirst(self, vertex, layer):
+        """
+        Returns the point index of the deepest node in the profile defined by vertex and layer
+        """
+        ptMap = self.thisptr.getPointMap()
+        pt = ptMap.getPointIndexFirst(vertex, layer)
+        return pt
+
+
     def toString(self):
 
         return self.thisptr.toString()
@@ -628,6 +868,15 @@ cdef class GeoTessModel:
         md.owner = self
 
         return md
+
+    def getNAttributes(self):
+        """
+        Returns the number of attributes in the metadata
+        """
+        md = self.getMetaData()
+        att = md.getAttributeNamesString()
+        x = att.split()
+        return len(x)
 
     def getGrid(self):
         #XXX: I don't this this works
@@ -651,30 +900,83 @@ cdef class GeoTessModel:
 
         """
         # holycrap, vector[vector[...]] can just be a list of lists
-        # I wonder if it can be a 2D NumPy array.  Yep!  I can do the to do below.
-        # TODO: accept NumPy vectors instead of lists for radii and values
-        self.thisptr.setProfile(vertex, layer, radii, values)
-    def setPointData(self, pointIndex, values):
-        """
-        For a given pointIndex, sets the values in the GeoTess Model
-        """
-        ptMap = self.thisptr.getPointMap()
-        # below returns a point to values in a point map.
-        geoData = ptMap.getPointData(pointIndex)
-        for ival, val in enumerate(values):
-            # The reference of the pointer is followed in the setter!
-            geoData.setValue(ival, val)
-        return
+        # I wonder if it can be a 2D NumPy array.  Yep!
+        try:
+            self.thisptr.setProfile(vertex, layer, radii, values)
+        except Exception as e:
+            # TODO: make this a more targeted exception
+            msg = "Problem setting profile. Message: {}".format(e.message)
+            raise Exception(msg)
 
-    def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):
-        """
-        For a given point index and attribute index, sets the value
-        """
-        ptMap = self.thisptr.getPointMap()
-        geoData = ptMap.getPointData(pointIndex)
-        geoData.setValue(attributeIndex, value)
-        return
-    
+    # def setProfileND(self, int vertex, int layer, radii, values):
+    #     """
+    #     Set profile values at a vertex and layer using ndarrays rather than c++ vector types
+
+    #     Parameters
+    #     ----------
+    #     int vertex, layer
+    #         vertex and layer indices of the profile
+    #     radii : 1D ndarray
+    #         ndarray radius values of the profile data
+    #     values : 2D ndarray
+    #         nradii x nattributes ndarray of attribute values at the provided radii
+
+    #     Returns:
+    #         1 on success
+    #         -1 on values not being 2D ndarray
+    #         -2 on errors packing ndarray in c++ vectors
+    #         -3 on error setting profile values
+    #     """
+    #     import numpy as np
+    #     cdef vector[float] cradii
+    #     cdef vector[vector[float]] cvalues
+    #     cdef vector[float] ctmp
+
+    #     # Radii have to increase.
+    #     # Put a check here to make sure the input radii and values ndarrays
+    #     # are in increasing radius, that is radius outward from the center
+    #     # of the earth
+    #     if radii[1] < radii[0]:
+    #         tmp = np.flipud(radii)
+    #         radii = tmp.copy()
+    #         tmp = np.flipud(values)
+    #         values = tmp.copy()
+
+    #     try:
+    #         (nr, na) = values.shape
+    #     except:
+    #         print("Error in setProfileND: values must be nradii x nattributes ndarray")
+    #         return -1
+    #     try:
+    #         cradii.reserve(nr)
+    #         for ir, r in enumerate(radii):
+    #             cradii.push_back(r)
+    #             ctmp.clear()
+    #             for ia, a in enumerate(values[ir]):
+    #                 ctmp.push_back(a)
+    #             cvalues.push_back(ctmp)
+    #     except:
+    #         print("Error in setProfileND: c++ vector fill error")
+    #         return -2
+    #     try:
+    #         self.thisptr.setProfile(vertex, layer, cradii, cvalues)
+    #         cradii.clear()
+    #         cvalues.clear()
+    #         return 1
+    #     except:
+    #         print("Error in setProfileND: c++ call failed.")
+    #         return -3
+
+
+    # XXX: I don't thing there's a GeoTessProfile.getTypeInt method in the library
+    # def getProfileTypeInt(self, int vertex, int layer):
+    #     """
+    #     Given a vertex and layer, returns the profile type as an integer
+    #     """
+    #     A = self.thisptr.getProfile(vertex, layer)
+    #     return A.getTypeInt()
+
+
     def getProfile(self, int vertex, int layer):
         """
         Gets values in a profile given the vertex and layer.
@@ -762,7 +1064,7 @@ cdef class GeoTessModel:
 
         """
         # TODO: make this return two NumPy arrays instead?
-        
+
         # pointA and pointB were specified as typed memorviews, so we can send the address to their first
         # element as the double pointer.
         # pointSpacing and radius are automatically converted to addresses by Cython because they
@@ -784,9 +1086,9 @@ cdef class GeoTessModel:
                                 weights)
 
         return weights
-    
+
     def getPointWeights(self, double lat, double lon, double radius, str horizontalType="LINEAR"):
-            
+
         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
 
@@ -813,46 +1115,6 @@ cdef class GeoTessModel:
         pos.getWeights(weights,1.)
         return weights
     
-    def getConnectedVertices(self, int layerid):
-        """
-        Function fo find which vertices are connected
-        if a vertex is not connected, then it won't have a set profile
-        Argument:
-            layerID: integer layer index
-        Returns:
-            ndarray of connected vertices at this layer
-        """
-        if layerid < 0 or layerid >= self.getNLayers():
-            print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
-            return -1
-        cdef cv = self.thisptr.getConnectedVertices(layerid)
-        nvertices = 0
-        for i in cv:
-            nvertices += 1
-        vertices = np.zeros((nvertices,), dtype='int')
-        for idx, i in enumerate(cv):
-            vertices[idx] = i
-
-        return vertices
-
-    def getPointLatitude(self, pointIndex):
-        """
-        Use the pointMap object to find the latitude given a pointIndex value
-        """
-        ptMap = self.thisptr.getPointMap()
-        loc = ptMap.getPointLatLonString(pointIndex)
-        floatLocation = [float(x) for x in loc.split()]
-        return floatLocation[0]
-
-    def getPointLongitude(self, pointIndex):
-        """
-        Use the pointMap object to find the longitude given a pointIndex value
-        """
-        ptMap = self.thisptr.getPointMap()
-        loc = ptMap.getPointLatLonString(pointIndex)
-        floatLocation = [float(x) for x in loc.split()]
-        return floatLocation[1]
-
     def getPointLocation(self, pointIndex):
         """
         Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
@@ -928,17 +1190,6 @@ cdef class GeoTessModel:
             dataOut[i] = geotessdata.getDouble(i)
         return dataOut
 
-    def setPointData(self, pointIndex, values):
-        """
-        For a given pointIndex, sets the values in the GeoTess Model
-        """
-        ptMap = self.thisptr.getPointMap()
-        # below returns a point to values in a point map.
-        geoData = ptMap.getPointData(pointIndex)
-        for ival, val in enumerate(values):
-            # The reference of the pointer is followed in the setter!
-            geoData.setValue(ival, val)
-        return
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
         """
         Set profile values at a vertex and layer.
@@ -1024,72 +1275,6 @@ cdef class GeoTessModel:
 #             print("Error in setProfileND: c++ call failed.")
 #             return -3
 
-    def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):
-        """
-        For a given point index and attribute index, sets the value
-        """
-        ptMap = self.thisptr.getPointMap()
-        geoData = ptMap.getPointData(pointIndex)
-        geoData.setValue(attributeIndex, value)
-        return
-
-    def getNearestPointIndex(self, float latitude, float longitude, float radius):
-        """
-        Warning! This does not always work. Layer definitions need to be included before it will work properly!
-        This is also quite slow.
-
-        Parameters
-        ----------
-        float latitude :
-            floating point from -90 to 90
-            Defines the latitude of the lookup point
-        float longitude : floating point from -180 to 360
-            Defines the longitude of the lookup point.
-        float radius : floating point from 0 to ~6371 (earth's radius out from center')
-            Defines the radius of the lookup point.
-
-        Returns
-        -------
-        (int) pointIndex used to map the given location to the nearest point in the tesselation.
-
-        """
-        #ptMap = self.thisptr.getPointMap()
-        # V2: use the unit vector from the EarthShape class
-        ellipsoid = self.getEarthShape()
-        inputUnitVector = ellipsoid.getVectorDegrees(latitude, longitude)
-        npoints = self.getNPoints()
-        # First, loop to get nearest vertex (ie horizontal coordinate, h)
-        ptOut = -1
-        mindh = 9001
-        for pt in range(npoints):
-            lat, lon, _, _ = self.getPointLocation(pt)
-            testUnitVector = ellipsoid.getVectorDegrees(lat, lon)
-            dh = np.linalg.norm(inputUnitVector - testUnitVector)
-            if dh < mindh:
-                mindh = dh
-                vtx = self.getPointVertex(pt)
-
-        # Second, loop to get nearest node (ie vertical coordinate, r)
-        # So this is failing when radius is deeper than what is available in connected vertices
-        mindr = 9001
-        for pt in range(npoints):
-            vtmp = self.getPointVertex(pt)
-            if vtmp == vtx:
-                _, _, rad, _ = self.getPointLocation(pt)
-                dr = np.abs(rad - radius)
-                if dr < mindr:
-                    mindr = dr
-                    ptOut = pt
-
-        return ptOut
-
-    def getPointDepth(self, pointIndex):
-        """
-        Given a point index, return the depth
-        """
-        cdef float depth
-        depth = self.thisptr.getDepth(pointIndex)
-        return depth
 
     def getPointRadius(self, pointIndex):
         """
@@ -1825,7 +2010,6 @@ cdef class GeoTessModel:
             maxdepth: maximum depth (km)
             dz: sampling in depth (km)
         """
-        import numpy as np
         depths = np.arange(mindepth, maxdepth, dz)
         outData = np.zeros((len(depths),))
         for idepth, depth in enumerate(depths):
