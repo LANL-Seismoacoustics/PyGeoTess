@@ -26,7 +26,7 @@ With conda:
 conda install -c conda-forge geotesscpp`
 ```
 
-Using PyGeoTess with `geotesscpp` installed from the main repository is currently untested.
+NOTE: Using PyGeoTess with `geotesscpp` installed from the main SNL repository does not currently work.
 
 
 ### PyGeoTess
