@@ -27,7 +27,7 @@ if use_cython:
                   # library_dirs=LIBDIRS,
                   # extra_link_args=LDFLAGS,
                   include_dirs=[np.get_include()])]
-    extensions = cythonize(extensions)
+    extensions = cythonize(extensions, force=True)
 else:
     extensions = [Extension(name='geotess.libgeotess',
                   sources=CYFILES, language='c++',
