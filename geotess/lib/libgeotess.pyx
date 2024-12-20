@@ -79,7 +79,7 @@ from libcpp.limits cimport numeric_limits
 from libcpp.set cimport set
 
 
-cimport clibgeotess as clib
+cimport geotess.lib.clibgeotess as clib
 import geotess.exc as exc
 
 
