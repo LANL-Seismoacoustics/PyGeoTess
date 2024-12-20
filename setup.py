@@ -4,8 +4,8 @@ from setuptools import setup, Extension
 
 import numpy as np
 
-PYXFILES = ['geotess/src/libgeotess.pyx'] # hand-crafted Cython (automatically finds clibgeotess.pxd)
-CYFILES = ['geotess/src/libgeotess.cpp'] # pre-cythonized c++ source files, in case cythonize fails
+# PYXFILES = ['geotess/src/libgeotess.pyx'] # hand-crafted Cython (automatically finds clibgeotess.pxd)
+# CYFILES = ['geotess/src/libgeotess.cpp'] # pre-cythonized c++ source files, in case cythonize fails
 
 try:
     from Cython.Build import cythonize
@@ -15,18 +15,14 @@ except ImportError:
 
 if use_cython:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=PYXFILES, language='c++',
+                  sources=["geotess/src/*.pyx"], language='c++',
                   libraries=['geotesscpp', 'geotessamplitudecpp'],
-                  # library_dirs=LIBDIRS,
-                  # extra_link_args=LDFLAGS,
                   include_dirs=[np.get_include()])]
     extensions = cythonize(extensions, force=True)
 else:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=CYFILES, language='c++',
+                  sources=["geotess/src/*.cpp"], language='c++',
                   libraries=['geotesscpp', 'geotessamplitudecpp'],
-                  # library_dirs=LIBDIRS,
-                  # extra_link_args=LDFLAGS,
                   include_dirs=[np.get_include(), 'geotess/src'])]
 
 
