@@ -20,13 +20,20 @@ PyGeoTess currently requires a C++ compiler.  In the future, binary wheels may b
 First, install GeoTessCPP >= 2.7, the underlying C++ library powering PyGeoTess,
 available from Conda-Forge or directly from the [SNL repository](https://github.com/sandialabs/GeoTessCPP):
 
+> [!WARNING]
+> Using PyGeoTess with GeoTessCPP installed from the main SNL repository does not currently work.
+> For PyGeoTess to work, the header files need to be put into a `geotesscpp` directory in the standard system include path,
+> and the shared object libraries need to be put into the standard library search path 
+> (e.g. `/usr/local/lib` and `/usr/local/include/geotesscpp`, or `$CONDA_PREFIX/lib` and `$CONDA_PREFIX/include/geotesscpp`).
+> The SNL Makefile, however, compiles the shared objects to look for the header files in `../lib` instead
+> of the search paths mentioned above.
+
 With conda:
 
 ```bash
 conda install -c conda-forge geotesscpp
 ```
 
-NOTE: Using PyGeoTess with `geotesscpp` installed from the main SNL repository does not currently work.
 
 
 ### PyGeoTess
@@ -38,9 +45,9 @@ To install an "editable" local installation from this repo: `pip install -e .`
 
 ## Roadmap
 
-1. Add tests, initially mirroring those from GeoTessCPP.
-2. Clean up API, due to expedient merging of work from contributors.
-3. Reorganize package, following outline below.  The idea is to have CPP/Python mirrored naming, distinguished only by import statements.
+1. Reorganize package, following outline below.  The idea is to have CPP/Python mirrored naming, distinguished only by import statements.
+2. Add tests, initially mirroring those from GeoTessCPP.
+3. Clean up API, due to expedient merging of work from contributors.
 ```
 geotess\
     __init__.py
