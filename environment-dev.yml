@@ -3,6 +3,7 @@ channels:
 - conda-forge
 dependencies:
 - python=3
+- setuptools
 - geotesscpp>=2.7
 - numpy<2
 - cython<3

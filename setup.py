@@ -1,18 +1,11 @@
 from glob import glob
-import sys
 
-from distutils.core import setup
-from distutils.extension import Extension
-import sysconfig
+from setuptools import setup, Extension
 
 import numpy as np
 
 PYXFILES = ['geotess/src/libgeotess.pyx'] # hand-crafted Cython (automatically finds clibgeotess.pxd)
 CYFILES = ['geotess/src/libgeotess.cpp'] # pre-cythonized c++ source files, in case cythonize fails
-
-# LIBDIRS = sysconfig.get_config_vars('LIBDIR')
-# LDFLAGS = sysconfig.get_config_vars('LDFLAGS')
-#'-Wl,-install_name,%s' % library_path
 
 try:
     from Cython.Build import cythonize
@@ -48,5 +41,6 @@ setup(name = 'pygeotess',
       data_files = [ ('geotess/data', glob('geotess/src/GeoTessModels/*')) ],
       install_requires = [
           'numpy',
+          'setuptools',
           ]
       )
