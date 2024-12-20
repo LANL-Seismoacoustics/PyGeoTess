@@ -15,15 +15,15 @@ except ImportError:
 
 if use_cython:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=["geotess/src/*.pyx"], language='c++',
+                  sources=["geotess/lib/*.pyx"], language='c++',
                   libraries=['geotesscpp', 'geotessamplitudecpp'],
                   include_dirs=[np.get_include()])]
     extensions = cythonize(extensions, force=True)
 else:
     extensions = [Extension(name='geotess.libgeotess',
-                  sources=["geotess/src/*.cpp"], language='c++',
+                  sources=["geotess/lib/*.cpp"], language='c++',
                   libraries=['geotesscpp', 'geotessamplitudecpp'],
-                  include_dirs=[np.get_include(), 'geotess/src'])]
+                  include_dirs=[np.get_include(), 'geotess/lib'])]
 
 
 setup(name = 'pygeotess',
