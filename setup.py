@@ -5,10 +5,13 @@ from setuptools import setup, Extension
 
 import numpy as np
 
-# PYXFILES = ['geotess/src/libgeotess.pyx'] # hand-crafted Cython (automatically finds clibgeotess.pxd)
-# CYFILES = ['geotess/src/libgeotess.cpp'] # pre-cythonized c++ source files, in case cythonize fails
+try:
+    from Cython.Build import cythonize
+    use_cython = True
+except ImportError:
+    use_cython = False
 
-# extensions = [ext for ext in make_extension(pathlib.Path('.').glob('geotess/*.pyx'))]
+
 def make_extension(extpath: Path) -> Extension:
     """ Make a setuptools.Extension from a Path to a pygeotess source file. 
 
@@ -33,11 +36,6 @@ def make_extension(extpath: Path) -> Extension:
 
     return extension
 
-try:
-    from Cython.Build import cythonize
-    use_cython = True
-except ImportError:
-    use_cython = False
 
 compiler_directives = dict(
     embedsignature=True,
@@ -47,18 +45,8 @@ compiler_directives = dict(
 )
 
 if use_cython:
+    # Every .pyx file in the package will produce a lowecase Python extension module in the same location.
     extensions = [make_extension(pth) for pth in Path('.').glob('geotess/**/*.pyx')]
-    # a single lib extension module containing all Cython implementation classes
-    # extensions = [
-    #     Extension(
-    #         name='geotess.lib',
-    #         # sources=["geotess/lib/*.pyx"],
-    #         sources=glob("geotess/*.pyx"),
-    #         language='c++',
-    #         libraries=['geotesscpp', 'geotessamplitudecpp'],
-    #         include_dirs=[np.get_include()],
-    #     )
-    # ]
     extensions = cythonize(
         extensions, 
         force=True, 
@@ -66,16 +54,6 @@ if use_cython:
     )
 else:
     extensions = [make_extension(pth) for pth in Path('.').glob('geotess/**/*.cpp')]
-    # extensions = [
-    #     Extension(
-    #         name='geotess.lib',
-    #         # sources=["geotess/lib/*.cpp"],
-    #         sources=glob("geotess/*.cpp"),
-    #         language='c++',
-    #         libraries=['geotesscpp', 'geotessamplitudecpp'],
-    #         include_dirs=[np.get_include(), 'geotess'],
-    #     )
-    # ]
 
 
 setup(name = 'pygeotess',
