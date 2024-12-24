@@ -1,9 +1,3 @@
-#distutils: language = c++
-#cython: embedsignature=True
-#cython: language_level=3
-#cython: c_string_type=unicode
-#cython: c_string_encoding=utf-8
-
 import numpy as np
 cimport numpy as np
 

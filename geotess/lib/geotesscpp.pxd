@@ -1,4 +1,3 @@
-#distutils: language = c++
 """
 This module pulls GeoTess c++ functionality into Cython (not in Python yet).
 
