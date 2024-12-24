@@ -1,6 +1,6 @@
 """ Test low-level Cython wrapping of GeoTessMetaData C++ class.
 """
-import geotess.libgeotess as libgt
+import geotess.lib as libgt
 
 def test_init():
     # Test empty/nullary constructor

@@ -14,7 +14,7 @@ import numpy as np
 from geotess import __version__
 from geotess.utils import Layer, Attribute
 from geotess.grid import Grid
-import geotess.libgeotess as lib
+import geotess.lib as lib
 
 def _geotess_layer_names(name_list):
     """ Convert Python list of names to GeoTess-style name list.

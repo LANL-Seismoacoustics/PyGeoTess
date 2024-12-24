@@ -4,7 +4,7 @@ GeoTessGrid Python definitions.
 """
 import numpy as np
 
-import geotess.libgeotess as lib
+import geotess.lib.libgeotess as lib
 
 class Grid(object):
     """

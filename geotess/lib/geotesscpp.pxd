@@ -2,12 +2,13 @@
 """
 This module pulls GeoTess c++ functionality into Cython (not in Python yet).
 
-A pxd file is just a header file, mirroring that of c++.  It's necessary
-because Cython doesn't have a C header parser.
+A pxd file is just a header file, mirroring that of the C++ headers it is exposing.  
+It's necessary because Cython doesn't have a C header parser.
 
-For simplicity, we pull from all of GeoTess into this one place, and only the
-desired classes, methods, and functions.  Declarations are mostly unchanged
-from the original.
+We pull from all of GeoTess into this one place, and only the
+desired classes, methods, and functions, so that it can be easily cimport-ed
+to avoid name clashes. Declarations are only changed from the original if there
+is a syntax problem or Cython limitation.
 
 """
 # libcpp is a Cython thing
@@ -25,6 +26,23 @@ cdef extern from "geotesscpp/GeoTessModelUtils.h" namespace "geotess":
         #string getBoreholeString(GeoTessModel& pos, double lat, double lon)
         #string getBoreholeString(GeoTessPosition& pos, double maxSpacing, int firstLayer, int lastLayer, bool convertToDepth, bool reciprocal, vector[int]& attributes)
         # The rest of the functions use 2D vectors of vectors. I need to make flattened versions for easier passing
+
+cdef extern from "geotesscpp/GeoTessUtils.h" namespace "geotess":
+    cdef cppclass GeoTessUtils:
+        GeoTessUtils() except +
+        # a lot of these methods are static, so we use @staticmethod
+        # https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#static-member-method
+        # This makes them like functions within a "GeoTessUtils" Python module
+        # instead of methods on a class instance.
+        # try to match common C++ exceptions to Python ones: https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html#exceptions
+        @staticmethod
+        double getLatDegrees(const double *const v)
+        @staticmethod
+        double getLonDegrees(const double *const v)
+        @staticmethod
+        double* getVectorDegrees(const double &lat, const double &lon, double *v)
+        @staticmethod
+        double getEarthRadius(const double *const v)
 
 
 cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":

@@ -79,9 +79,9 @@ from libcpp.limits cimport numeric_limits
 from libcpp.set cimport set
 
 
-cimport geotess.lib.clibgeotess as clib
+cimport geotess.lib.geotesscpp as clib
+# import geotess.lib as lib
 import geotess.exc as exc
-
 
 
 cdef class GeoTessGrid:

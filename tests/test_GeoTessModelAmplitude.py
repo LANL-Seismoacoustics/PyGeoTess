@@ -1,6 +1,6 @@
 """ Testing for wrapped C++ GeoTessModelAmplitude class
 """
-import geotess.libgeotess as libgt
+import geotess.lib as libgt
 
 
 def test_init():
