@@ -37,23 +37,27 @@ def make_extension(extpath: Path) -> Extension:
     return extension
 
 
-compiler_directives = dict(
-    embedsignature=True,
-    language_level='3',
-    c_string_type='unicode',
-    c_string_encoding='utf-8',
-)
 
 if use_cython:
-    # Every .pyx file in the package will produce a lowecase Python extension module in the same location.
-    extensions = [make_extension(pth) for pth in Path('.').glob('geotess/**/*.pyx')]
+    # Every .pyx file in the the geotess directory will produce a lowecase Python extension module in the same location.
+    pyxfiles = Path('geotess').glob('**/*.pyx')
+    cy_extensions = [make_extension(pth) for pth in pyxfiles]
+
+    compiler_directives = dict(
+        embedsignature=True,
+        language_level='3',
+        c_string_type='unicode',
+        c_string_encoding='utf-8',
+    )
     extensions = cythonize(
-        extensions, 
+        cy_extensions, 
         force=True, 
         compiler_directives=compiler_directives
     )
 else:
-    extensions = [make_extension(pth) for pth in Path('.').glob('geotess/**/*.cpp')]
+    # Every .cpp file in the the geotess directory will produce a lowecase Python extension module in the same location.
+    cppfiles = Path('geotess').glob('**/*.cpp')
+    extensions = [make_extension(pth) for pth in cppfiles]
 
 
 setup(name = 'pygeotess',
