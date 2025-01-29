@@ -79,10 +79,40 @@ import geotess.lib as lib
 import geotess.exc as exc
 
 cdef class GeoTessGrid:
+    """ Manages the geometry and topology of one or more multi-level triangular tessellations of a unit sphere.
+
+    Has many functions to retrieve information about the grid but knows nothing about Data.
+
+    Manages the geometry and topology of one or more multi-level triangular tessellations of a unit sphere.
+    It knows:
+
+    * the positions of all the vertices,
+    * the connectivity information that defines how vertices are connected to form triangles,
+    * for each triangle it knows the indexes of the 3 neighboring triangles,
+    * for each triangle it knows the index of the triangle which is a descendant at the next higher
+      tessellation level, if there is one.
+    * information about which triangles reside on which tessellation level
+
+    GeoTessGrid is thread-safe in that its internal state is not modified after its data has been loaded
+    into memory. The design intention is that single instances of a GeoTessGrid object and GeoTessData
+    object can be shared among all the threads in a multi-threaded application and each thread will have 
+    it's own instance of a GeoTessPosition object that references the common GeoTessGrid + GeoTessData
+    combination.
+
+    Parameters
+    ----------
+    raw : bool
+        If True, return an "raw" (empty) instance (doesn't initialize its own pointer).
+        This is intended for use with c-level classmethods that instantiate an instance
+        from an existing pointer.
+
+    """
     cdef clib.GeoTessGrid *thisptr
     cdef object owner
 
     def __cinit__(self, raw=False):
+        """ 
+        """
         # XXX: lots of things evaluate to True or False. A file name, for example.
         if not raw:
             self.thisptr = new clib.GeoTessGrid()
@@ -92,6 +122,19 @@ cdef class GeoTessGrid:
             del self.thisptr
 
     def loadGrid(self, const string& inputFile):
+        """ Load GeoTessGrid object from a File.
+
+        Parameters
+        ----------
+        inputFile : str
+            name of file from which to load grid.
+
+        Returns
+        -------
+        pointer to a Grid object
+
+        """
+        # TODO: I think this needs to become a staticmethod: grid = GeoTessGrid.loadGrid(gridfilename)
         if os.path.exists(inputFile):
             self.thisptr.loadGrid(inputFile)
         else:
