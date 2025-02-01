@@ -75,6 +75,7 @@ from libcpp.set cimport set
 
 
 cimport geotess.lib.geotesscpp as clib
+
 import geotess.lib as lib
 import geotess.exc as exc
 
@@ -111,8 +112,6 @@ cdef class GeoTessGrid:
     cdef object owner
 
     def __cinit__(self, raw=False):
-        """ 
-        """
         # XXX: lots of things evaluate to True or False. A file name, for example.
         if not raw:
             self.thisptr = new clib.GeoTessGrid()
@@ -135,6 +134,8 @@ cdef class GeoTessGrid:
 
         """
         # TODO: I think this needs to become a staticmethod: grid = GeoTessGrid.loadGrid(gridfilename)
+        # I honestly don't know how this works as written.  CPP returns a pointer to a GeoTessGrid, but 
+        # I don't capture it here.  Somehow it still gets assigned to .thisptr.
         if os.path.exists(inputFile):
             self.thisptr.loadGrid(inputFile)
         else:
@@ -142,6 +143,9 @@ cdef class GeoTessGrid:
 
     def writeGrid(self, const string& fileName):
         self.thisptr.writeGrid(fileName)
+
+    def getGridInputFile(self):
+        return self.thisptr.getGridInputFile()
 
     def getNLevels(self):
         return self.thisptr.getNLevels()
