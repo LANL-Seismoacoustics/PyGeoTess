@@ -145,12 +145,46 @@ cdef class GeoTessGrid:
         self.thisptr.writeGrid(fileName)
 
     def getGridInputFile(self):
+        """ Retrieve the name of the file from which the grid was loaded.
+
+        This will be the name of a GeoTessModel file if the grid was stored in the same file as the model.
+
+        Returns
+        -------
+        str
+            the name of the file from which the grid was loaded.
+
+        """
         return self.thisptr.getGridInputFile()
 
     def getNLevels(self):
+        """ Returns the number of tessellation levels defined for this grid.
+
+        Returns
+        -------
+        int
+            The number of tessellation levels defined for this grid.
+
+        """
         return self.thisptr.getNLevels()
  
     def getNTriangles(self, tessellation=None, level=None):
+        """ Retrieve the number of triangles that define the specified level of the specified
+        multi-level tessellation of the model.
+
+        Parameters
+        ----------
+        tessellation : int
+            Specified tessellation index.
+        level : int 
+            index of a level relative to the first level of the specified tessellation
+
+        Returns
+        -------
+        int
+            number of triangles on specified tessellation and level.
+
+        """
         if tessellation is None and level is None:
             NTriangles = self.thisptr.getNTriangles()
         else:
@@ -164,12 +198,41 @@ cdef class GeoTessGrid:
         return NTriangles
 
     def getNTessellations(self):
+        """ Returns the number of tessellations in the tessellations array.
+
+        Returns
+        -------
+        int
+            the number of multi-level tesseallations.
+
+        """
         return self.thisptr.getNTessellations()
 
     def getNVertices(self):
+        """ Returns the number of vertices in the vectices array.
+
+        Returns
+        -------
+        int
+            number of vertices
+
+        """
         return self.thisptr.getNVertices()
 
     def getVertices(self):
+        """ Retrieve a reference to all of the vertices.
+
+        Vertices consists of an nVertices x 3 array of doubles. The double[3] array associated
+        with each vertex is the 3 component unit vector that defines the position of the vertex.
+
+        Users should not modify the contents of the array.
+
+        Returns
+        -------
+        numpy.ndarray
+            nVertices x 3 array of unit vectors.
+
+        """
         # http://docs.cython.org/src/userguide/wrapping_CPlusPlus.html#create-cython-wrapper-class
         # _grid.vertices() returns a double const* const* (2D array), which will
         # need some internal NumPy functions to get out of Cython.
@@ -198,7 +261,19 @@ cdef class GeoTessGrid:
         return ArgsArray
 
     def toString(self):
+        """ Summary information about this GeoTessGrid object.
+
+        Returns
+        -------
+        str
+            Summary description string for current grid.
+
+        """
         return self.thisptr.toString()
+
+    def getGridID(self):
+        #const string& getGridID() const
+        return self.thisptr.getGridID()
 
     def getVertex(self, int vertex):
         """
@@ -251,7 +326,7 @@ cdef class GeoTessGrid:
 
     def getTriangleVertexIndexes(self, int triangleIndex):
         """
-        Supply an integer triangle index, get a 3-element integer array, which
+        Supply an integer triangle index, get a 3-element numpy integer array, which
         are indices of the vertices that make this triangle.
 
         """
@@ -264,16 +339,64 @@ cdef class GeoTessGrid:
         return arr.copy()
 
     def getFirstTriangle(self, int tessellation, int level):
+        """ Retrieve the index of the first triangle on the specified level of the
+        specified tessellation of the model.
+
+        Parameters
+        ----------
+        tessellation : int
+        level : int
+            index of a level relative to the first level of the specified tessellation
+
+        Returns
+        -------
+        int
+            a triangle index
+
+        """
         return self.thisptr.getFirstTriangle(tessellation, level)
 
     def getLastTriangle(self, int tessellation, int level):
+        """ Retrieve the index of the last triangle on the specified level of the specified
+        tessellation of the model.
+
+        Parameters
+        ----------
+        tessellation : int
+        level : int
+            index of a level relative to the first level of the specified tessellation
+
+        Returns
+        -------
+        int
+            a triangle index
+
+        """
         return self.thisptr.getLastTriangle(tessellation, level)
 
     def getVertexIndex(self, int triangle, int corner):
+        """ Get the index of the vertex that occupies the specified position in the hierarchy.
+
+        Parameters
+        ----------
+        triangle : int
+            the i'th triangle in the grid
+        corner : int
+            the i'th corner of the specified triangle
+
+        Returns
+        -------
+        int
+            index of a vertex
+
+        """
         return self.thisptr.getVertexIndex(triangle, corner)
 
     @staticmethod
     cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
+        """
+        Wrap a C++ pointer with a pointer-less Python GeoTessGrid class.
+        """
         cdef GeoTessGrid inst = GeoTessGrid(raw=True)
         inst.thisptr = cptr
         if owner:
@@ -283,6 +406,37 @@ cdef class GeoTessGrid:
 
 
 cdef class GeoTessMetaData:
+    """ Top level class that manages the GeoTessMetaData, GeoTessGrid and GeoTessData
+    that comprise a 3D Earth model.
+
+    GeoTessModel manages the grid and data that comprise a 3D Earth model.
+    The Earth is assumed to be composed of a number of layers each of which spans the
+    entire geographic extent of the Earth. It is assumed that layer boundaries do not 
+    fold back on themselves, i.e., along any radial profile through the model, each layer
+    boundary is intersected exactly one time. Layers may have zero thickness over some
+    or all of their geographic extent. Earth properties stored in the model are assumed
+    to be continuous within a layer, both geographically and radially, but may be discontinuous
+    across layer boundaries.
+
+    A GeoTessModel is comprised of 3 major components:
+
+    The model grid (geometry and topology) is managed by a GeoTessGrid object. The grid is made
+    up of one or more 2D triangular tessellations of a unit sphere.
+
+    The data are managed by a 2D array of Profile objects. A Profile is essentially a list of
+    radii and Data objects distributed along a radial profile that spans a single layer at a
+    single vertex of the 2D grid. The 2D Profile array has dimensions nVertices by nLayers.
+
+    Important metadata about the model, such as the names of the major layers, the names of
+    the data attributes stored in the model, etc., are managed by a GeoTessMetaData object.
+    The term 'vertex' refers to a position in the 2D tessellation. They are 2D positions
+    represented by unit vectors on a unit sphere. The term 'node' refers to a 1D position
+    on a radial profile associated with a vertex and a layer in the model. Node indexes are
+    unique only within a given profile (all profiles have a node with index 0 for example). 
+    The term 'point' refers to all the nodes in all the profiles of the model. There is only one 
+    'point' in the model with index 0. PointMap is introduced to manage all these different indexes.
+
+    """
     cdef clib.GeoTessMetaData *thisptr
     cdef object owner
 
@@ -295,6 +449,36 @@ cdef class GeoTessMetaData:
             del self.thisptr #XXX: I think this just deletes Python objects, need to do more c "free" stuff here
 
     def setEarthShape(self, str earthShapeName):
+        """ Specify the name of the ellipsoid that is to be used to convert between geocentric
+        and geographic latitude and between depth and radius.
+
+        This ellipsoid will be save in this GeoTessModel if it is written to file.
+        The following EarthShapes are supported:
+
+        SPHERE - Geocentric and geographic latitudes are identical and conversion between depth and 
+            radius assume the Earth is a sphere with constant radius of 6371 km.
+        GRS80 - Conversion between geographic and geocentric latitudes, and between depth and 
+            radius are performed using the parameters of the GRS80 ellipsoid.
+        GRS80_RCONST - Conversion between geographic and geocentric latitudes are performed using
+            the parameters of the GRS80 ellipsoid. Conversions between depth and radius assume the
+            Earth is a sphere with radius 6371.
+        WGS84 - Conversion between geographic and geocentric latitudes, and between depth and radius
+            are performed using the parameters of the WGS84 ellipsoid.
+        WGS84_RCONST - Conversion between geographic and geocentric latitudes are performed
+            using the parameters of the WGS84 ellipsoid. Conversions between depth and radius assume
+            the Earth is a sphere with radius 6371.
+        IERS2003 - Conversion between geographic and geocentric latitudes, and between depth and
+            radius are performed using the parameters of the IERS2003 ellipsoid.
+        IERS2003_RCONST - Conversion between geographic and geocentric latitudes are performed
+            using the parameters of the IERS2003 ellipsoid. Conversions between depth and radius
+            assume the Earth is a sphere with radius 6371.
+
+        Parameters
+        ----------
+        earthShapeName : str
+            the name of the ellipsoid that is to be used.
+
+        """
         allowed_shapes = ('SPHERE', 'WGS84', 'WGS84_RCONST', 'GRS80', 'GRS80_RCONST',
                   'IERS2003', 'IERS2003_RCONST')
         if earthShapeName not in allowed_shapes:
@@ -303,45 +487,121 @@ cdef class GeoTessMetaData:
         self.thisptr.setEarthShape(earthShapeName)
 
     def setDescription(self, const string& dscr):
+        """ Set the description of the model.
+
+        Parameters
+        ----------
+        dscr : str
+            the description of the model.
+        """
         self.thisptr.setDescription(dscr)
 
     def getDescription(self):
+        """ Retrieve the description of the model.
+
+        Returns
+        -------
+        str
+            the description of the model.
+        """
         self.thisptr.getDescription()
 
     def setLayerNames(self, const string& lyrNms):
+        """ Specify the names of all the layers that comprise the model.
+
+        This will determine the value of nLayers as well. The input lyrNms is a semicolon 
+        concatenation of all layer names (i.e. LAYERNAME1; LAYERNAME2; ...).
+
+        Parameters
+        ----------
+        lyrNms : str
+            single string containing all the layer names separated by semi-colons
+        """
         self.thisptr.setLayerNames(lyrNms)
 
     def setLayerTessIds(self, vector[int]& layrTsIds):
-        """
-        layrTsIds is an iterable of integers.
+        """ LayerTessIds is a map from a layer index to a tessellation index.
+
+        There is an element for each layer.
+
+        Parameters
+        ----------
+        layrTsIds : iterable of int
+            of length equal to the number of layers in the model.
+
         """
         # iterable of integers is automatically casted to vector of integers
-        # http://www.peterbeerli.com/classes/images/f/f7/Isc4304cpluspluscython.pdf
         self.thisptr.setLayerTessIds(layrTsIds)
 
     def setAttributes(self, const string& nms, const string& unts):
+        """ Specify the names and units of the attributes.
+
+        Parameters
+        ----------
+        nms : str
+            the names of the attributes, separated by a semicolon
+        unts : str
+            the units of the attributes, separated by a semicolon
+
+        """
         self.thisptr.setAttributes(nms, unts)
 
     def setDataType(self, dt):
+        """ Specify the type of the data that is stored in the model; 
+        
+        Must be one of DOUBLE, FLOAT, LONG, INT, SHORTINT, BYTE.
+
+        Parameters
+        ----------
+        dt : str
+           the dataType to set.
+
+        """
         allowed_dtypes = ('DOUBLE', 'FLOAT', 'LONG', 'INT', 'SHORTINT', 'BYTE')
         if dt not in allowed_dtypes:
             raise ValueError("DataType must be one of {}".format(allowed_dtypes))
         self.thisptr.setDataType(dt)
 
     def setModelSoftwareVersion(self, const string& swVersion):
+        """ Set the name and version number of the software that generated the contents of this model.
+
+        Parameters
+        ----------
+        swVersion : str
+
+        """
         self.thisptr.setModelSoftwareVersion(swVersion)
 
     def getModelSoftwareVersion(self):
+        """ Get the name and version of the software that generated the content of this model.
+
+        Returns
+        -------
+        str
+            the name and version of the software that generated this model.
+        """
         self.thisptr.getModelSoftwareVersion()
 
     def setModelGenerationDate(self, const string& genDate):
+        """ Set the date when this model was generated.
+
+        This is not necessarily the same as the date when the file was copied or translated.
+
+        Parameters
+        ----------
+        genDate	: str (free-form text date field)
+        """
         self.thisptr.setModelGenerationDate(genDate)
 
     def toString(self):
+        """ Returns a string representation of this meta data object
+        """
         return self.thisptr.toString()
 
     @staticmethod
     cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
+        """ Wrap a C++ pointer with a pointer-less Python class.
+        """
         cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
         inst.thisptr = cptr
         if owner:
@@ -350,15 +610,45 @@ cdef class GeoTessMetaData:
         return inst
 
     def getAttributeNamesString(self):
+        """ Retrieve the names of all the attributes assembled into a single, semi-colon separated string.
+
+        Returns
+        -------
+        str
+            the names of all the attributes assembled into a single, semi-colon separated string.
+        """
         return self.thisptr.getAttributeNamesString()
 
     def getAttributeUnitsString(self):
+        """ Retrieve the units of all the attributes assembled into a single, semi-colon separated string.
+
+        Returns
+        -------
+        str
+            the units of all the attributes assembled into a single, semi-colon separated string.
+        """
         return self.thisptr.getAttributeUnitsString()
 
     def getLayerNamesString(self):
+        """ Retrieve the names of all the layers assembled into a single, semi-colon separated string.
+
+        Returns
+        -------
+        str
+            the names of all the layers assembled into a single, semi-colon separated string.
+        """
         return self.thisptr.getLayerNamesString()
 
     def getLayerTessIds(self):
+        """ Retrieve a reference to layerTessIds
+        
+        An int[] with an entry for each layer specifying the index of the tessellation that supports that layer.
+
+        Returns
+        -------
+        layerTessIds : numpy.ndarray of int
+
+        """
         # Use some internal NumPy C API calls to safely wrap the array pointer,
         # hopefully preventing memory leaks or segfaults.
         # following https://gist.github.com/aeberspaecher/1253698
@@ -372,26 +662,71 @@ cdef class GeoTessMetaData:
         return arr.tolist() # copies the data to a list.  XXX: this might leak memory.
 
     def getNLayers(self):
+        """ Retrieve the number of layers represented in the model.
+
+        Returns
+        -------
+        int
+            number of layers represented in the model.
+        """
         return self.thisptr.getNLayers()
 
     def getLayerName(self, const int &layerIndex):
+        """ Retrieve the name of one of the layers supported by the model.
+
+        Parameters
+        ----------
+        layerIndex : int
+            the index of the layer
+
+        Returns
+        -------
+        str
+            the name of the layer
+        """
         return self.thisptr.getLayerName(layerIndex)
 
     def getLayerIndex(self, layerName):
+        """ Retrieve the index of the layer that has the specified name, or -1.
+
+        Parameters
+        ----------
+        layerName : str
+            the name of the layer whose index is sought.
+
+        Returns
+        -------
+        int
+            the index of the layer that has the specified name, or -1.
+
+        """
+        # TODO: find out what "or -1" means here, and handle it in this python method
         return self.thisptr.getLayerIndex(layerName)
 
     def getModelFileFormat(self):
+        # TODO: look up C++ docstring for this
         return self.thisptr.getModelFileFormat()
 
     def setModelFileFormat(self, version):
+        # TODO: look up C++ docstring for this
         self.thisptr.setModelFileFormat(version)
 
 
 cdef class EarthShape:
-    """
+    """ Defines the ellipsoid that is to be used to convert between geocentric and
+    geographic latitude and between depth and radius.
+
+    EarthShape defines the ellipsoid that is to be used to convert between geocentric
+    and geographic latitude and between depth and radius. The default is WGS84.
+
+    The following EarthShapes are defined:
+
     Parameters
     ----------
     earthShape : str
+        Define the shape of the Earth that is to be used to convert between geocentric and
+        geographic latitude and between depth and radius.
+
         SPHERE - Geocentric and geographic latitudes are identical and
             conversion between depth and radius assume the Earth is a sphere
             with constant radius of 6371 km.
@@ -449,9 +784,18 @@ cdef class EarthShape:
 
     def getVectorDegrees(self, double lat, double lon):
         """
-        Convert geographic lat, lon into a geocentric unit vector. The
-        x-component points toward lat,lon = 0, 0. The y-component points toward
+        Convert geographic lat, lon into a geocentric unit vector.
+        
+        The x-component points toward lat,lon = 0, 0. The y-component points toward
         lat,lon = 0, 90. The z-component points toward north pole.
+
+        Parameters
+        ----------
+        lat, lon : float
+
+        Returns
+        -------
+        numpy.ndarray of floats
 
         """
         # thisptr.getVectorDegrees wants two doubles and a pointer to an array
@@ -490,7 +834,59 @@ cdef class EarthShape:
 
 
 cdef class GeoTessModel:
-    """
+    """ Top level class that manages the GeoTessMetaData, GeoTessGrid and GeoTessData
+    that comprise a 3D Earth model.
+
+    GeoTessModel manages the grid and data that comprise a 3D Earth model. The Earth is assumed
+    to be composed of a number of layers each of which spans the entire geographic extent of the
+    Earth. It is assumed that layer boundaries do not fold back on themselves, i.e., along any
+    radial profile through the model, each layer boundary is intersected exactly one time. 
+    Layers may have zero thickness over some or all of their geographic extent. Earth properties 
+    stored in the model are assumed to be continuous within a layer, both geographically and radially, 
+    but may be discontinuous across layer boundaries.
+
+    A GeoTessModel is comprised of 3 major components:
+
+    The model grid (geometry and topology) is managed by a GeoTessGrid object. The grid is made up 
+    of one or more 2D triangular tessellations of a unit sphere.
+
+    The data are managed by a 2D array of Profile objects. A Profile is essentially a list of 
+    radii and Data objects distributed along a radial profile that spans a single layer at a 
+    single vertex of the 2D grid. The 2D Profile array has dimensions nVertices by nLayers.
+
+    Important metadata about the model, such as the names of the major layers, the names of the 
+    data attributes stored in the model, etc., are managed by a GeoTessMetaData object.
+    The term 'vertex' refers to a position in the 2D tessellation. They are 2D positions 
+    represented by unit vectors on a unit sphere. The term 'node' refers to a 1D position on a 
+    radial profile associated with a vertex and a layer in the model. Node indexes are unique 
+    only within a given profile (all profiles have a node with index 0 for example). 
+    The term 'point' refers to all the nodes in all the profiles of the model. There is only one 
+    'point' in the model with index 0. PointMap is introduced to manage all these different indexes.
+
+    Parameterized constructor, specifying the grid and metadata for the model.
+
+    The grid is constructed and the data structures are initialized based on information supplied in metadata.
+    The data structures are not populated with any information however (all Profiles are null). 
+    The application should populate the new model's Profiles after this constructor completes.
+
+    Before calling this constructor, the supplied MetaData object must be populated with required information
+    by calling the following MetaData methods:
+
+    setDescription()
+    setLayerNames()
+    setAttributes()
+    setDataType()
+    setLayerTessIds() (only required if grid has more than one multi-level tessellation)
+
+    Parameters
+    ----------
+    gridFileName : str
+        name of file from which to load the grid.
+    metaData : geotess.lib.MetaData
+        See Notes.
+
+    Notes
+    -----
     GeoTessModel accepts a grid file name and GeoTessMetaData instance.  The
     metadata is _copied_ into the GeoTessModel, so be warned that changes to
     it are _not_ reflected in the original instances.  This is done to
@@ -524,6 +920,26 @@ cdef class GeoTessModel:
     # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
 
     def loadModel(self, const string& inputFile, relGridFilePath=""):
+        """ Read model data and grid from a file.
+
+        Parameters
+        ----------
+        inputFile : str
+            the path to the file that contains the model.
+        relGridFilePath : str
+            if the grid is stored in a separate file then relGridFilePath
+            is the relative path from the directory where the model located
+            to the directory where the grid is located. The default value for
+            relGridFilePath is "" which indicates that the grid file resides
+            in the same directory as the model file.
+
+        Returns
+        -------
+        returns a pointer to this
+
+        """
+        # XXX: I don't know why this works, as its supposed to return a pointer to the loaded
+        # model, not assign it to self.thisptr.
         # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
         if os.path.exists(inputFile):
             self.thisptr.loadModel(inputFile, relGridFilePath)
@@ -531,16 +947,41 @@ cdef class GeoTessModel:
             raise exc.GeoTessFileError("Model file not found.")
 
     def writeModel(self, const string& outputFile):
+        """ Write the model to file.
+
+        The data (radii and attribute values) are written to outputFile. 
+        If gridFileName is '*' or omitted then the grid information is written 
+        to the same file as the data. If gridFileName is something else, it should 
+        be the name of the file that contains the grid information (just the name; 
+        no path information). In the latter case, the gridFile referenced by 
+        gridFileName is not overwritten; all that happens is that the name of the 
+        grid file (with no path information) is stored in the data file.
+
+        Parameters
+        ----------
+        outputFile : str
+            name of the file to receive the model
+        gridFileName : str
+            name of file to receive the grid (no path info), or "*"
+
+        """
         self.thisptr.writeModel(outputFile)
 
     def getConnectedVertices(self, int layerid):
-        """
-        Function fo find which vertices are connected
-        if a vertex is not connected, then it won't have a set profile
-        Argument:
-            layerID: integer layer index
-        Returns:
-            ndarray of connected vertices at this layer
+        """ Function fo find which vertices are connected
+
+        If a vertex is not connected, then it won't have a set profile.
+
+        Paramters
+        ---------
+        layerID : int 
+            layer index
+
+        Returns
+        -------
+        numpy.ndarray 
+            connected vertices at this layer
+
         """
         if layerid < 0 or layerid >= self.getNLayers():
             print("Error, layerid must be between 0 and {}".format(self.getNLayers()-1))
@@ -677,12 +1118,14 @@ cdef class GeoTessModel:
 
         Parameters
         ----------
-        float latitude :
+        latitude : float
             floating point from -90 to 90
             Defines the latitude of the lookup point
-        float longitude : floating point from -180 to 360
+        longitude : float
+            floating point from -180 to 360
             Defines the longitude of the lookup point.
-        float radius : floating point from 0 to ~6371 (earth's radius out from center')
+        radius : float
+            floating point from 0 to ~6371 (earth's radius out from center')
             Defines the radius of the lookup point.
 
         Returns
@@ -762,36 +1205,70 @@ cdef class GeoTessModel:
 
 
     def toString(self):
-
+        """ Returns a string with information about this model.
+        """
         return self.thisptr.toString()
 
     def getEarthShape(self):
+        """ Retrieve a reference to the ellipsoid that is stored in this GeoTessModel.
+
+        This EarthShape object can be used to convert between geographic and geocentric latitude,
+        and between radius and depth in the Earth.
+
+        Returns
+        -------
+        Earthshape
+            The EarthShape currently in use.
+        """
         shp = EarthShape.wrap(&self.thisptr.getEarthShape(), owner=self)
 
         return shp
 
     def getMetaData(self):
+        """ Return a reference to the GeoTessMetaData object associated with this model.
+
+        The metadata object stores information about the models such as a description of the model,
+        the layer names, attribute names, attribute units, the data type, etc.
+
+        Returns
+        -------
+        GeoTessMetaData
+            The metadata object.
+
+        """
         md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
         md.owner = self
 
         return md
 
     def getNAttributes(self):
+        """ Return the number of attributes that are associated with each node in the model.
+
+        Returns
+        -------
+        int
+            the number of attributes that are associated with each node in the model.
+
         """
-        Returns the number of attributes in the metadata
-        """
-        md = self.getMetaData()
-        att = md.getAttributeNamesString()
-        x = att.split()
-        return len(x)
+        nattrib = self.thisptr.getNAttributes()
+
+        return nattrib
 
     def getGrid(self):
+        """ Return the current model's grid object.
+
+        Returns
+        -------
+        GeoTessGrid
+            Current model's grid object.
+
+        """
         #XXX: I don't think this works
         # cdef clib.GeoTessGrid *ptr = &self.thisptr.getGrid()
         # grid = lib.GeoTessGrid.from_pointer(ptr)
-        grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
+        cdef GeoTessGrid grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
         # cdef GeoTessGrid grid = GeoTessGrid.from_pointer(&self.thisptr.getGrid())
-        grid.owner = self
+        # grid.owner = self
 
         return grid
 
@@ -888,10 +1365,27 @@ cdef class GeoTessModel:
 
 
     def getProfile(self, int vertex, int layer):
-        """
+        """ Get a reference to the Profile object for the specified vertex and layer.
+
         Gets values in a profile given the vertex and layer.
-        returns nradius x 1 radius vector and nradius x nattributes attributes matrix
+
+        Parameters
+        ----------
+        vertex : int
+            index of a vertex in the 2D grid
+        layer : int
+            index of one of the layers that comprise the model
+
+        Returns
+        -------
+        radii : numpy.ndarray of floats [nradius x 1]
+            Profile radius values for the profile.
+        attributes : numpy.ndarray of floats [nradius x nattributes]
+            Profile attribute values corresponding to each radius.
+
         """
+        # returns nradius x 1 radius vector and nradius x nattributes attributes matrix
+        # returns: a reference to a Profile object that contains the radii and Data values stored in profile[vertex][layer].
         nv = self.getNVertices()
         if vertex >= nv or vertex < 0:
             print("Error, vertex {} outside of range (0 - {})".format(vertex, nv-1))
@@ -921,14 +1415,19 @@ cdef class GeoTessModel:
         return radiusPy, attributesPy
 
     def getNLayers(self):
+        """ Return the number of layers that comprise the model as an integer.
+        """
         return self.thisptr.getNLayers()
 
     def getNVertices(self):
+        """ Return number of vertices in the 2D geographic grid as an integer.
+        """
         return self.thisptr.getNVertices()
 
     def getNPoints(self):
         """
-        Returns the number of points
+        Retrieve the number of points in the model, including all nodes along all profiles
+        at all grid vertices, as an integer.
         """
         return self.thisptr.getNPoints()
 
@@ -1122,7 +1621,6 @@ cdef class GeoTessModel:
 
         try:
             self.thisptr.setProfile(vertex, layer, radii, values)
-            return
         except:
             raise ValueError('setProfile failed')
     
@@ -1219,6 +1717,21 @@ cdef class GeoTessModel:
         return pt
     
     def getValueFloat(self, int pointIndex, int attributeIndex):
+        """ Return the value of the attribute at the specified pointIndex, attributeIndex, 
+        cast to a float if necessary.
+
+        Parameters
+        ----------
+        pointIndex : int
+        attributeIndex : int
+            the attributeIndex
+
+        Returns
+        -------
+        float
+            the value of the specifed attribute, cast to float if necessary
+
+        """
         return self.thisptr.getValueFloat(pointIndex, attributeIndex)
 
     # Series of position methods. They start with defining the interpolator types
