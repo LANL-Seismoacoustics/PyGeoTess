@@ -190,6 +190,7 @@ cdef class GeoTessGrid:
         else:
             Nlevels = self.thisptr.getNLevels() 
             NTess = self.getNTessellations()
+            # TODO: doesn't GeoTessCPP already do this kind of checking?
             if level > Nlevels or tessellation > NTess:
                 msg = "level > {} or tessellation > {}".format(Nlevels, NTess)
                 raise ValueError(msg)

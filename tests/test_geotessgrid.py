@@ -4,30 +4,41 @@ Test GeoTessGrid methods.
 """
 import os
 
-import geotess
-from geotess.lib.libgeotess import GeoTessGrid
+import pytest
 
-# <install location>/geotess/data
-# datadir = os.path.dirname(geotess.__file__) + os.path.sep + 'data'
+from geotess import lib
+# from geotess.lib.libgeotess import GeoTessGrid
+
 datadir = '/Users/jkmacc2/code/PyGeoTess/GeoTessModels'
 inputfile = datadir + os.path.sep + 'geotess_grid_64000.geotess'
-
-grid = GeoTessGrid()
-grid.loadGrid(inputfile)
 grid_id = '90E53A213AEC248687F0D661B46D194A'
+
+
+@pytest.fixture
+def grid_object():
+    grid = lib.GeoTessGrid()
+    grid.loadGrid(inputfile)
+
+    return grid
+
 
 def test_init():
     # Test empty/nullary constructor
     # Just Tests that it doesn't crash the interpreter.
-    g = GeoTessGrid()
+    g = lib.GeoTessGrid()
     del g 
 
 def test_loadGrid():
-    inputfile = datadir + os.path.sep + 'geotess_grid_64000.geotess'
-    grid = GeoTessGrid()
+    grid = lib.GeoTessGrid()
     grid.loadGrid(inputfile)
     # TODO: use the getGridID instead
+    # assert grid.getGridInputFile() == inputfile
+    assert grid.getGridID() == grid_id
+
+def test_getGridInputFile(grid_object):
+    grid = grid_object
     assert grid.getGridInputFile() == inputfile
 
-def test_getGridID():
+def test_getGridID(grid_object):
+    grid = grid_object
     assert grid.getGridID() == grid_id
