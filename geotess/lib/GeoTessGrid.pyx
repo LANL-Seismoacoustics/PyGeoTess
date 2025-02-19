@@ -12,6 +12,7 @@ np.import_array()
 cimport geotess.lib.geotesscpp as clib
 import geotess.exc as exc
 
+
 cdef class GeoTessGrid:
     cdef clib.GeoTessGrid *thisptr
     cdef object owner
