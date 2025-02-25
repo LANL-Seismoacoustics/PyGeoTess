@@ -68,7 +68,16 @@ setup(name = 'pygeotess',
       packages = ['geotess'],
       py_modules = ['geotess.model', 'geotess.exc'],
       ext_modules = extensions,
-      data_files = [ ('geotess/data', glob('GeoTessModels/*')) ],
+      # data_files = [
+      #   ('geotess/data', glob('geotess/data/*.geotess')),
+      #   ('geotess/data', glob('geotess/data/small_model_grid.ascii')),
+      # ],
+      package_data = {
+        'geotess.data': [
+            'geotess/data/*.geotess',
+            'geotess/data/small_model_grid.ascii',
+        ]
+      },
       install_requires = [
           'numpy',
           'setuptools',

@@ -2,16 +2,15 @@
 Test GeoTessModel methods.
 
 """
-import os
+from pathlib import Path
 
 import pytest
 
+import geotess
 import geotess.lib as lib
 
-# <install location>/geotess/data
-# datadir = os.path.dirname(geotess.__file__) + os.path.sep + 'data'
-datadir = '/Users/jkmacc2/code/PyGeoTess/GeoTessModels'
-inputfile = datadir + os.path.sep + 'crust20.geotess'
+datadir = Path(geotess.__file__).parents[0] / 'data'
+inputfile = str(datadir / 'crust20.geotess')
 grid_id = '808785948EB2350DD44E6C29BDEA6CAE'
 
 @pytest.fixture(scope="module")

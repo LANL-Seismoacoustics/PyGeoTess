@@ -2,15 +2,15 @@
 Test GeoTessGrid methods.
 
 """
-import os
+from pathlib import Path
 
 import pytest
 
+import geotess
 from geotess import lib
-# from geotess.lib.libgeotess import GeoTessGrid
 
-datadir = '/Users/jkmacc2/code/PyGeoTess/GeoTessModels'
-inputfile = datadir + os.path.sep + 'geotess_grid_64000.geotess'
+datadir = Path(geotess.__file__).parents[0] / 'data'
+inputfile = str(datadir / 'geotess_grid_64000.geotess')
 grid_id = '90E53A213AEC248687F0D661B46D194A'
 
 
