@@ -139,7 +139,7 @@ cdef class GeoTessGrid:
         if os.path.exists(inputFile):
             self.thisptr.loadGrid(inputFile)
         else:
-            raise exc.GeoTessFileError("File not found.")
+            raise exc.GeoTessFileError(f"File not found: {inputFile}")
 
     def writeGrid(self, const string& fileName):
         self.thisptr.writeGrid(fileName)
@@ -945,7 +945,7 @@ cdef class GeoTessModel:
         if os.path.exists(inputFile):
             self.thisptr.loadModel(inputFile, relGridFilePath)
         else:
-            raise exc.GeoTessFileError("Model file not found.")
+            raise exc.GeoTessFileError(f"File not found: {inputFile}.")
 
     def writeModel(self, const string& outputFile):
         """ Write the model to file.
