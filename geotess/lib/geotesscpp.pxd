@@ -50,6 +50,7 @@ cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
         GeoTessGrid(GeoTessGrid &other) except +
         GeoTessGrid* loadGrid(const string& inputFile)
         void writeGrid(const string& fileName)
+        const string& getGridInputFile() const
         int getNLevels() const
         int getNLevels(int tessellation)
         int getNTriangles()
@@ -57,6 +58,7 @@ cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
         int getNTessellations()
         int getNVertices() const
         string toString()
+        const string& getGridID() const
         const double* getVertex(int vertex) const
         const vector[int] getVertexTriangles(const int &tessId, const int &level, const int &vertex) const
         const int* getTriangleVertexIndexes(int triangleIndex) const
@@ -121,6 +123,7 @@ cdef extern from "geotesscpp/GeoTessModel.h" namespace "geotess":
         #void setProfile(int vertex, int layer, GeoTessProfile* profile)
         GeoTessProfile* getProfile(int vertex, int layer)
         #int getProfile(int vertex, int layer)
+        int getNAttributes()
         int getNLayers() const
         int getNVertices() const
         int getNPoints() const
