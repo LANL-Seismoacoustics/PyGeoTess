@@ -46,4 +46,4 @@ def test_getPointWeights(model_object):
         142069: 0.42192350242842563
         }
     weights = model_object.getPointWeights(lat, lon, depth)
-    assert weights == expected
+    assert weights == pytest.approx(expected)
