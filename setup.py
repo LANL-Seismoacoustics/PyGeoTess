@@ -65,17 +65,17 @@ setup(name = 'pygeotess',
       description = 'GeoTess access from Python.',
       author = 'Jonathan K. MacCarthy',
       author_email = 'jkmacc@lanl.gov',
-      packages = ['geotess'],
-      py_modules = ['geotess.model', 'geotess.exc'],
+      packages = ['geotess', 'geotess.lib', 'geotess.data'],
+      # py_modules = ['geotess.model', 'geotess.exc'],
       ext_modules = extensions,
       # data_files = [
-      #   ('geotess/data', glob('geotess/data/*.geotess')),
-      #   ('geotess/data', glob('geotess/data/small_model_grid.ascii')),
+      #   ('geotess/data', glob('*.geotess')),
+      #   ('geotess/data', glob('small_model_grid.ascii')),
       # ],
       package_data = {
         'geotess.data': [
-            'geotess/data/*.geotess',
-            'geotess/data/small_model_grid.ascii',
+            '*.geotess',
+            'small_model_grid.ascii',
         ]
       },
       install_requires = [
