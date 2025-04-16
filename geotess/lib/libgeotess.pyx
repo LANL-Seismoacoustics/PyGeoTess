@@ -157,6 +157,18 @@ cdef class GeoTessGrid:
         """
         return self.thisptr.getGridInputFile()
 
+    def testGrid(self):
+        """ Tests the integrity of the grid.
+
+        Visits every triangle T, and (1) checks to ensure that every neighbor of T includes T in its list of neighbors, and (2) checks that every neighbor of T shares exactly two nodes with T.
+
+        Exceptions
+        ----------
+        GeoTessException if anything is amiss.
+
+        """
+        self.thisptr.testGrid()
+
     def getNLevels(self, tessellation=None):
         """ Returns the number of tessellation levels defined for this grid.
         
@@ -2191,7 +2203,7 @@ cdef class GeoTessModel:
         lon : float
             longitude.
         depth : float
-            depth from surface of ellipsoid.
+            depth from surface of ellipsoid. [km] I think.
         Optionally, give horizontalType and/or radialType interpolators
 
         Returns
