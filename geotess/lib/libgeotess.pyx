@@ -157,8 +157,14 @@ cdef class GeoTessGrid:
         """
         return self.thisptr.getGridInputFile()
 
-    def getNLevels(self):
+    def getNLevels(self, tessellation=None):
         """ Returns the number of tessellation levels defined for this grid.
+        
+        Parameters
+        ----------
+        tessellation : int
+            Return only number of levels for the provided tessellation index, otherwise
+            all levels are returned.
 
         Returns
         -------
@@ -166,7 +172,12 @@ cdef class GeoTessGrid:
             The number of tessellation levels defined for this grid.
 
         """
-        return self.thisptr.getNLevels()
+        if tessellation is None:
+            nlevels = self.thisptr.getNLevels()
+        else:
+            nlevels = self.thisptr.getNLevels(tessellation)
+
+        return nlevels
  
     def getNTriangles(self, tessellation=None, level=None):
         """ Retrieve the number of triangles that define the specified level of the specified
@@ -375,7 +386,7 @@ cdef class GeoTessGrid:
         """
         return self.thisptr.getLastTriangle(tessellation, level)
 
-    def getVertexIndex(self, int triangle, int corner):
+    def getVertexIndex(self, int triangle, int corner, tessId=None, level=None):
         """ Get the index of the vertex that occupies the specified position in the hierarchy.
 
         Parameters
@@ -384,6 +395,10 @@ cdef class GeoTessGrid:
             the i'th triangle in the grid
         corner : int
             the i'th corner of the specified triangle
+        tessId : int
+            tessellation index
+        level : int
+            index of a level relative to the first level of the specified tessellation
 
         Returns
         -------
@@ -391,7 +406,15 @@ cdef class GeoTessGrid:
             index of a vertex
 
         """
-        return self.thisptr.getVertexIndex(triangle, corner)
+        # XXX: the order of these method arguments doesn't match CPP, but used here for 
+        # backwards PyGeoTess compatibility.  Supplying them in the wrong order can crash
+        # the interpreter :-(
+        if tessId is not None and level is not None:
+            out = self.thisptr.getVertexIndex(tessId, level, triangle, corner)
+        else:
+            out = self.thisptr.getVertexIndex(triangle, corner)
+
+        return out
 
     @staticmethod
     cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
