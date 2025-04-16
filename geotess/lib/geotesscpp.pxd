@@ -65,6 +65,7 @@ cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
         int getFirstTriangle(int tessellation, int level) const
         int getLastTriangle(int tessellation, int level) const
         int getVertexIndex(int triangle, int corner) const
+        int getVertexIndex(int tessId, int level, int triangle, int corner) const
         # had to remove a "const" from the def
         # Cython can't use 'const' in all the same places as C++
         # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
