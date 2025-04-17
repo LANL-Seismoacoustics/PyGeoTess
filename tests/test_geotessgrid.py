@@ -7,7 +7,6 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-import geotess
 from geotess import lib
 
 # datadir = Path(geotess.__file__).parents[0] / 'data'
@@ -16,7 +15,7 @@ from geotess import lib
 
 testdata = Path(__file__).parents[0] / 'testdata'
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def grid_unified():
     inputfile = str(testdata / 'unified_crust20_ak135_grid.geotess')
     grid = lib.GeoTessGrid()
