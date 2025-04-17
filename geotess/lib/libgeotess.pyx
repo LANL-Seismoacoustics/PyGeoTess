@@ -168,6 +168,17 @@ cdef class GeoTessGrid:
 
         """
         self.thisptr.testGrid()
+    
+    def getMemory(self):
+        """ Retrieve the amount of memory required by this GeoTessGrid object in bytes.
+
+        Returns
+        -------
+        int
+            the amount of memory required by this GeoTessGrid object in bytes.
+
+        """
+        return self.thisptr.getMemory()
 
     def getNLevels(self, tessellation=None):
         """ Returns the number of tessellation levels defined for this grid.

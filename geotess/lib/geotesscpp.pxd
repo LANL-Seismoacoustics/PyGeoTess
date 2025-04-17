@@ -71,6 +71,7 @@ cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
         # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
         double *const * getVertices() const
         void testGrid()
+        long getMemory() # may need to be "long" instead of LONG_INT
 
 cdef extern from "geotesscpp/GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
