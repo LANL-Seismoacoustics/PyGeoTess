@@ -70,6 +70,7 @@ cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
         # Cython can't use 'const' in all the same places as C++
         # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
         double *const * getVertices() const
+        void testGrid()
 
 cdef extern from "geotesscpp/GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:
