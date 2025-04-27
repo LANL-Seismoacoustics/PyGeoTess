@@ -52,13 +52,13 @@ def model2d():
         # model2d.setProfile(vtx, values, 2) # TODO: expose this setProfile interface
         pass
 
-@pytest.fixture
-def euler():
-    equal = lib.GeoTessModel()
-    equal.loadModel(str(testdata / 'euler_model_grid_coords_equal.geotess'))
-    unequal = lib.GeoTessModel()
-    unequal.loadModel(str(testdata / 'euler_model_grid_coords_not_equal.geotess'))
-    return equal, unequal
+# @pytest.fixture
+# def euler():
+#     equal = lib.GeoTessModel()
+#     equal.loadModel(str(testdata / 'euler_model_grid_coords_equal.geotess'))
+#     unequal = lib.GeoTessModel()
+#     unequal.loadModel(str(testdata / 'euler_model_grid_coords_not_equal.geotess'))
+#     return equal, unequal
 
 def test_getNAttributes(crust20):
     # model = model_object
