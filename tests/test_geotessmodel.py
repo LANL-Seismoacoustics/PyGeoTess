@@ -31,26 +31,26 @@ def test_init_empty():
     model = lib.GeoTessModel()
     del model
 
-@pytest.fixture
-def model2d():
-    """ A small model made from scratch.
-    """
-    md = lib.GeoTessMetaData()
-    md.setDescription("2D velocity model")
-    md.setLayerNames("surface")
-    md.setAttributes("PSLOWNESS; PVELOCITY", "sec/km; km/sec")
-    md.setDataType('FLOAT')
-    md.setModelSoftwareVersion("test_geotessmodel.test_init_from_scratch")
-    # e.g. 'Wed April 18 15:21:51 2012'
-    md.setModelGenerationDate(
-              datetime.datetime.now(tz=datetime.UTC).strftime('%a %B %d %H:%M:%S %Y')
-    )
-    model2d = lib.GeoTessModel(str(testdata / 'small_model_grid.ascii'), md)
-    nvtx = model2d.getGrid().getNVertices()
-    values = [0.125, 8]
-    for vtx in range(nvtx):
-        # model2d.setProfile(vtx, values, 2) # TODO: expose this setProfile interface
-        pass
+# @pytest.fixture
+# def model2d():
+#     """ A small model made from scratch.
+#     """
+#     md = lib.GeoTessMetaData()
+#     md.setDescription("2D velocity model")
+#     md.setLayerNames("surface")
+#     md.setAttributes("PSLOWNESS; PVELOCITY", "sec/km; km/sec")
+#     md.setDataType('FLOAT')
+#     md.setModelSoftwareVersion("test_geotessmodel.test_init_from_scratch")
+#     # e.g. 'Wed April 18 15:21:51 2012'
+#     md.setModelGenerationDate(
+#               datetime.datetime.now(tz=datetime.UTC).strftime('%a %B %d %H:%M:%S %Y')
+#     )
+#     model2d = lib.GeoTessModel(str(testdata / 'small_model_grid.ascii'), md)
+#     nvtx = model2d.getGrid().getNVertices()
+#     values = [0.125, 8]
+#     for vtx in range(nvtx):
+#         # model2d.setProfile(vtx, values, 2) # TODO: expose this setProfile interface
+#         pass
 
 # @pytest.fixture
 # def euler():
