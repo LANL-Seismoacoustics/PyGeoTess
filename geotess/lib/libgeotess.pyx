@@ -110,6 +110,7 @@ cdef class GeoTessGrid:
     """
     cdef clib.GeoTessGrid *thisptr
     cdef object owner
+    cdef bint owns_ptr # True if the instance owns its pointer, otherwise likely came from model.getGrid()
 
     def __cinit__(self, raw=False):
         # XXX: lots of things evaluate to True or False. A file name, for example.
@@ -117,8 +118,38 @@ cdef class GeoTessGrid:
             self.thisptr = new clib.GeoTessGrid()
 
     def __dealloc__(self):
-        if self.thisptr != NULL and not self.owner:
+        # if self.thisptr != NULL and not self.owner:
+        if self.thisptr is not NULL and self.owns_ptr:
             del self.thisptr
+
+    @staticmethod
+    cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
+        """
+        Wrap a C++ pointer with a pointer-less Python GeoTessGrid class.
+
+        Deprecated.  Use `from_pointer` instead.
+        """
+        cdef GeoTessGrid inst = GeoTessGrid(raw=True)
+        inst.thisptr = cptr
+        if owner:
+            inst.owner = owner
+
+        return inst
+
+    @staticmethod
+    cdef GeoTessGrid from_pointer(clib.GeoTessGrid *cptr):
+        """ Initialize GeoTessGrid from a C++ GeoTessGrid pointer.
+
+        The resulting grid instance doesn't own the pointer and won't free its memory
+        when deleted or garbage collected.
+
+        """
+        # from "Instantiation from existing C/C++ pointers" in Cython docs
+        cdef GeoTessGrid wrapper = GeoTessGrid.__new__(GeoTessGrid, raw=True)
+        wrapper.thisptr = cptr
+        wrapper.owns_ptr = False
+
+        return wrapper
 
     def loadGrid(self, const string& inputFile):
         """ Load GeoTessGrid object from a File.
@@ -439,17 +470,6 @@ cdef class GeoTessGrid:
 
         return out
 
-    @staticmethod
-    cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
-        """
-        Wrap a C++ pointer with a pointer-less Python GeoTessGrid class.
-        """
-        cdef GeoTessGrid inst = GeoTessGrid(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
 
 
 cdef class GeoTessMetaData:
@@ -486,6 +506,7 @@ cdef class GeoTessMetaData:
     """
     cdef clib.GeoTessMetaData *thisptr
     cdef object owner
+    cdef bint owns_ptr
 
     def __cinit__(self, raw=False):
         if not raw:
@@ -494,6 +515,30 @@ cdef class GeoTessMetaData:
     def __dealloc__(self):
         if self.thisptr != NULL and not self.owner:
             del self.thisptr #XXX: I think this just deletes Python objects, need to do more c "free" stuff here
+
+    @staticmethod
+    cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
+        """ Wrap a C++ pointer with a pointer-less Python class.
+        
+        Deprecated.  Use `from_pointer` instead.
+        """
+        cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
+        inst.thisptr = cptr
+        if owner:
+            inst.owner = owner
+
+        return inst
+
+    @staticmethod
+    cdef GeoTessMetaData from_pointer(clib.GeoTessMetaData *cptr, owner=None):
+        """ Initialize from a C++ GeoTessMetaData pointer.
+        """
+        cdef GeoTessMetaData wrapper = GeoTessMetaData.__new__(GeoTessMetaData, raw=True)
+        wrapper.thisptr = cptr
+        if owner:
+            wrapper.owns_ptr = False
+
+        return wrapper
 
     def setEarthShape(self, str earthShapeName):
         """ Specify the name of the ellipsoid that is to be used to convert between geocentric
@@ -645,17 +690,6 @@ cdef class GeoTessMetaData:
         """
         return self.thisptr.toString()
 
-    @staticmethod
-    cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
-        """ Wrap a C++ pointer with a pointer-less Python class.
-        """
-        cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
-
     def getAttributeNamesString(self):
         """ Retrieve the names of all the attributes assembled into a single, semi-colon separated string.
 
@@ -757,6 +791,28 @@ cdef class GeoTessMetaData:
     def setModelFileFormat(self, version):
         # TODO: look up C++ docstring for this
         self.thisptr.setModelFileFormat(version)
+
+    # def getEulerRotationAngles(self):
+    #     """
+    #     Retrieve the Euler Rotation Angles that are being used to rotate unit
+    #     vectors from grid to model coordinates, in degrees. Returns null if no 
+    #     grid rotations are being applied. There are possibly two geographic coordinate
+    #     systems at play:
+
+    #     * Grid coordinates, where grid vertex 0 points to the north pole.
+    #     * Model coordinates, where grid vertex 0 points to some other location,
+    #       typically a station location.
+    #     
+    #     Returns
+    #     -------
+    #     float
+    #         euler rotation angles in degrees.
+
+    #     """
+    #     cdef double* rotation_angles_p = self.thisptr.getEulerRotationAngles()
+    #     # rotaton_angles = deref(rotation_angles_p)
+
+    #     return rotation_angles_p
 
 
 cdef class EarthShape:
@@ -943,6 +999,7 @@ cdef class GeoTessModel:
 
     """
     # XXX: pointer ownership is an issue here.
+    #   May have fixed some/all of it in the new .from_pointer staticmethod.
     # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
@@ -1310,16 +1367,21 @@ cdef class GeoTessModel:
             Current model's grid object.
 
         """
-        #XXX: I don't think this works
+        # XXX: I don't think this works.  It crashes the interpreter when the grid is deleted or 
+        # garbage collected. I need to fix pointer ownership or something.
+
         # cdef clib.GeoTessGrid *ptr = &self.thisptr.getGrid()
         # grid = lib.GeoTessGrid.from_pointer(ptr)
-        cdef GeoTessGrid grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
-        # cdef GeoTessGrid grid = GeoTessGrid.from_pointer(&self.thisptr.getGrid())
+
+        # cdef GeoTessGrid grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
+        cdef GeoTessGrid grid = GeoTessGrid.from_pointer(&self.thisptr.getGrid())
         # grid.owner = self
 
         return grid
 
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
+        # setProfile (int vertex, int layer, vector< float > &radii, vector< vector< T > > &values)
+        # setProfile (const int &vertex, T *values, const int &nAttributes)
         """
         Set profile values at a vertex and layer.
 
@@ -1333,7 +1395,7 @@ cdef class GeoTessModel:
             List of corresponding attribute values at the provided radii.
 
         """
-        # holycrap, vector[vector[...]] can just be a list of lists
+        # holycrap, vector[vector[...]] can just be a list of lists.  cython converts it.
         # I wonder if it can be a 2D NumPy array.  Yep!
         try:
             self.thisptr.setProfile(vertex, layer, radii, values)
