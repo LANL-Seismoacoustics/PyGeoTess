@@ -37,7 +37,7 @@ jobs:
         conda init bash
         conda activate test
         conda list
-        pip install .
+        pip install -v .
 
     - name: Test with pytest
       run: |

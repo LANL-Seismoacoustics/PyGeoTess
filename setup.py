@@ -76,5 +76,5 @@ setup(name = 'pygeotess',
       install_requires = [
           'numpy',
           'setuptools',
-          ]
+          ],
       )
