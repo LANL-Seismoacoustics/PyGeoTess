@@ -12,7 +12,7 @@ import geotess.lib as lib
 testdata = Path(__file__).parents[0] / 'testdata'
 grid_id = '808785948EB2350DD44E6C29BDEA6CAE'
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def crust20():
     inputfile = str(testdata / 'crust20.geotess')
     model = lib.GeoTessModel()
