@@ -2,7 +2,9 @@
 Test GeoTessGrid methods.
 
 """
+import filecmp
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 import numpy as np
 import pytest
@@ -16,7 +18,7 @@ from geotess import lib
 testdata = Path(__file__).parents[0] / 'testdata'
 
 @pytest.fixture(scope="module")
-def grid_unified():
+def grid_unified() -> dict:
     inputfile = str(testdata / 'unified_crust20_ak135_grid.geotess')
     grid = lib.GeoTessGrid()
     grid.loadGrid(inputfile)
@@ -32,7 +34,7 @@ def grid_unified():
 
 
 @pytest.fixture
-def grid16():
+def grid16() -> dict:
     inputfile = str(testdata / 'geotess_grid_16000.geotess')
     grid = lib.GeoTessGrid()
     grid.loadGrid(inputfile)
@@ -58,6 +60,14 @@ def test_loadGrid(grid16):
     grid = lib.GeoTessGrid()
     grid.loadGrid(expected['inputfile'])
     assert grid.getGridID() == expected['grid_id']
+
+def test_writeGrid(grid16):
+    grid = grid16['grid']
+    gridpath = Path(grid16['inputfile']) 
+    with NamedTemporaryFile(mode="w+b") as f:
+        grid.writeGrid(f.name)
+        temppath = Path(f.name)
+        assert filecmp.cmp(temppath, gridpath, shallow=False)
 
 def test_getGridInputFile(grid16):
     expected = grid16
@@ -329,10 +339,74 @@ def test_getLastTriangle(grid_unified):
 
 	# }
 
+def test_getVertexTriangles(grid_unified):
+    grid = grid_unified['grid']
+    data = (
+	((0,0,10), [9, 10, 14, 15, 19]),
+	((0,1,40), [88, 89, 90, 92, 94, 95]),
+	((0,2,160), [404, 405, 407, 412, 414, 415]),
+	((1,0,10), [429, 430, 434, 435, 439]),
+	((1,1,40), [508, 509, 510, 512, 514, 515]),
+	((1,2,160), [824, 825, 827, 832, 834, 835]),
+	((1,3,640), [2104, 2105, 2107, 2112, 2114, 2115]),
+	((2,0,10), [2129, 2130, 2134, 2135, 2139]),
+	((2,1,40), [2208, 2209, 2210, 2212, 2214, 2215]),
+	((2,2,160), [2524, 2525, 2527, 2532, 2534, 2535]),
+	((2,3,640), [3804, 3805, 3807, 3812, 3814, 3815]),
+	((2,4,2560), [8924, 8925, 8927, 8932, 8934, 8935]),
+	((2,5,10240), [29404, 29405, 29407, 29412, 29414, 29415]),
+	((2,6,27358), [54128, 54130, 54131, 76869, 76870, 76871]),
+	((2,7,30112), [91284, 91285, 91287, 115035, 115036]),
+    )
+
+    for (tessID, level, vertex), vertices in data:
+        observed = grid.getVertexTriangles(tessID, level, vertex)
+        assert observed == vertices
+
+
 def test_getTriangleVertexIndexes(grid_unified):
     grid = grid_unified['grid']
     expected = np.array([1, 24, 23])
     np.testing.assert_equal(grid.getTriangleVertexIndexes(65), expected)
+
+	# void testGetTriangleVertexIndex()
+	# {
+	# 	if (Compare::verbosity() > 0)
+	# 		cout << "GeoTessGridTest::testGetTriangleVertexIndex" << endl;
+	#
+	# 	TS_ASSERT_EQUALS(24, grid->getTriangleVertexIndex(65, 1));
+	# }
+
+	# void testGetTriangleVertex()
+	# {
+	# 	if (Compare::verbosity() > 0)
+	# 		cout << "GeoTessGridTest::testGetTriangleVertex" << endl;
+	#
+	# 	double v[] = {0.85065080835204, -6.525727206302101E-17, -0.5257311121191336};
+	# 	TS_ASSERT(Compare::arrays(grid->getTriangleVertex(62, 1), v, 1e-15));
+	# }
+
+	# void testGetTriangleVertices()
+	# {
+	# 	if (Compare::verbosity() > 0)
+	# 		cout << "GeoTessGridTest::testGetTriangleVertices" << endl;
+	#
+	# 	double** actual = CPPUtils::new2DArray<double>(3,3);
+	#
+	# 	grid->getTriangleVertices(333, actual);
+	#
+	# 	double expected0[] = {0.723606797749979, -0.5257311121191337, -0.447213595499958};
+	# 	TS_ASSERT(Compare::arrays(actual[0], expected0, 1e-15));
+	#
+	# 	double expected1[] = {0.5127523743216502, -0.6937804775604494, -0.5057209226277919};
+	# 	TS_ASSERT(Compare::arrays(actual[1], expected1, 1e-15));
+	#
+	# 	double expected2[] = {0.6816403771773872, -0.6937804775604494, -0.23245439371512025};
+	# 	TS_ASSERT(Compare::arrays(actual[2], expected2, 1e-15));
+	#
+	# 	CPPUtils::delete2DArray(actual);
+	#
+	# }
 
 	# void testGetCircumCenter()
 	# {
