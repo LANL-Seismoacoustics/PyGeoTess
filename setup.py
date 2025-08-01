@@ -65,6 +65,7 @@ setup(name = 'pygeotess',
       description = 'GeoTess access from Python.',
       author = 'Jonathan K. MacCarthy',
       author_email = 'jkmacc@lanl.gov',
+      zip_safe=False,
       packages = ['geotess', 'geotess.lib', 'geotess.data'],
       ext_modules = extensions,
       package_data = {
