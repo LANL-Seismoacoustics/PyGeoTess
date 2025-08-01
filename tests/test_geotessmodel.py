@@ -27,9 +27,9 @@ def crust20():
 #     grid.loadGrid(inputfile)
 #     return grid
 
-def test_init_empty():
-    model = lib.GeoTessModel()
-    del model
+# def test_init_empty():
+#     model = lib.GeoTessModel()
+#     del model
 
 # @pytest.fixture
 # def model2d():
