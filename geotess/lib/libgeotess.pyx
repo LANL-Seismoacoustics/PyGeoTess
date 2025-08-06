@@ -581,6 +581,8 @@ cdef class GeoTessMetaData:
     def setDescription(self, const string& dscr):
         """ Set the description of the model.
 
+        Adds a newline as final character.
+
         Parameters
         ----------
         dscr : str
@@ -596,13 +598,14 @@ cdef class GeoTessMetaData:
         str
             the description of the model.
         """
-        self.thisptr.getDescription()
+        return self.thisptr.getDescription()
 
     def setLayerNames(self, const string& lyrNms):
         """ Specify the names of all the layers that comprise the model.
 
         This will determine the value of nLayers as well. The input lyrNms is a semicolon 
         concatenation of all layer names (i.e. LAYERNAME1; LAYERNAME2; ...).
+        Whitespaces will be removed.
 
         Parameters
         ----------
@@ -722,12 +725,12 @@ cdef class GeoTessMetaData:
 
     def getLayerTessIds(self):
         """ Retrieve a reference to layerTessIds
-        
+
         An int[] with an entry for each layer specifying the index of the tessellation that supports that layer.
 
         Returns
         -------
-        layerTessIds : numpy.ndarray of int
+        layerTessIds : list of int
 
         """
         # Use some internal NumPy C API calls to safely wrap the array pointer,
