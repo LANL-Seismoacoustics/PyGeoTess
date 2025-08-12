@@ -2,22 +2,31 @@
 Test GeoTessModel methods.
 
 """
-import datetime
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 import geotess.lib as lib
+from geotess.lib import geotessutils as gtutil
 
 testdata = Path(__file__).parents[0] / 'testdata'
 grid_id = '808785948EB2350DD44E6C29BDEA6CAE'
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def crust20():
     inputfile = str(testdata / 'crust20.geotess')
     model = lib.GeoTessModel()
+    model.loadModel(inputfile) # XXX: loadModel crashes if the associated grid file isn't found.  do a try/except somewhere.
+
+    return model
+
+@pytest.fixture(scope="function")
+def unified() -> dict:
+    inputfile = str(testdata / 'unified_crust20_ak135.geotess')
+    model = lib.GeoTessModel()
     model.loadModel(inputfile)
-    # XXX: loadModel crashes if the associated grid file isn't found.  do a try/except somewhere.
+
     return model
 
 # @pytest.fixture
@@ -77,8 +86,8 @@ def test_getPointWeights(crust20):
     # randomly chose a lat/lon/depth.
     lat, lon, depth = 30.5, 110.5, 1.0
     expected = {
-        142055: 0.25024172435496234, 
-        142062: 0.32783477321661203, 
+        142055: 0.25024172435496234,
+        142062: 0.32783477321661203,
         142069: 0.42192350242842563
         }
     weights = crust20.getPointWeights(lat, lon, depth)
@@ -89,3 +98,52 @@ def test_getPointWeights(crust20):
 #     euler_model_grid_coords_equal, euler_model_grid_coords_not_equal = euler
 #     GeoTessPosition* peq = euler_model_grid_coords_equal->getPosition(GeoTessInterpolatorType::LINEAR, GeoTessInterpolatorType::LINEAR);
 #     GeoTessPosition* pneq = euler_model_grid_coords_not_equal->getPosition(GeoTessInterpolatorType::LINEAR, GeoTessInterpolatorType::LINEAR);
+
+def test_getMetaData(crust20):
+    md = crust20.getMetaData()
+    # make sure GeoTess is on the first line in toString.  weird but ok.
+    assert md.toString().find('GeoTess') == 1
+
+def test_getProfile(unified):
+    expected = np.array([5964.7847, 6086.9287, 6209.0728, 6331.217])
+    radii, attributes = unified.getProfile(340, 4)
+    np.testing.assert_allclose(radii, expected, atol=0.001)
+
+def test_setProfile(unified):
+    radii, attributes = unified.getProfile(340, 4)
+    # expected = radii + 1
+    unified.setProfile(340, 4, radii+1, attributes+1)
+    observed_radii, observed_attributes = unified.getProfile(340, 4)
+    expected_radii = radii + 1
+    expected_attributes = attributes + 1
+    np.testing.assert_allclose(observed_radii, expected_radii, atol=0.001)
+    np.testing.assert_allclose(observed_attributes, expected_attributes, atol=0.001)
+
+def test_getNLayers(unified):
+    assert unified.getNLayers() == 9
+
+def test_getNVerticies(unified):
+    assert unified.getNVertices() == 30114
+
+def test_getNPoints(unified):
+    assert unified.getNPoints() == 170730
+
+def test_getNRadii(unified):
+    assert unified.getNRadii(340, 4) == 4
+
+def test_getWeights(unified):
+    # get the origin of the ray path
+    u = gtutil.GeoTessUtils.getVectorDegrees(20, 90)
+    # get end of the ray path (90 deg away)
+    gc = gtutil.GeoTessUtils.getGreatCircle(u, np.pi/2)
+    angle = np.pi/6
+    radius = 5350 # km
+    n = 100 # ray path increments
+    spacing = angle /(n-1.)
+    # getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):
+    weights = unified.getWeights(gc[0], gc[1], spacing, radius, 'LINEAR')
+
+    # the sum of the weights along the raypath should be roughly equal to its
+    # arclength along the great circle 
+    sum = np.sum(weights.values())
+    assert sum == pytest.approx(angle*radius, 0.01)
