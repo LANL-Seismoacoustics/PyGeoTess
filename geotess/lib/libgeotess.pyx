@@ -324,6 +324,7 @@ cdef class GeoTessGrid:
             memcpy(p, c_vertices[r], sizeof(double) * nCol)
             p += nCol
 
+        # free c_vertices b/c data has already been copied?
         return ArgsArray
 
     def toString(self):
@@ -1207,7 +1208,6 @@ cdef class GeoTessModel:
         for ival, val in enumerate(values):
             # The reference of the pointer is followed in the setter!
             geoData.setValue(ival, val)
-        return
 
     def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):
         """
@@ -1216,7 +1216,6 @@ cdef class GeoTessModel:
         ptMap = self.thisptr.getPointMap()
         geoData = ptMap.getPointData(pointIndex)
         geoData.setValue(attributeIndex, value)
-        return
 
     def getNearestPointIndex(self, float latitude, float longitude, float radius):
         """
@@ -1394,7 +1393,7 @@ cdef class GeoTessModel:
             vertex and layer number of the profile.
         radii : list
             Radius values of profile data.
-        values : list of lists
+        values : list of lists, or 2D numpy.ndarray
             List of corresponding attribute values at the provided radii.
 
         """
@@ -1586,7 +1585,7 @@ cdef class GeoTessModel:
         """
         # TODO: make this return two NumPy arrays instead?
 
-        # pointA and pointB were specified as typed memorviews, so we can send the address to their first
+        # pointA and pointB were specified as 1D typed memoryviews, so we can send the address to their first
         # element as the double pointer.
         # pointSpacing and radius are automatically converted to addresses by Cython because they
         # are numeric types and we specified them as typed in the calling signature.
