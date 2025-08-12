@@ -11,10 +11,6 @@ import pytest
 
 from geotess import lib
 
-# datadir = Path(geotess.__file__).parents[0] / 'data'
-# inputfile = str(datadir / 'geotess_grid_64000.geotess')
-# grid_id = '90E53A213AEC248687F0D661B46D194A'
-
 testdata = Path(__file__).parents[0] / 'testdata'
 
 @pytest.fixture(scope="module")

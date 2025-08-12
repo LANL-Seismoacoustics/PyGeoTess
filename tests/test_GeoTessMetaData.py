@@ -68,9 +68,10 @@ def test_getLayerNames(crust20):
 def test_setLayerTessIds():
     meta = lib.GeoTessMetaData()
     expected = [0, 0, 1]
+    # check types that support the buffer protocol
     inputs = [
-        tuple(expected), # (0, 0, 1)
         expected,
+        tuple(expected),
         np.array(expected),
         array.array('B', expected),
     ]
@@ -113,5 +114,3 @@ def test_getLayerIndex(crust20):
     ]
     for expected, name in enumerate(layer_names):
         assert meta.getLayerIndex(name) == expected
-
-
