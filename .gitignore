@@ -2,6 +2,7 @@ build/
 docs/site/
 .DS_Store
 pygeotess.egg-info/
+*.cpp
 *pyc
 *.so
 .vscode
