@@ -1,5 +1,6 @@
 from pathlib import Path
 from glob import glob
+import sys
 
 from setuptools import setup, Extension
 
@@ -26,6 +27,7 @@ def make_extension(extpath: Path) -> Extension:
         name='.'.join(extpath.parts[:-1] + (extpath.stem.lower(),)),
         sources=[str(extpath)],
         language='c++',
+        library_dirs=[sys.prefix + '/lib'],
         libraries=['geotesscpp', 'geotessamplitudecpp'],
         include_dirs=[np.get_include()],
     )
