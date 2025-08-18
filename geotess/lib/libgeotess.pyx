@@ -1620,9 +1620,9 @@ cdef class GeoTessModel:
 
         pos.getWeights(weights,radius)
         return weights
-    
+
     def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):
-            
+
         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
 
@@ -1634,7 +1634,7 @@ cdef class GeoTessModel:
 
         pos.getWeights(weights,1.)
         return weights
-    
+
     def getPointLocation(self, pointIndex):
         """
         Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
@@ -1734,7 +1734,7 @@ cdef class GeoTessModel:
             self.thisptr.setProfile(vertex, layer, radii, values)
         except:
             raise ValueError('setProfile failed')
-    
+
 #     def setProfileND(self, int vertex, int layer, radii, values):
 #         """
 #         Set profile values at a vertex and layer using ndarrays rather than c++ vector types
@@ -1826,7 +1826,7 @@ cdef class GeoTessModel:
         ptMap = self.thisptr.getPointMap()
         pt = ptMap.getPointIndexFirst(vertex, layer)
         return pt
-    
+
     def getValueFloat(self, int pointIndex, int attributeIndex):
         """ Return the value of the attribute at the specified pointIndex, attributeIndex, 
         cast to a float if necessary.

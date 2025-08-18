@@ -139,7 +139,7 @@ def test_getWeights(unified):
     angle = np.pi/6
     radius = 5350 # km
     n = 100 # ray path increments
-    spacing = angle /(n-1.)
+    spacing = angle / (n-1.)
     # getWeights(self, const double[::1] pointA, const double[::1] pointB, const double pointSpacing, const double radius, str horizontalType):
     weights = unified.getWeights(gc[0], gc[1], spacing, radius, 'LINEAR')
 
