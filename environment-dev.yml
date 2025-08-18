@@ -6,7 +6,7 @@ dependencies:
 - setuptools
 - geotesscpp>=2.7
 - numpy<2
-- cython<3
+- cython=3
 - pytest
 - pip
 # - cxx-compiler

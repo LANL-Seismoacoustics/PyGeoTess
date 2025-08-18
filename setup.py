@@ -41,8 +41,8 @@ cy_extensions = [make_extension(pth) for pth in pyxfiles]
 compiler_directives = dict(
     embedsignature=True,
     language_level='3',
-    c_string_type='unicode',
-    c_string_encoding='utf-8',
+    c_string_type='unicode', # std::string outputs are coerced from bytes to Python 3 unicode str
+    c_string_encoding='utf-8', # if std::string is coerced to Python 3 unicode str, use utf-8 decoding
 )
 extensions = cythonize(
     cy_extensions,
