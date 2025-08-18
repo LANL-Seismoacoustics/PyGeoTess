@@ -1,15 +1,12 @@
 from pathlib import Path
 from glob import glob
+import sys
 
 from setuptools import setup, Extension
 
 import numpy as np
 
-try:
-    from Cython.Build import cythonize
-    use_cython = True
-except ImportError:
-    use_cython = False
+from Cython.Build import cythonize
 
 
 def make_extension(extpath: Path) -> Extension:
@@ -30,6 +27,7 @@ def make_extension(extpath: Path) -> Extension:
         name='.'.join(extpath.parts[:-1] + (extpath.stem.lower(),)),
         sources=[str(extpath)],
         language='c++',
+        library_dirs=[sys.prefix + '/lib'],
         libraries=['geotesscpp', 'geotessamplitudecpp'],
         include_dirs=[np.get_include()],
     )
@@ -38,26 +36,21 @@ def make_extension(extpath: Path) -> Extension:
 
 
 
-if use_cython:
-    # Every .pyx file in the the geotess directory will produce a lowecase Python extension module in the same location.
-    pyxfiles = Path('geotess').glob('**/*.pyx')
-    cy_extensions = [make_extension(pth) for pth in pyxfiles]
+# Every .pyx file in the the geotess directory will produce a lowecase Python extension module in the same location.
+pyxfiles = Path('geotess').glob('**/*.pyx')
+cy_extensions = [make_extension(pth) for pth in pyxfiles]
 
-    compiler_directives = dict(
-        embedsignature=True,
-        language_level='3',
-        c_string_type='unicode',
-        c_string_encoding='utf-8',
-    )
-    extensions = cythonize(
-        cy_extensions, 
-        force=True, 
-        compiler_directives=compiler_directives
-    )
-else:
-    # Every .cpp file in the the geotess directory will produce a lowecase Python extension module in the same location.
-    cppfiles = Path('geotess').glob('**/*.cpp')
-    extensions = [make_extension(pth) for pth in cppfiles]
+compiler_directives = dict(
+    embedsignature=True,
+    language_level='3',
+    c_string_type='unicode', # std::string outputs are coerced from bytes to Python 3 unicode str
+    c_string_encoding='utf-8', # if std::string is coerced to Python 3 unicode str, use utf-8 decoding
+)
+extensions = cythonize(
+    cy_extensions,
+    force=True,
+    compiler_directives=compiler_directives
+)
 
 
 setup(name = 'pygeotess',
@@ -76,5 +69,6 @@ setup(name = 'pygeotess',
       install_requires = [
           'numpy',
           'setuptools',
+          'cython',
           ]
       )
