@@ -580,7 +580,7 @@ cdef class GeoTessMetaData:
             raise ValueError(msg.format(earthShapeName, allowed_shapes))
         self.thisptr.setEarthShape(earthShapeName)
 
-    def setDescription(self, const string& dscr):
+    def setDescription(self, str dscr):
         """ Set the description of the model.
 
         Adds a newline as final character.
@@ -590,7 +590,7 @@ cdef class GeoTessMetaData:
         dscr : str
             the description of the model.
         """
-        self.thisptr.setDescription(dscr)
+        self.thisptr.setDescription(bytes(dscr, encoding='utf-8'))
 
     def getDescription(self):
         """ Retrieve the description of the model.
@@ -602,7 +602,7 @@ cdef class GeoTessMetaData:
         """
         return self.thisptr.getDescription()
 
-    def setLayerNames(self, const string& lyrNms):
+    def setLayerNames(self, str lyrNms):
         """ Specify the names of all the layers that comprise the model.
 
         This will determine the value of nLayers as well. The input lyrNms is a semicolon 
@@ -614,7 +614,7 @@ cdef class GeoTessMetaData:
         lyrNms : str
             single string containing all the layer names separated by semi-colons
         """
-        self.thisptr.setLayerNames(lyrNms)
+        self.thisptr.setLayerNames(bytes(lyrNms, encoding='utf-8'))
 
     def setLayerTessIds(self, vector[int]& layrTsIds):
         """ LayerTessIds is a map from a layer index to a tessellation index.
