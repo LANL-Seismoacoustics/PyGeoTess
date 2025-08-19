@@ -151,7 +151,7 @@ cdef class GeoTessGrid:
 
         return wrapper
 
-    def loadGrid(self, const string& inputFile):
+    def loadGrid(self, str inputFile):
         """ Load GeoTessGrid object from a File.
 
         Parameters
@@ -168,7 +168,7 @@ cdef class GeoTessGrid:
         # I honestly don't know how this works as written.  CPP returns a pointer to a GeoTessGrid, but 
         # I don't capture it here.  Somehow it still gets assigned to .thisptr.
         if os.path.exists(inputFile):
-            self.thisptr.loadGrid(inputFile)
+            self.thisptr.loadGrid(bytes(inputFile, encoding='utf-8')) # bytes implicitly coerces to std::string
         else:
             raise exc.GeoTessFileError(f"File not found: {inputFile}")
 
@@ -340,6 +340,7 @@ cdef class GeoTessGrid:
 
     def getGridID(self):
         #const string& getGridID() const
+        # return self.thisptr.getGridID().decode('utf-8')
         return self.thisptr.getGridID()
 
     def getVertex(self, int vertex):
@@ -1027,7 +1028,8 @@ cdef class GeoTessModel:
 
     # https://groups.google.com/forum/#!topic/cython-users/6I2HMUTPT6o
 
-    def loadModel(self, const string& inputFile, relGridFilePath=""):
+    # def loadModel(self, const string& inputFile, relGridFilePath=b""):
+    def loadModel(self, str inputFile, relGridFilePath=b""):
         """ Read model data and grid from a file.
 
         Parameters
@@ -1050,7 +1052,7 @@ cdef class GeoTessModel:
         # model, not assign it to self.thisptr.
         # https://groups.google.com/forum/#!topic/cython-users/4ecKM-p8dPA
         if os.path.exists(inputFile):
-            self.thisptr.loadModel(inputFile, relGridFilePath)
+            self.thisptr.loadModel(bytes(inputFile, encoding='utf-8'), relGridFilePath)
         else:
             raise exc.GeoTessFileError(f"File not found: {inputFile}.")
 
@@ -1612,7 +1614,7 @@ cdef class GeoTessModel:
         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
 
-        cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(bytes(horizontalType, encoding='utf-8'))
         pos = self.thisptr.getPosition(deref(interpolator))
         pos.set(lat, lon, radius)
 
