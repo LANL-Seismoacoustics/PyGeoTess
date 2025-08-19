@@ -42,7 +42,10 @@ cdef extern from "geotesscpp/GeoTessUtils.h" namespace "geotess":
         double* getVectorDegrees(const double &lat, const double &lon, double *v)
         @staticmethod
         double getEarthRadius(const double *const v)
-
+        @staticmethod
+        void getGreatCircle(const double* const v, double azimuth, double** gc)
+        @staticmethod
+        void getGreatCirclePoint(double** greatCircle, double distance, double* v)
 
 cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
     cdef cppclass GeoTessGrid:
@@ -65,10 +68,13 @@ cdef extern from "geotesscpp/GeoTessGrid.h" namespace "geotess":
         int getFirstTriangle(int tessellation, int level) const
         int getLastTriangle(int tessellation, int level) const
         int getVertexIndex(int triangle, int corner) const
+        int getVertexIndex(int tessId, int level, int triangle, int corner) const
         # had to remove a "const" from the def
         # Cython can't use 'const' in all the same places as C++
         # http://stackoverflow.com/questions/23873652/how-to-use-const-in-cython
         double *const * getVertices() const
+        void testGrid()
+        long getMemory() # may need to be "long" instead of LONG_INT
 
 cdef extern from "geotesscpp/GeoTessMetaData.h" namespace "geotess":
     cdef cppclass GeoTessMetaData:

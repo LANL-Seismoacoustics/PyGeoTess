@@ -3,6 +3,7 @@
   "reportMissingTypeStubs": false,
   "reportUnknownVariableType": false,
   "reportUnknownArgumentType": false,
+  "reportUnknownMemberType": false,
   "reportPossiblyUnboundVariable": false,
   "reportAny": false
 }

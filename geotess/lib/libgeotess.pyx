@@ -110,6 +110,7 @@ cdef class GeoTessGrid:
     """
     cdef clib.GeoTessGrid *thisptr
     cdef object owner
+    cdef bint owns_ptr # True if the instance owns its pointer, otherwise likely came from model.getGrid()
 
     def __cinit__(self, raw=False):
         # XXX: lots of things evaluate to True or False. A file name, for example.
@@ -117,8 +118,38 @@ cdef class GeoTessGrid:
             self.thisptr = new clib.GeoTessGrid()
 
     def __dealloc__(self):
-        if self.thisptr != NULL and not self.owner:
+        # if self.thisptr != NULL and not self.owner:
+        if self.thisptr is not NULL and self.owns_ptr:
             del self.thisptr
+
+    @staticmethod
+    cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
+        """
+        Wrap a C++ pointer with a pointer-less Python GeoTessGrid class.
+
+        Deprecated.  Use `from_pointer` instead.
+        """
+        cdef GeoTessGrid inst = GeoTessGrid(raw=True)
+        inst.thisptr = cptr
+        if owner:
+            inst.owner = owner
+
+        return inst
+
+    @staticmethod
+    cdef GeoTessGrid from_pointer(clib.GeoTessGrid *cptr):
+        """ Initialize GeoTessGrid from a C++ GeoTessGrid pointer.
+
+        The resulting grid instance doesn't own the pointer and won't free its memory
+        when deleted or garbage collected.
+
+        """
+        # from "Instantiation from existing C/C++ pointers" in Cython docs
+        cdef GeoTessGrid wrapper = GeoTessGrid.__new__(GeoTessGrid, raw=True)
+        wrapper.thisptr = cptr
+        wrapper.owns_ptr = False
+
+        return wrapper
 
     def loadGrid(self, str inputFile):
         """ Load GeoTessGrid object from a File.
@@ -141,8 +172,8 @@ cdef class GeoTessGrid:
         else:
             raise exc.GeoTessFileError(f"File not found: {inputFile}")
 
-    def writeGrid(self, const string& fileName):
-        self.thisptr.writeGrid(fileName)
+    def writeGrid(self, str fileName):
+        self.thisptr.writeGrid(bytes(fileName, encoding='utf-8'))
 
     def getGridInputFile(self):
         """ Retrieve the name of the file from which the grid was loaded.
@@ -157,8 +188,37 @@ cdef class GeoTessGrid:
         """
         return self.thisptr.getGridInputFile()
 
-    def getNLevels(self):
+    def testGrid(self):
+        """ Tests the integrity of the grid.
+
+        Visits every triangle T, and (1) checks to ensure that every neighbor of T includes T in its list of neighbors, and (2) checks that every neighbor of T shares exactly two nodes with T.
+
+        Exceptions
+        ----------
+        GeoTessException if anything is amiss.
+
+        """
+        self.thisptr.testGrid()
+    
+    def getMemory(self):
+        """ Retrieve the amount of memory required by this GeoTessGrid object in bytes.
+
+        Returns
+        -------
+        int
+            the amount of memory required by this GeoTessGrid object in bytes.
+
+        """
+        return self.thisptr.getMemory()
+
+    def getNLevels(self, tessellation=None):
         """ Returns the number of tessellation levels defined for this grid.
+        
+        Parameters
+        ----------
+        tessellation : int
+            Return only number of levels for the provided tessellation index, otherwise
+            all levels are returned.
 
         Returns
         -------
@@ -166,7 +226,12 @@ cdef class GeoTessGrid:
             The number of tessellation levels defined for this grid.
 
         """
-        return self.thisptr.getNLevels()
+        if tessellation is None:
+            nlevels = self.thisptr.getNLevels()
+        else:
+            nlevels = self.thisptr.getNLevels(tessellation)
+
+        return nlevels
  
     def getNTriangles(self, tessellation=None, level=None):
         """ Retrieve the number of triangles that define the specified level of the specified
@@ -259,6 +324,7 @@ cdef class GeoTessGrid:
             memcpy(p, c_vertices[r], sizeof(double) * nCol)
             p += nCol
 
+        # free c_vertices b/c data has already been copied?
         return ArgsArray
 
     def toString(self):
@@ -300,7 +366,7 @@ cdef class GeoTessGrid:
         # object gets garbage collected
         # As the OWNDATA flag of an array is read-only in Python, we need to
         # call the C function PyArray_UpdateFlags
-        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_ARRAY_OWNDATA)
         # http://stackoverflow.com/questions/19204098/c-code-within-python-and-copying-arrays-in-c-code
 
         # XXX: this seems to contradict the docstring that memory is shared.
@@ -336,7 +402,7 @@ cdef class GeoTessGrid:
         cdef np.npy_intp shape[1]
         shape[0] = <np.npy_intp> 3
         arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> tri_vertex_ids)
-        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_ARRAY_OWNDATA)
 
         return arr.copy()
 
@@ -376,7 +442,7 @@ cdef class GeoTessGrid:
         """
         return self.thisptr.getLastTriangle(tessellation, level)
 
-    def getVertexIndex(self, int triangle, int corner):
+    def getVertexIndex(self, int triangle, int corner, tessId=None, level=None):
         """ Get the index of the vertex that occupies the specified position in the hierarchy.
 
         Parameters
@@ -385,6 +451,10 @@ cdef class GeoTessGrid:
             the i'th triangle in the grid
         corner : int
             the i'th corner of the specified triangle
+        tessId : int
+            tessellation index
+        level : int
+            index of a level relative to the first level of the specified tessellation
 
         Returns
         -------
@@ -392,19 +462,16 @@ cdef class GeoTessGrid:
             index of a vertex
 
         """
-        return self.thisptr.getVertexIndex(triangle, corner)
+        # XXX: the order of these method arguments doesn't match CPP, but used here for 
+        # backwards PyGeoTess compatibility.  Supplying them in the wrong order can crash
+        # the interpreter :-(
+        if tessId is not None and level is not None:
+            out = self.thisptr.getVertexIndex(tessId, level, triangle, corner)
+        else:
+            out = self.thisptr.getVertexIndex(triangle, corner)
 
-    @staticmethod
-    cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
-        """
-        Wrap a C++ pointer with a pointer-less Python GeoTessGrid class.
-        """
-        cdef GeoTessGrid inst = GeoTessGrid(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
+        return out
 
-        return inst
 
 
 cdef class GeoTessMetaData:
@@ -441,6 +508,7 @@ cdef class GeoTessMetaData:
     """
     cdef clib.GeoTessMetaData *thisptr
     cdef object owner
+    cdef bint owns_ptr
 
     def __cinit__(self, raw=False):
         if not raw:
@@ -449,6 +517,30 @@ cdef class GeoTessMetaData:
     def __dealloc__(self):
         if self.thisptr != NULL and not self.owner:
             del self.thisptr #XXX: I think this just deletes Python objects, need to do more c "free" stuff here
+
+    @staticmethod
+    cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
+        """ Wrap a C++ pointer with a pointer-less Python class.
+        
+        Deprecated.  Use `from_pointer` instead.
+        """
+        cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
+        inst.thisptr = cptr
+        if owner:
+            inst.owner = owner
+
+        return inst
+
+    @staticmethod
+    cdef GeoTessMetaData from_pointer(clib.GeoTessMetaData *cptr, owner=None):
+        """ Initialize from a C++ GeoTessMetaData pointer.
+        """
+        cdef GeoTessMetaData wrapper = GeoTessMetaData.__new__(GeoTessMetaData, raw=True)
+        wrapper.thisptr = cptr
+        if owner:
+            wrapper.owns_ptr = False
+
+        return wrapper
 
     def setEarthShape(self, str earthShapeName):
         """ Specify the name of the ellipsoid that is to be used to convert between geocentric
@@ -488,15 +580,17 @@ cdef class GeoTessMetaData:
             raise ValueError(msg.format(earthShapeName, allowed_shapes))
         self.thisptr.setEarthShape(earthShapeName)
 
-    def setDescription(self, const string& dscr):
+    def setDescription(self, str dscr):
         """ Set the description of the model.
+
+        Adds a newline as final character.
 
         Parameters
         ----------
         dscr : str
             the description of the model.
         """
-        self.thisptr.setDescription(dscr)
+        self.thisptr.setDescription(bytes(dscr, encoding='utf-8'))
 
     def getDescription(self):
         """ Retrieve the description of the model.
@@ -506,20 +600,21 @@ cdef class GeoTessMetaData:
         str
             the description of the model.
         """
-        self.thisptr.getDescription()
+        return self.thisptr.getDescription()
 
-    def setLayerNames(self, const string& lyrNms):
+    def setLayerNames(self, str lyrNms):
         """ Specify the names of all the layers that comprise the model.
 
         This will determine the value of nLayers as well. The input lyrNms is a semicolon 
         concatenation of all layer names (i.e. LAYERNAME1; LAYERNAME2; ...).
+        Whitespaces will be removed.
 
         Parameters
         ----------
         lyrNms : str
             single string containing all the layer names separated by semi-colons
         """
-        self.thisptr.setLayerNames(lyrNms)
+        self.thisptr.setLayerNames(bytes(lyrNms, encoding='utf-8'))
 
     def setLayerTessIds(self, vector[int]& layrTsIds):
         """ LayerTessIds is a map from a layer index to a tessellation index.
@@ -600,17 +695,6 @@ cdef class GeoTessMetaData:
         """
         return self.thisptr.toString()
 
-    @staticmethod
-    cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
-        """ Wrap a C++ pointer with a pointer-less Python class.
-        """
-        cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
-
     def getAttributeNamesString(self):
         """ Retrieve the names of all the attributes assembled into a single, semi-colon separated string.
 
@@ -643,12 +727,12 @@ cdef class GeoTessMetaData:
 
     def getLayerTessIds(self):
         """ Retrieve a reference to layerTessIds
-        
+
         An int[] with an entry for each layer specifying the index of the tessellation that supports that layer.
 
         Returns
         -------
-        layerTessIds : numpy.ndarray of int
+        layerTessIds : list of int
 
         """
         # Use some internal NumPy C API calls to safely wrap the array pointer,
@@ -659,7 +743,7 @@ cdef class GeoTessMetaData:
         cdef int nLayers = self.thisptr.getNLayers()
         shape[0] = <np.npy_intp> nLayers
         arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> tess_ids)
-        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_ARRAY_OWNDATA)
 
         return arr.tolist() # copies the data to a list.  XXX: this might leak memory.
 
@@ -688,7 +772,7 @@ cdef class GeoTessMetaData:
         """
         return self.thisptr.getLayerName(layerIndex)
 
-    def getLayerIndex(self, layerName):
+    def getLayerIndex(self, str layerName):
         """ Retrieve the index of the layer that has the specified name, or -1.
 
         Parameters
@@ -703,7 +787,7 @@ cdef class GeoTessMetaData:
 
         """
         # TODO: find out what "or -1" means here, and handle it in this python method
-        return self.thisptr.getLayerIndex(layerName)
+        return self.thisptr.getLayerIndex(bytes(layerName, encoding='utf-8'))
 
     def getModelFileFormat(self):
         # TODO: look up C++ docstring for this
@@ -712,6 +796,28 @@ cdef class GeoTessMetaData:
     def setModelFileFormat(self, version):
         # TODO: look up C++ docstring for this
         self.thisptr.setModelFileFormat(version)
+
+    # def getEulerRotationAngles(self):
+    #     """
+    #     Retrieve the Euler Rotation Angles that are being used to rotate unit
+    #     vectors from grid to model coordinates, in degrees. Returns null if no 
+    #     grid rotations are being applied. There are possibly two geographic coordinate
+    #     systems at play:
+
+    #     * Grid coordinates, where grid vertex 0 points to the north pole.
+    #     * Model coordinates, where grid vertex 0 points to some other location,
+    #       typically a station location.
+    #     
+    #     Returns
+    #     -------
+    #     float
+    #         euler rotation angles in degrees.
+
+    #     """
+    #     cdef double* rotation_angles_p = self.thisptr.getEulerRotationAngles()
+    #     # rotaton_angles = deref(rotation_angles_p)
+
+    #     return rotation_angles_p
 
 
 cdef class EarthShape:
@@ -898,6 +1004,7 @@ cdef class GeoTessModel:
 
     """
     # XXX: pointer ownership is an issue here.
+    #   May have fixed some/all of it in the new .from_pointer staticmethod.
     # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
@@ -1103,7 +1210,6 @@ cdef class GeoTessModel:
         for ival, val in enumerate(values):
             # The reference of the pointer is followed in the setter!
             geoData.setValue(ival, val)
-        return
 
     def setPointDataSingleAttribute(self, pointIndex, attributeIndex, value):
         """
@@ -1112,7 +1218,6 @@ cdef class GeoTessModel:
         ptMap = self.thisptr.getPointMap()
         geoData = ptMap.getPointData(pointIndex)
         geoData.setValue(attributeIndex, value)
-        return
 
     def getNearestPointIndex(self, float latitude, float longitude, float radius):
         """
@@ -1266,16 +1371,21 @@ cdef class GeoTessModel:
             Current model's grid object.
 
         """
-        #XXX: I don't think this works
+        # XXX: I don't think this works.  It crashes the interpreter when the grid is deleted or 
+        # garbage collected. I need to fix pointer ownership or something.
+
         # cdef clib.GeoTessGrid *ptr = &self.thisptr.getGrid()
         # grid = lib.GeoTessGrid.from_pointer(ptr)
-        cdef GeoTessGrid grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
-        # cdef GeoTessGrid grid = GeoTessGrid.from_pointer(&self.thisptr.getGrid())
+
+        # cdef GeoTessGrid grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
+        cdef GeoTessGrid grid = GeoTessGrid.from_pointer(&self.thisptr.getGrid())
         # grid.owner = self
 
         return grid
 
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
+        # setProfile (int vertex, int layer, vector< float > &radii, vector< vector< T > > &values)
+        # setProfile (const int &vertex, T *values, const int &nAttributes)
         """
         Set profile values at a vertex and layer.
 
@@ -1285,11 +1395,11 @@ cdef class GeoTessModel:
             vertex and layer number of the profile.
         radii : list
             Radius values of profile data.
-        values : list of lists
+        values : list of lists, or 2D numpy.ndarray
             List of corresponding attribute values at the provided radii.
 
         """
-        # holycrap, vector[vector[...]] can just be a list of lists
+        # holycrap, vector[vector[...]] can just be a list of lists.  cython converts it.
         # I wonder if it can be a 2D NumPy array.  Yep!
         try:
             self.thisptr.setProfile(vertex, layer, radii, values)
@@ -1477,7 +1587,7 @@ cdef class GeoTessModel:
         """
         # TODO: make this return two NumPy arrays instead?
 
-        # pointA and pointB were specified as typed memorviews, so we can send the address to their first
+        # pointA and pointB were specified as 1D typed memoryviews, so we can send the address to their first
         # element as the double pointer.
         # pointSpacing and radius are automatically converted to addresses by Cython because they
         # are numeric types and we specified them as typed in the calling signature.
@@ -1512,9 +1622,9 @@ cdef class GeoTessModel:
 
         pos.getWeights(weights,radius)
         return weights
-    
+
     def getPointWeightsVector(self, double[:] v, double radius, str horizontalType="LINEAR"):
-            
+
         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
 
@@ -1526,7 +1636,7 @@ cdef class GeoTessModel:
 
         pos.getWeights(weights,1.)
         return weights
-    
+
     def getPointLocation(self, pointIndex):
         """
         Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index
@@ -1626,7 +1736,7 @@ cdef class GeoTessModel:
             self.thisptr.setProfile(vertex, layer, radii, values)
         except:
             raise ValueError('setProfile failed')
-    
+
 #     def setProfileND(self, int vertex, int layer, radii, values):
 #         """
 #         Set profile values at a vertex and layer using ndarrays rather than c++ vector types
@@ -1718,7 +1828,7 @@ cdef class GeoTessModel:
         ptMap = self.thisptr.getPointMap()
         pt = ptMap.getPointIndexFirst(vertex, layer)
         return pt
-    
+
     def getValueFloat(self, int pointIndex, int attributeIndex):
         """ Return the value of the attribute at the specified pointIndex, attributeIndex, 
         cast to a float if necessary.
@@ -2170,7 +2280,7 @@ cdef class GeoTessModel:
         lon : float
             longitude.
         depth : float
-            depth from surface of ellipsoid.
+            depth from surface of ellipsoid. [km] I think.
         Optionally, give horizontalType and/or radialType interpolators
 
         Returns

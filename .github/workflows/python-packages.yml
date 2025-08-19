@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
-        os: [macOS-13, ubuntu-latest]
+        os: [ubuntu-latest, macOS-13]
         # os: [ubuntu-latest, macOS-latest, windows-latest]
     defaults:
       run:
@@ -37,7 +37,7 @@ jobs:
         conda init bash
         conda activate test
         conda list
-        pip install .
+        pip install -v .
 
     - name: Test with pytest
       run: |
