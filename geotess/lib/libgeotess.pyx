@@ -366,7 +366,7 @@ cdef class GeoTessGrid:
         # object gets garbage collected
         # As the OWNDATA flag of an array is read-only in Python, we need to
         # call the C function PyArray_UpdateFlags
-        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_ARRAY_OWNDATA)
         # http://stackoverflow.com/questions/19204098/c-code-within-python-and-copying-arrays-in-c-code
 
         # XXX: this seems to contradict the docstring that memory is shared.
@@ -402,7 +402,7 @@ cdef class GeoTessGrid:
         cdef np.npy_intp shape[1]
         shape[0] = <np.npy_intp> 3
         arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> tri_vertex_ids)
-        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_ARRAY_OWNDATA)
 
         return arr.copy()
 
@@ -743,7 +743,7 @@ cdef class GeoTessMetaData:
         cdef int nLayers = self.thisptr.getNLayers()
         shape[0] = <np.npy_intp> nLayers
         arr = np.PyArray_SimpleNewFromData(1, shape, np.NPY_INT, <void *> tess_ids)
-        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_OWNDATA)
+        np.PyArray_UpdateFlags(arr, arr.flags.num | np.NPY_ARRAY_OWNDATA)
 
         return arr.tolist() # copies the data to a list.  XXX: this might leak memory.
 
