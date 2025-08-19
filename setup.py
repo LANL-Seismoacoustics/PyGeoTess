@@ -53,7 +53,7 @@ extensions = cythonize(
 
 
 setup(name = 'pygeotess',
-      version = '0.2.2',
+      version = '0.3.0',
       description = 'GeoTess access from Python.',
       author = 'Jonathan K. MacCarthy',
       author_email = 'jkmacc@lanl.gov',
