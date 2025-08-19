@@ -172,8 +172,8 @@ cdef class GeoTessGrid:
         else:
             raise exc.GeoTessFileError(f"File not found: {inputFile}")
 
-    def writeGrid(self, const string& fileName):
-        self.thisptr.writeGrid(fileName)
+    def writeGrid(self, str fileName):
+        self.thisptr.writeGrid(bytes(fileName, encoding='utf-8'))
 
     def getGridInputFile(self):
         """ Retrieve the name of the file from which the grid was loaded.
@@ -772,7 +772,7 @@ cdef class GeoTessMetaData:
         """
         return self.thisptr.getLayerName(layerIndex)
 
-    def getLayerIndex(self, layerName):
+    def getLayerIndex(self, str layerName):
         """ Retrieve the index of the layer that has the specified name, or -1.
 
         Parameters
@@ -787,7 +787,7 @@ cdef class GeoTessMetaData:
 
         """
         # TODO: find out what "or -1" means here, and handle it in this python method
-        return self.thisptr.getLayerIndex(layerName)
+        return self.thisptr.getLayerIndex(bytes(layerName, encoding='utf-8'))
 
     def getModelFileFormat(self):
         # TODO: look up C++ docstring for this
