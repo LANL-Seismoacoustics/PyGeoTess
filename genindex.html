@@ -1,0 +1,852 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; PyGeoTess 0.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=83a61292"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <link rel="icon" href="_static/LANL Logo Ultramarine globe.png"/>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/LANL Logo Ultramarine.png" class="logo__image only-light" alt="PyGeoTess 0.3.0 documentation - Home"/>
+    <img src="_static/LANL Logo White.png" class="logo__image only-dark pst-js-only" alt="PyGeoTess 0.3.0 documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    PyGeoTess
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">API Documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api/geotess.html">geotess</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="api/geotess.data.html">geotess.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.data.grids.html">geotess.data.grids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.data.models.html">geotess.data.models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="api/geotess.lib.html">geotess.lib</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.lib.geotessgrid.html">geotess.lib.geotessgrid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.lib.geotessutils.html">geotess.lib.geotessutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.lib.libgeotess.html">geotess.lib.libgeotess</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="api/geotess.exc.html">geotess.exc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/geotess.utils.html">geotess.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/LANL-seismoacoustics/pygeotess" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.AK135Model">AK135Model (class in geotess.lib.libgeotess)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.utils.html#geotess.utils.Attribute">Attribute (class in geotess.utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.convertToNPArray">convertToNPArray() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.EarthShape">EarthShape (class in geotess.lib.libgeotess)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    geotess
+
+      <ul>
+        <li><a href="api/geotess.html#module-geotess">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.data
+
+      <ul>
+        <li><a href="api/geotess.data.html#module-geotess.data">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.data.grids
+
+      <ul>
+        <li><a href="api/geotess.data.grids.html#module-geotess.data.grids">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.data.models
+
+      <ul>
+        <li><a href="api/geotess.data.models.html#module-geotess.data.models">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.exc
+
+      <ul>
+        <li><a href="api/geotess.exc.html#module-geotess.exc">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.lib
+
+      <ul>
+        <li><a href="api/geotess.lib.html#module-geotess.lib">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.lib.geotessgrid
+
+      <ul>
+        <li><a href="api/geotess.lib.geotessgrid.html#module-geotess.lib.geotessgrid">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.lib.geotessutils
+
+      <ul>
+        <li><a href="api/geotess.lib.geotessutils.html#module-geotess.lib.geotessutils">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.lib.libgeotess
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#module-geotess.lib.libgeotess">module</a>
+</li>
+      </ul></li>
+      <li>
+    geotess.utils
+
+      <ul>
+        <li><a href="api/geotess.utils.html#module-geotess.utils">module</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.exc.html#geotess.exc.GeoTessError">GeoTessError</a>
+</li>
+      <li><a href="api/geotess.exc.html#geotess.exc.GeoTessFileError">GeoTessFileError</a>
+</li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid">GeoTessGrid (class in geotess.lib.geotessgrid)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid">(class in geotess.lib.libgeotess)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData">GeoTessMetaData (class in geotess.lib.libgeotess)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel">GeoTessModel (class in geotess.lib.libgeotess)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModelAmplitude">GeoTessModelAmplitude (class in geotess.lib.libgeotess)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessutils.html#geotess.lib.geotessutils.GeoTessUtils">GeoTessUtils (class in geotess.lib.geotessutils)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getAttributeNamesString">getAttributeNamesString() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getAttributeUnitsString">getAttributeUnitsString() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getConnectedVertices">getConnectedVertices() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getDescription">getDescription() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessutils.html#geotess.lib.geotessutils.GeoTessUtils.getEarthRadius">getEarthRadius() (geotess.lib.geotessutils.GeoTessUtils static method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getEarthShape">getEarthShape() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getFirstTriangle">getFirstTriangle() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getFirstTriangle">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getGeographicLocationAttribute">getGeographicLocationAttribute() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessutils.html#geotess.lib.geotessutils.GeoTessUtils.getGreatCircle">getGreatCircle() (geotess.lib.geotessutils.GeoTessUtils static method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessutils.html#geotess.lib.geotessutils.GeoTessUtils.getGreatCirclePoint">getGreatCirclePoint() (geotess.lib.geotessutils.GeoTessUtils static method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getGrid">getGrid() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getGridID">getGridID() (geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getGridInputFile">getGridInputFile() (geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getLastTriangle">getLastTriangle() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getLastTriangle">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessutils.html#geotess.lib.geotessutils.GeoTessUtils.getLatDegrees">getLatDegrees() (geotess.lib.geotessutils.GeoTessUtils static method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.EarthShape.getLatDegrees">(geotess.lib.libgeotess.EarthShape method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getLayerIndex">getLayerIndex() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getLayerName">getLayerName() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getLayerNamesString">getLayerNamesString() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.AK135Model.getLayerProfile">getLayerProfile() (geotess.lib.libgeotess.AK135Model method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getLayerTessIds">getLayerTessIds() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessutils.html#geotess.lib.geotessutils.GeoTessUtils.getLonDegrees">getLonDegrees() (geotess.lib.geotessutils.GeoTessUtils static method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.EarthShape.getLonDegrees">(geotess.lib.libgeotess.EarthShape method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getMemory">getMemory() (geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getMetaData">getMetaData() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getModelFileFormat">getModelFileFormat() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getModelSoftwareVersion">getModelSoftwareVersion() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getNAttributes">getNAttributes() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getNearestPointIndex">getNearestPointIndex() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.getNLayers">getNLayers() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getNLayers">(geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getNLevels">getNLevels() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getNLevels">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getNPoints">getNPoints() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getNRadii">getNRadii() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getNTessellations">getNTessellations() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getNTessellations">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getNTriangles">getNTriangles() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getNTriangles">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getNVertices">getNVertices() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getNVertices">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getNVertices">(geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointData">getPointData() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointDepth">getPointDepth() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointIndex">getPointIndex() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointIndexFirst">getPointIndexFirst() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointIndexLast">getPointIndexLast() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointLatitude">getPointLatitude() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointLayerIndex">getPointLayerIndex() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointLocation">getPointLocation() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointLongitude">getPointLongitude() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointNodeIndex">getPointNodeIndex() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointRadius">getPointRadius() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointTessId">getPointTessId() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointVertex">getPointVertex() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointVertexTessLayerNode">getPointVertexTessLayerNode() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointWeights">getPointWeights() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getPointWeightsVector">getPointWeightsVector() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getProfile">getProfile() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModelAmplitude.getSiteTrans">getSiteTrans() (geotess.lib.libgeotess.GeoTessModelAmplitude method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getTriangleVertexIndexes">getTriangleVertexIndexes() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getTriangleVertexIndexes">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getValueFloat">getValueFloat() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessutils.html#geotess.lib.geotessutils.GeoTessUtils.getVectorDegrees">getVectorDegrees() (geotess.lib.geotessutils.GeoTessUtils static method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.EarthShape.getVectorDegrees">(geotess.lib.libgeotess.EarthShape method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getVertex">getVertex() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getVertex">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getVertexIndex">getVertexIndex() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getVertexIndex">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getVertexTriangles">getVertexTriangles() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getVertexTriangles">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.getVertices">getVertices() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.getVertices">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.getWeights">getWeights() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.utils.html#geotess.utils.Layer">Layer (class in geotess.utils)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.loadGrid">loadGrid() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.loadGrid">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.loadModel">loadModel() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.make1DProfile">make1DProfile() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.makeDepthMap">makeDepthMap() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="api/geotess.html#module-geotess">geotess</a>
+</li>
+        <li><a href="api/geotess.data.html#module-geotess.data">geotess.data</a>
+</li>
+        <li><a href="api/geotess.data.grids.html#module-geotess.data.grids">geotess.data.grids</a>
+</li>
+        <li><a href="api/geotess.data.models.html#module-geotess.data.models">geotess.data.models</a>
+</li>
+        <li><a href="api/geotess.exc.html#module-geotess.exc">geotess.exc</a>
+</li>
+        <li><a href="api/geotess.lib.html#module-geotess.lib">geotess.lib</a>
+</li>
+        <li><a href="api/geotess.lib.geotessgrid.html#module-geotess.lib.geotessgrid">geotess.lib.geotessgrid</a>
+</li>
+        <li><a href="api/geotess.lib.geotessutils.html#module-geotess.lib.geotessutils">geotess.lib.geotessutils</a>
+</li>
+        <li><a href="api/geotess.lib.libgeotess.html#module-geotess.lib.libgeotess">geotess.lib.libgeotess</a>
+</li>
+        <li><a href="api/geotess.utils.html#module-geotess.utils">geotess.utils</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.utils.html#geotess.utils.Attribute.name">name (geotess.utils.Attribute attribute)</a>
+
+      <ul>
+        <li><a href="api/geotess.utils.html#geotess.utils.Layer.name">(geotess.utils.Layer attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetBorehole">positionGetBorehole() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetDepth">positionGetDepth() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertex">positionGetIndexOfClosestVertex() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertexLayer">positionGetIndexOfClosestVertexLayer() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetLayer">positionGetLayer() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetRadius">positionGetRadius() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusBottomLayer">positionGetRadiusBottomLayer() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusTopLayer">positionGetRadiusTopLayer() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetTriangle">positionGetTriangle() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetValue">positionGetValue() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetValueLayer">positionGetValueLayer() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetValues">positionGetValues() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetValuesLayer">positionGetValuesLayer() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionGetVector">positionGetVector() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionToString">positionToString() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.positionToStringLayer">positionToStringLayer() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setAttributes">setAttributes() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setDataType">setDataType() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setDescription">setDescription() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setEarthShape">setEarthShape() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setLayerNames">setLayerNames() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setLayerTessIds">setLayerTessIds() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setModelFileFormat">setModelFileFormat() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setModelGenerationDate">setModelGenerationDate() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.setModelSoftwareVersion">setModelSoftwareVersion() (geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.setPointData">setPointData() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.setPointDataSingleAttribute">setPointDataSingleAttribute() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.setProfile">setProfile() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.utils.html#geotess.utils.Layer.tess_id">tess_id (geotess.utils.Layer attribute)</a>
+</li>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.testGrid">testGrid() (geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.toString">toString() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.toString">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessMetaData.toString">(geotess.lib.libgeotess.GeoTessMetaData method)</a>
+</li>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.toString">(geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.utils.html#geotess.utils.Attribute.unit">unit (geotess.utils.Attribute attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.geotessgrid.html#geotess.lib.geotessgrid.GeoTessGrid.writeGrid">writeGrid() (geotess.lib.geotessgrid.GeoTessGrid method)</a>
+
+      <ul>
+        <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessGrid.writeGrid">(geotess.lib.libgeotess.GeoTessGrid method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geotess.lib.libgeotess.html#geotess.lib.libgeotess.GeoTessModel.writeModel">writeModel() (geotess.lib.libgeotess.GeoTessModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Jonathan MacCarthy
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Jonathan MacCarthy.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

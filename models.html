@@ -1,0 +1,780 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Models &#8212; PyGeoTess 0.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=83a61292"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'models';</script>
+    <link rel="icon" href="_static/LANL Logo Ultramarine globe.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="Grids" href="grids.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/LANL Logo Ultramarine.png" class="logo__image only-light" alt="PyGeoTess 0.3.0 documentation - Home"/>
+    <img src="_static/LANL Logo White.png" class="logo__image only-dark pst-js-only" alt="PyGeoTess 0.3.0 documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    PyGeoTess
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="grids.html">Grids</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">API Documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api/geotess.html">geotess</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="api/geotess.data.html">geotess.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.data.grids.html">geotess.data.grids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.data.models.html">geotess.data.models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="api/geotess.lib.html">geotess.lib</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.lib.geotessgrid.html">geotess.lib.geotessgrid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.lib.geotessutils.html">geotess.lib.geotessutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/geotess.lib.libgeotess.html">geotess.lib.libgeotess</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="api/geotess.exc.html">geotess.exc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/geotess.utils.html">geotess.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/LANL-seismoacoustics/pygeotess" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/models.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Models</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-from-file">Load from file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-model-from-scratch">Create a Model from scratch</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="models">
+<h1>Models<a class="headerlink" href="#models" title="Link to this heading">#</a></h1>
+<p>Models can be loaded from file, or constructed from scratch (a grid file is still required).</p>
+<section id="load-from-file">
+<h2>Load from file<a class="headerlink" href="#load-from-file" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">geotess</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;geotess/data/crust20.geotess&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">********************************************************************************</span>
+
+<span class="n">GeoTessModel</span><span class="p">:</span>
+<span class="n">OS</span><span class="p">:</span> <span class="n">Undefined</span> <span class="mi">64</span><span class="o">-</span><span class="n">bit</span> <span class="n">mode</span>
+<span class="n">Input</span> <span class="n">Model</span> <span class="n">File</span><span class="p">:</span> <span class="n">geotess</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">crust20</span><span class="o">.</span><span class="n">geotess</span>
+<span class="n">Input</span> <span class="n">Grid</span> <span class="n">File</span><span class="p">:</span> <span class="o">*</span>
+
+<span class="n">Generated</span> <span class="n">by</span><span class="p">:</span> <span class="n">GeoModel</span> <span class="mf">7.0.1</span>  <span class="n">Wed</span> <span class="n">April</span> <span class="mi">18</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">51</span> <span class="mi">2012</span>
+<span class="n">Model</span> <span class="n">Load</span> <span class="n">Time</span><span class="p">:</span> <span class="mf">0.000</span> <span class="n">sec</span>
+<span class="n">Memory</span> <span class="n">footprint</span><span class="p">:</span> <span class="mf">18.5971</span> <span class="n">MB</span>
+
+<span class="n">Model</span> <span class="n">Description</span><span class="p">:</span> 
+<span class="n">The</span> <span class="n">Crust</span> <span class="mf">2.0</span> <span class="n">model</span> <span class="n">of</span> <span class="n">Bassin</span><span class="p">,</span> <span class="n">Laske</span> <span class="ow">and</span> <span class="n">Masters</span> <span class="p">(</span><span class="mi">2000</span><span class="p">)</span><span class="o">.</span>
+
+<span class="n">Bassin</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="p">,</span> <span class="n">Laske</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span> <span class="ow">and</span> <span class="n">Masters</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="p">,</span> 
+<span class="n">The</span> <span class="n">Current</span> <span class="n">Limits</span> <span class="n">of</span> <span class="n">Resolution</span> <span class="k">for</span> <span class="n">Surface</span> <span class="n">Wave</span> 
+<span class="n">Tomography</span> <span class="ow">in</span> <span class="n">North</span> <span class="n">America</span><span class="p">,</span> <span class="n">EOS</span> <span class="n">Trans</span> <span class="n">AGU</span><span class="p">,</span> <span class="mi">81</span><span class="p">,</span> <span class="n">F897</span><span class="p">,</span> <span class="mf">2000.</span>
+
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">igppweb</span><span class="o">.</span><span class="n">ucsd</span><span class="o">.</span><span class="n">edu</span><span class="o">/~</span><span class="n">gabi</span><span class="o">/</span><span class="n">crust2</span><span class="o">.</span><span class="n">html</span>
+
+<span class="n">The</span> <span class="n">original</span> <span class="n">model</span> <span class="n">was</span> <span class="n">defined</span> <span class="n">on</span> <span class="n">a</span> <span class="n">regular</span> <span class="n">latitude</span><span class="o">-</span><span class="n">longitude</span>
+<span class="n">grid</span> <span class="k">with</span> <span class="mi">2</span> <span class="n">degree</span> <span class="n">by</span> <span class="mi">2</span> <span class="n">degree</span> <span class="n">spacing</span><span class="o">.</span>  <span class="n">It</span> <span class="n">was</span> <span class="n">cell</span><span class="o">-</span><span class="n">based</span><span class="p">,</span>
+<span class="n">meaning</span> <span class="n">that</span> <span class="n">the</span> <span class="n">model</span> <span class="n">attributes</span> <span class="p">(</span><span class="n">p</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">s</span> <span class="n">velocity</span> <span class="ow">and</span>
+<span class="n">density</span><span class="p">)</span> <span class="n">were</span> <span class="n">attached</span> <span class="n">to</span> <span class="n">the</span> <span class="n">cells</span><span class="p">,</span> <span class="ow">not</span> <span class="n">the</span> <span class="n">nodes</span> <span class="n">at</span> <span class="n">the</span> 
+<span class="n">corners</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cells</span><span class="o">.</span>
+
+<span class="n">This</span> <span class="n">representation</span> <span class="n">uses</span> <span class="n">a</span> <span class="n">triangular</span> <span class="n">tessellation</span> <span class="k">with</span> 
+<span class="mi">1</span> <span class="n">degree</span> <span class="n">edge</span> <span class="n">lengths</span> <span class="ow">and</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">node</span> <span class="n">based</span><span class="p">,</span> <span class="n">meaning</span> <span class="n">that</span>
+<span class="n">the</span> <span class="n">attributes</span> <span class="n">are</span> <span class="n">attached</span> <span class="n">to</span> <span class="n">the</span> <span class="n">nodes</span> <span class="n">at</span> <span class="n">the</span> <span class="n">corners</span>
+<span class="n">of</span> <span class="n">the</span> <span class="n">triangles</span><span class="p">,</span> <span class="ow">not</span> <span class="n">the</span> <span class="n">triangles</span><span class="o">.</span>  <span class="n">The</span> <span class="n">translation</span>
+<span class="n">was</span> <span class="n">accomplished</span> <span class="n">by</span> <span class="n">first</span> <span class="n">defining</span> <span class="n">a</span> <span class="n">node</span> <span class="n">at</span> <span class="n">the</span> <span class="n">center</span> 
+<span class="n">of</span> <span class="n">each</span> <span class="mi">2</span> <span class="n">degree</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">original</span> <span class="n">model</span> <span class="ow">and</span> <span class="n">then</span>
+<span class="n">interpolating</span> <span class="n">attribute</span> <span class="n">values</span> <span class="n">at</span> <span class="n">the</span> <span class="n">nodes</span> <span class="n">of</span> <span class="n">the</span> 
+<span class="n">new</span> <span class="n">model</span> <span class="n">using</span> <span class="n">simple</span> <span class="n">bi</span><span class="o">-</span><span class="n">linear</span> <span class="n">interpolation</span><span class="o">.</span>  <span class="n">There</span>
+<span class="n">was</span> <span class="n">certainly</span> <span class="n">some</span> <span class="n">interpolation</span> <span class="n">error</span> <span class="n">involved</span> <span class="ow">in</span> <span class="n">this</span> 
+<span class="n">process</span><span class="o">.</span>
+
+<span class="n">In</span> <span class="n">this</span> <span class="n">representation</span><span class="p">,</span> <span class="n">the</span> <span class="n">water</span> <span class="n">layer</span> <span class="n">has</span> <span class="n">been</span> <span class="n">omitted</span><span class="o">.</span>
+<span class="n">The</span> <span class="n">top</span> <span class="n">of</span> <span class="n">the</span> <span class="n">new</span> <span class="n">model</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">surface</span> <span class="n">of</span> <span class="n">the</span> <span class="n">solid</span> 
+<span class="n">Earth</span><span class="o">.</span>  <span class="n">While</span> <span class="n">the</span> <span class="n">thickness</span> <span class="n">of</span> <span class="n">the</span> <span class="n">water</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">the</span> 
+<span class="n">oceans</span> <span class="n">can</span> <span class="n">be</span> <span class="n">deduced</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">new</span> <span class="n">model</span> <span class="n">by</span> <span class="n">assuming</span> <span class="n">that</span>
+<span class="n">the</span> <span class="n">surface</span> <span class="n">of</span> <span class="n">the</span> <span class="n">oceans</span> <span class="n">corresponds</span> <span class="n">to</span> <span class="n">depth</span> <span class="n">zero</span><span class="p">,</span> <span class="n">the</span>
+<span class="n">thickness</span> <span class="n">of</span> <span class="n">the</span> <span class="n">water</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">large</span> <span class="n">inland</span> <span class="n">lakes</span> <span class="ow">and</span>
+<span class="n">seas</span> <span class="n">has</span> <span class="n">been</span> <span class="n">lost</span><span class="o">.</span>
+
+<span class="n">In</span> <span class="n">the</span> <span class="n">new</span> <span class="n">representation</span><span class="p">,</span> <span class="n">layer</span> <span class="n">boundaries</span> <span class="n">are</span> <span class="n">defined</span> <span class="ow">in</span> 
+<span class="n">terms</span> <span class="n">of</span> <span class="n">radius</span><span class="p">,</span> <span class="ow">not</span> <span class="n">depth</span><span class="o">.</span>  <span class="n">Depths</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">original</span> <span class="n">model</span>
+<span class="n">were</span> <span class="n">converted</span> <span class="n">to</span> <span class="n">radius</span> <span class="n">using</span> <span class="n">the</span> <span class="n">radius</span> <span class="n">of</span> <span class="n">the</span> <span class="n">WGS84</span>
+<span class="n">ellipsoid</span><span class="o">.</span>
+
+<span class="n">Sandy</span> <span class="n">Ballard</span>
+<span class="n">Sandia</span> <span class="n">National</span> <span class="n">Laboratories</span>
+<span class="n">sballar</span><span class="nd">@sandia</span><span class="o">.</span><span class="n">gov</span>
+<span class="mi">4</span><span class="o">/</span><span class="mi">14</span><span class="o">/</span><span class="mi">2012</span>
+<span class="o">&lt;</span><span class="n">end</span> <span class="n">description</span><span class="o">&gt;</span>
+
+<span class="n">EarthShape</span><span class="p">:</span> <span class="n">WGS84</span>
+<span class="n">DataType</span><span class="p">:</span> <span class="n">FLOAT</span>
+<span class="n">Attributes</span><span class="p">:</span> 
+  <span class="mi">0</span><span class="p">:</span>  <span class="n">vp</span>  <span class="p">(</span><span class="n">km</span><span class="o">/</span><span class="n">sec</span><span class="p">)</span>
+  <span class="mi">1</span><span class="p">:</span>  <span class="n">vs</span>  <span class="p">(</span><span class="n">km</span><span class="o">/</span><span class="n">sec</span><span class="p">)</span>
+  <span class="mi">2</span><span class="p">:</span>  <span class="n">density</span>  <span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">cc</span><span class="p">)</span>
+
+<span class="n">Layers</span><span class="p">:</span> 
+  <span class="n">Index</span>  <span class="n">TessId</span>    <span class="n">Name</span>
+   <span class="mi">6</span>       <span class="mi">0</span>     <span class="n">ice</span>
+   <span class="mi">5</span>       <span class="mi">0</span>     <span class="n">soft_sediments</span>
+   <span class="mi">4</span>       <span class="mi">0</span>     <span class="n">hard_sediments</span>
+   <span class="mi">3</span>       <span class="mi">0</span>     <span class="n">upper_crust</span>
+   <span class="mi">2</span>       <span class="mi">0</span>     <span class="n">middle_crust</span>
+   <span class="mi">1</span>       <span class="mi">0</span>     <span class="n">lower_crust</span>
+   <span class="mi">0</span>       <span class="mi">0</span>     <span class="n">mantle</span>
+
+
+<span class="n">Layer</span>  <span class="n">connected</span>   <span class="n">number</span>    <span class="n">profile</span>   <span class="n">profile</span>    <span class="n">profile</span>  <span class="n">profile</span>  <span class="n">profile</span>  <span class="n">profile</span>
+<span class="n">Index</span>  <span class="n">vertices</span>   <span class="n">of</span> <span class="n">points</span>  <span class="n">npoints</span>   <span class="n">constant</span>    <span class="n">thin</span>     <span class="n">empty</span>   <span class="n">surface</span> <span class="n">surfemtpy</span>
+<span class="o">-----</span>  <span class="o">--------</span>   <span class="o">---------</span>  <span class="o">-------</span>   <span class="o">--------</span>   <span class="o">------</span>   <span class="o">-------</span>  <span class="o">-------</span>  <span class="o">-------</span>
+   <span class="mi">6</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>       <span class="mi">1542</span>    <span class="mi">39420</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">5</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">39267</span>     <span class="mi">1695</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">4</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">13561</span>    <span class="mi">27401</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">3</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">40962</span>        <span class="mi">0</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">2</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">40962</span>        <span class="mi">0</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">1</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">40962</span>        <span class="mi">0</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">0</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>          <span class="mi">0</span>    <span class="mi">40962</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+<span class="o">-----</span>  <span class="o">--------</span>   <span class="o">---------</span>  <span class="o">-------</span>   <span class="o">--------</span>   <span class="o">------</span>   <span class="o">-------</span>  <span class="o">-------</span>  <span class="o">-------</span>
+<span class="n">Total</span>   <span class="mi">40962</span>       <span class="mi">286734</span>         <span class="mi">0</span>     <span class="mi">177256</span>   <span class="mi">109478</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+
+<span class="n">GeoTessGrid</span>
+<span class="n">gridID</span> <span class="o">=</span> <span class="mi">808785948</span><span class="n">EB2350DD44E6C29BDEA6CAE</span>
+<span class="n">memory</span> <span class="p">:</span> <span class="mf">34.2188</span> <span class="n">MB</span>
+<span class="nb">input</span> <span class="n">Grid</span> <span class="n">File</span> <span class="p">:</span> <span class="n">geotess</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">crust10</span><span class="o">.</span><span class="n">geotess</span>
+<span class="n">generated</span> <span class="n">by</span> <span class="n">software</span> <span class="n">version</span> <span class="p">:</span> <span class="n">GeoModel</span> <span class="mf">7.0.1</span>  <span class="n">Wed</span> <span class="n">April</span> <span class="mi">18</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">51</span> <span class="mi">2012</span>
+
+<span class="n">nTessellations</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">nLevels</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">nVertices</span> <span class="o">=</span> <span class="mi">40962</span>
+<span class="n">nTriangles</span> <span class="o">=</span> <span class="mi">109220</span>
+
+    <span class="n">Tess</span>    <span class="n">Level</span>  <span class="n">LevelID</span>     <span class="n">NTri</span>    <span class="n">First</span>   <span class="n">Last</span><span class="o">+</span><span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>        <span class="mi">0</span>       <span class="mi">20</span>        <span class="mi">0</span>       <span class="mi">20</span>
+      <span class="mi">0</span>        <span class="mi">1</span>        <span class="mi">1</span>       <span class="mi">80</span>       <span class="mi">20</span>      <span class="mi">100</span>
+      <span class="mi">0</span>        <span class="mi">2</span>        <span class="mi">2</span>      <span class="mi">320</span>      <span class="mi">100</span>      <span class="mi">420</span>
+      <span class="mi">0</span>        <span class="mi">3</span>        <span class="mi">3</span>     <span class="mi">1280</span>      <span class="mi">420</span>     <span class="mi">1700</span>
+      <span class="mi">0</span>        <span class="mi">4</span>        <span class="mi">4</span>     <span class="mi">5120</span>     <span class="mi">1700</span>     <span class="mi">6820</span>
+      <span class="mi">0</span>        <span class="mi">5</span>        <span class="mi">5</span>    <span class="mi">20480</span>     <span class="mi">6820</span>    <span class="mi">27300</span>
+      <span class="mi">0</span>        <span class="mi">6</span>        <span class="mi">6</span>    <span class="mi">81920</span>    <span class="mi">27300</span>   <span class="mi">109220</span>
+
+
+<span class="o">********************************************************************************</span>
+</pre></div>
+</div>
+<p>Each <code class="docutils literal notranslate"><span class="pre">Model</span></code> has a <code class="docutils literal notranslate"><span class="pre">.grid</span></code>, which provides access to that Model’s Grid instance.</p>
+<p>Just like with <code class="docutils literal notranslate"><span class="pre">Grids</span></code>, PyGeoTess is distribed with the same GeoTess model files, like Crust2.0, which can be directly imported.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">geotess.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">crust20</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">crust20</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">********************************************************************************</span>
+
+<span class="n">GeoTessModel</span><span class="p">:</span>
+<span class="n">OS</span><span class="p">:</span> <span class="n">Undefined</span> <span class="mi">64</span><span class="o">-</span><span class="n">bit</span> <span class="n">mode</span>
+<span class="n">Input</span> <span class="n">Model</span> <span class="n">File</span><span class="p">:</span> <span class="n">geotess</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">crust20</span><span class="o">.</span><span class="n">geotess</span>
+<span class="n">Input</span> <span class="n">Grid</span> <span class="n">File</span><span class="p">:</span> <span class="o">*</span>
+
+<span class="n">Generated</span> <span class="n">by</span><span class="p">:</span> <span class="n">GeoModel</span> <span class="mf">7.0.1</span>  <span class="n">Wed</span> <span class="n">April</span> <span class="mi">18</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">51</span> <span class="mi">2012</span>
+<span class="n">Model</span> <span class="n">Load</span> <span class="n">Time</span><span class="p">:</span> <span class="mf">1.000</span> <span class="n">sec</span>
+<span class="n">Memory</span> <span class="n">footprint</span><span class="p">:</span> <span class="mf">18.5971</span> <span class="n">MB</span>
+
+<span class="n">Model</span> <span class="n">Description</span><span class="p">:</span> 
+<span class="n">The</span> <span class="n">Crust</span> <span class="mf">2.0</span> <span class="n">model</span> <span class="n">of</span> <span class="n">Bassin</span><span class="p">,</span> <span class="n">Laske</span> <span class="ow">and</span> <span class="n">Masters</span> <span class="p">(</span><span class="mi">2000</span><span class="p">)</span><span class="o">.</span>
+
+<span class="n">Bassin</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="p">,</span> <span class="n">Laske</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span> <span class="ow">and</span> <span class="n">Masters</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="p">,</span> 
+<span class="n">The</span> <span class="n">Current</span> <span class="n">Limits</span> <span class="n">of</span> <span class="n">Resolution</span> <span class="k">for</span> <span class="n">Surface</span> <span class="n">Wave</span> 
+<span class="n">Tomography</span> <span class="ow">in</span> <span class="n">North</span> <span class="n">America</span><span class="p">,</span> <span class="n">EOS</span> <span class="n">Trans</span> <span class="n">AGU</span><span class="p">,</span> <span class="mi">81</span><span class="p">,</span> <span class="n">F897</span><span class="p">,</span> <span class="mf">2000.</span>
+
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">igppweb</span><span class="o">.</span><span class="n">ucsd</span><span class="o">.</span><span class="n">edu</span><span class="o">/~</span><span class="n">gabi</span><span class="o">/</span><span class="n">crust2</span><span class="o">.</span><span class="n">html</span>
+
+<span class="n">The</span> <span class="n">original</span> <span class="n">model</span> <span class="n">was</span> <span class="n">defined</span> <span class="n">on</span> <span class="n">a</span> <span class="n">regular</span> <span class="n">latitude</span><span class="o">-</span><span class="n">longitude</span>
+<span class="n">grid</span> <span class="k">with</span> <span class="mi">2</span> <span class="n">degree</span> <span class="n">by</span> <span class="mi">2</span> <span class="n">degree</span> <span class="n">spacing</span><span class="o">.</span>  <span class="n">It</span> <span class="n">was</span> <span class="n">cell</span><span class="o">-</span><span class="n">based</span><span class="p">,</span>
+<span class="n">meaning</span> <span class="n">that</span> <span class="n">the</span> <span class="n">model</span> <span class="n">attributes</span> <span class="p">(</span><span class="n">p</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">s</span> <span class="n">velocity</span> <span class="ow">and</span>
+<span class="n">density</span><span class="p">)</span> <span class="n">were</span> <span class="n">attached</span> <span class="n">to</span> <span class="n">the</span> <span class="n">cells</span><span class="p">,</span> <span class="ow">not</span> <span class="n">the</span> <span class="n">nodes</span> <span class="n">at</span> <span class="n">the</span> 
+<span class="n">corners</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cells</span><span class="o">.</span>
+
+<span class="n">This</span> <span class="n">representation</span> <span class="n">uses</span> <span class="n">a</span> <span class="n">triangular</span> <span class="n">tessellation</span> <span class="k">with</span> 
+<span class="mi">1</span> <span class="n">degree</span> <span class="n">edge</span> <span class="n">lengths</span> <span class="ow">and</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">node</span> <span class="n">based</span><span class="p">,</span> <span class="n">meaning</span> <span class="n">that</span>
+<span class="n">the</span> <span class="n">attributes</span> <span class="n">are</span> <span class="n">attached</span> <span class="n">to</span> <span class="n">the</span> <span class="n">nodes</span> <span class="n">at</span> <span class="n">the</span> <span class="n">corners</span>
+<span class="n">of</span> <span class="n">the</span> <span class="n">triangles</span><span class="p">,</span> <span class="ow">not</span> <span class="n">the</span> <span class="n">triangles</span><span class="o">.</span>  <span class="n">The</span> <span class="n">translation</span>
+<span class="n">was</span> <span class="n">accomplished</span> <span class="n">by</span> <span class="n">first</span> <span class="n">defining</span> <span class="n">a</span> <span class="n">node</span> <span class="n">at</span> <span class="n">the</span> <span class="n">center</span> 
+<span class="n">of</span> <span class="n">each</span> <span class="mi">2</span> <span class="n">degree</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">original</span> <span class="n">model</span> <span class="ow">and</span> <span class="n">then</span>
+<span class="n">interpolating</span> <span class="n">attribute</span> <span class="n">values</span> <span class="n">at</span> <span class="n">the</span> <span class="n">nodes</span> <span class="n">of</span> <span class="n">the</span> 
+<span class="n">new</span> <span class="n">model</span> <span class="n">using</span> <span class="n">simple</span> <span class="n">bi</span><span class="o">-</span><span class="n">linear</span> <span class="n">interpolation</span><span class="o">.</span>  <span class="n">There</span>
+<span class="n">was</span> <span class="n">certainly</span> <span class="n">some</span> <span class="n">interpolation</span> <span class="n">error</span> <span class="n">involved</span> <span class="ow">in</span> <span class="n">this</span> 
+<span class="n">process</span><span class="o">.</span>
+
+<span class="n">In</span> <span class="n">this</span> <span class="n">representation</span><span class="p">,</span> <span class="n">the</span> <span class="n">water</span> <span class="n">layer</span> <span class="n">has</span> <span class="n">been</span> <span class="n">omitted</span><span class="o">.</span>
+<span class="n">The</span> <span class="n">top</span> <span class="n">of</span> <span class="n">the</span> <span class="n">new</span> <span class="n">model</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">surface</span> <span class="n">of</span> <span class="n">the</span> <span class="n">solid</span> 
+<span class="n">Earth</span><span class="o">.</span>  <span class="n">While</span> <span class="n">the</span> <span class="n">thickness</span> <span class="n">of</span> <span class="n">the</span> <span class="n">water</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">the</span> 
+<span class="n">oceans</span> <span class="n">can</span> <span class="n">be</span> <span class="n">deduced</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">new</span> <span class="n">model</span> <span class="n">by</span> <span class="n">assuming</span> <span class="n">that</span>
+<span class="n">the</span> <span class="n">surface</span> <span class="n">of</span> <span class="n">the</span> <span class="n">oceans</span> <span class="n">corresponds</span> <span class="n">to</span> <span class="n">depth</span> <span class="n">zero</span><span class="p">,</span> <span class="n">the</span>
+<span class="n">thickness</span> <span class="n">of</span> <span class="n">the</span> <span class="n">water</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">large</span> <span class="n">inland</span> <span class="n">lakes</span> <span class="ow">and</span>
+<span class="n">seas</span> <span class="n">has</span> <span class="n">been</span> <span class="n">lost</span><span class="o">.</span>
+
+<span class="n">In</span> <span class="n">the</span> <span class="n">new</span> <span class="n">representation</span><span class="p">,</span> <span class="n">layer</span> <span class="n">boundaries</span> <span class="n">are</span> <span class="n">defined</span> <span class="ow">in</span> 
+<span class="n">terms</span> <span class="n">of</span> <span class="n">radius</span><span class="p">,</span> <span class="ow">not</span> <span class="n">depth</span><span class="o">.</span>  <span class="n">Depths</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">original</span> <span class="n">model</span>
+<span class="n">were</span> <span class="n">converted</span> <span class="n">to</span> <span class="n">radius</span> <span class="n">using</span> <span class="n">the</span> <span class="n">radius</span> <span class="n">of</span> <span class="n">the</span> <span class="n">WGS84</span>
+<span class="n">ellipsoid</span><span class="o">.</span>
+
+<span class="n">Sandy</span> <span class="n">Ballard</span>
+<span class="n">Sandia</span> <span class="n">National</span> <span class="n">Laboratories</span>
+<span class="n">sballar</span><span class="nd">@sandia</span><span class="o">.</span><span class="n">gov</span>
+<span class="mi">4</span><span class="o">/</span><span class="mi">14</span><span class="o">/</span><span class="mi">2012</span>
+<span class="o">&lt;</span><span class="n">end</span> <span class="n">description</span><span class="o">&gt;</span>
+
+<span class="n">EarthShape</span><span class="p">:</span> <span class="n">WGS84</span>
+<span class="n">DataType</span><span class="p">:</span> <span class="n">FLOAT</span>
+<span class="n">Attributes</span><span class="p">:</span> 
+  <span class="mi">0</span><span class="p">:</span>  <span class="n">vp</span>  <span class="p">(</span><span class="n">km</span><span class="o">/</span><span class="n">sec</span><span class="p">)</span>
+  <span class="mi">1</span><span class="p">:</span>  <span class="n">vs</span>  <span class="p">(</span><span class="n">km</span><span class="o">/</span><span class="n">sec</span><span class="p">)</span>
+  <span class="mi">2</span><span class="p">:</span>  <span class="n">density</span>  <span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">cc</span><span class="p">)</span>
+
+<span class="n">Layers</span><span class="p">:</span> 
+  <span class="n">Index</span>  <span class="n">TessId</span>    <span class="n">Name</span>
+   <span class="mi">6</span>       <span class="mi">0</span>     <span class="n">ice</span>
+   <span class="mi">5</span>       <span class="mi">0</span>     <span class="n">soft_sediments</span>
+   <span class="mi">4</span>       <span class="mi">0</span>     <span class="n">hard_sediments</span>
+   <span class="mi">3</span>       <span class="mi">0</span>     <span class="n">upper_crust</span>
+   <span class="mi">2</span>       <span class="mi">0</span>     <span class="n">middle_crust</span>
+   <span class="mi">1</span>       <span class="mi">0</span>     <span class="n">lower_crust</span>
+   <span class="mi">0</span>       <span class="mi">0</span>     <span class="n">mantle</span>
+
+
+<span class="n">Layer</span>  <span class="n">connected</span>   <span class="n">number</span>    <span class="n">profile</span>   <span class="n">profile</span>    <span class="n">profile</span>  <span class="n">profile</span>  <span class="n">profile</span>  <span class="n">profile</span>
+<span class="n">Index</span>  <span class="n">vertices</span>   <span class="n">of</span> <span class="n">points</span>  <span class="n">npoints</span>   <span class="n">constant</span>    <span class="n">thin</span>     <span class="n">empty</span>   <span class="n">surface</span> <span class="n">surfemtpy</span>
+<span class="o">-----</span>  <span class="o">--------</span>   <span class="o">---------</span>  <span class="o">-------</span>   <span class="o">--------</span>   <span class="o">------</span>   <span class="o">-------</span>  <span class="o">-------</span>  <span class="o">-------</span>
+   <span class="mi">6</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>       <span class="mi">1542</span>    <span class="mi">39420</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">5</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">39267</span>     <span class="mi">1695</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">4</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">13561</span>    <span class="mi">27401</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">3</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">40962</span>        <span class="mi">0</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">2</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">40962</span>        <span class="mi">0</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">1</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>      <span class="mi">40962</span>        <span class="mi">0</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+   <span class="mi">0</span>    <span class="mi">40962</span>        <span class="mi">40962</span>         <span class="mi">0</span>          <span class="mi">0</span>    <span class="mi">40962</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+<span class="o">-----</span>  <span class="o">--------</span>   <span class="o">---------</span>  <span class="o">-------</span>   <span class="o">--------</span>   <span class="o">------</span>   <span class="o">-------</span>  <span class="o">-------</span>  <span class="o">-------</span>
+<span class="n">Total</span>   <span class="mi">40962</span>       <span class="mi">286734</span>         <span class="mi">0</span>     <span class="mi">177256</span>   <span class="mi">109478</span>         <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+
+<span class="n">GeoTessGrid</span>
+<span class="n">gridID</span> <span class="o">=</span> <span class="mi">808785948</span><span class="n">EB2350DD44E6C29BDEA6CAE</span>
+<span class="n">memory</span> <span class="p">:</span> <span class="mf">34.2188</span> <span class="n">MB</span>
+<span class="nb">input</span> <span class="n">Grid</span> <span class="n">File</span> <span class="p">:</span> <span class="n">geotess</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">crust10</span><span class="o">.</span><span class="n">geotess</span>
+<span class="n">generated</span> <span class="n">by</span> <span class="n">software</span> <span class="n">version</span> <span class="p">:</span> <span class="n">GeoModel</span> <span class="mf">7.0.1</span>  <span class="n">Wed</span> <span class="n">April</span> <span class="mi">18</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">51</span> <span class="mi">2012</span>
+
+<span class="n">nTessellations</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">nLevels</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">nVertices</span> <span class="o">=</span> <span class="mi">40962</span>
+<span class="n">nTriangles</span> <span class="o">=</span> <span class="mi">109220</span>
+
+    <span class="n">Tess</span>    <span class="n">Level</span>  <span class="n">LevelID</span>     <span class="n">NTri</span>    <span class="n">First</span>   <span class="n">Last</span><span class="o">+</span><span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>        <span class="mi">0</span>       <span class="mi">20</span>        <span class="mi">0</span>       <span class="mi">20</span>
+      <span class="mi">0</span>        <span class="mi">1</span>        <span class="mi">1</span>       <span class="mi">80</span>       <span class="mi">20</span>      <span class="mi">100</span>
+      <span class="mi">0</span>        <span class="mi">2</span>        <span class="mi">2</span>      <span class="mi">320</span>      <span class="mi">100</span>      <span class="mi">420</span>
+      <span class="mi">0</span>        <span class="mi">3</span>        <span class="mi">3</span>     <span class="mi">1280</span>      <span class="mi">420</span>     <span class="mi">1700</span>
+      <span class="mi">0</span>        <span class="mi">4</span>        <span class="mi">4</span>     <span class="mi">5120</span>     <span class="mi">1700</span>     <span class="mi">6820</span>
+      <span class="mi">0</span>        <span class="mi">5</span>        <span class="mi">5</span>    <span class="mi">20480</span>     <span class="mi">6820</span>    <span class="mi">27300</span>
+      <span class="mi">0</span>        <span class="mi">6</span>        <span class="mi">6</span>    <span class="mi">81920</span>    <span class="mi">27300</span>   <span class="mi">109220</span>
+
+
+<span class="o">********************************************************************************</span>
+</pre></div>
+</div>
+</section>
+<section id="create-a-model-from-scratch">
+<h2>Create a Model from scratch<a class="headerlink" href="#create-a-model-from-scratch" title="Link to this heading">#</a></h2>
+<p>Creating a GeoTessModel from scratch requires a grid file, some layers, and some attributes.  PyGeoTess describes layers with 2-tuples.  The first entry is the layer name, the second is the correspoding tessellation id.  Similarly, with names and units, for attributes.  Convenience <a class="reference external" href="https://docs.python.org/2/library/collections.html#collections.namedtuple"><code class="docutils literal notranslate"><span class="pre">namedtuple</span></code></a> are provided, for readability.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># look at the grid, so you can assign layers to tessellation ids.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">geotess.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">grid_16000</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">geotess</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Attribute</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">grid_16000</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GeoTessGrid</span>
+<span class="n">gridID</span> <span class="o">=</span> <span class="mi">4</span><span class="n">FD3D72E55EFA8E13CA096B4C8795F03</span>
+<span class="n">memory</span> <span class="p">:</span> <span class="mf">0.11776</span> <span class="n">MB</span>
+<span class="nb">input</span> <span class="n">Grid</span> <span class="n">File</span> <span class="p">:</span> <span class="n">geotess</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">geotess_grid_16000</span><span class="o">.</span><span class="n">geotess</span>
+<span class="n">generated</span> <span class="n">by</span> <span class="n">software</span> <span class="n">version</span> <span class="p">:</span> <span class="n">GridBuilder</span> <span class="mf">0.0.0</span>  <span class="n">Fri</span> <span class="n">May</span> <span class="mi">25</span> <span class="mi">11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">59</span> <span class="n">MDT</span> <span class="mi">2012</span>
+
+<span class="n">nTessellations</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">nLevels</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">nVertices</span> <span class="o">=</span> <span class="mi">162</span>
+<span class="n">nTriangles</span> <span class="o">=</span> <span class="mi">420</span>
+
+    <span class="n">Tess</span>    <span class="n">Level</span>  <span class="n">LevelID</span>     <span class="n">NTri</span>    <span class="n">First</span>   <span class="n">Last</span><span class="o">+</span><span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>        <span class="mi">0</span>       <span class="mi">20</span>        <span class="mi">0</span>       <span class="mi">20</span>
+      <span class="mi">0</span>        <span class="mi">1</span>        <span class="mi">1</span>       <span class="mi">80</span>       <span class="mi">20</span>      <span class="mi">100</span>
+      <span class="mi">0</span>        <span class="mi">2</span>        <span class="mi">2</span>      <span class="mi">320</span>      <span class="mi">100</span>      <span class="mi">420</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crust</span> <span class="o">=</span> <span class="n">Layer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;crust&#39;</span><span class="p">,</span> <span class="n">tess_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">mantle</span> <span class="o">=</span> <span class="n">Layer</span><span class="p">(</span><span class="s1">&#39;mantle&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">Vp</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Vp&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+<span class="n">Vs</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="s1">&#39;Vs&#39;</span><span class="p">,</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+
+<span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;My awesome model.&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;geotess/data/geotess_grid_16000.geotess&#39;</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="n">crust</span><span class="p">,</span> <span class="n">mantle</span><span class="p">],</span> <span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="n">Vp</span><span class="p">,</span> <span class="n">Vs</span><span class="p">],</span> 
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">earth_shape</span><span class="o">=</span><span class="s1">&#39;wgs84&#39;</span><span class="p">,</span> <span class="n">rconst</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">********************************************************************************</span>
+
+<span class="n">GeoTessModel</span><span class="p">:</span>
+<span class="n">OS</span><span class="p">:</span> <span class="n">Undefined</span> <span class="mi">64</span><span class="o">-</span><span class="n">bit</span> <span class="n">mode</span>
+<span class="n">Input</span> <span class="n">Model</span> <span class="n">File</span><span class="p">:</span> <span class="n">none</span>
+<span class="n">Input</span> <span class="n">Grid</span> <span class="n">File</span><span class="p">:</span> <span class="n">geotess</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">geotess_grid_16000</span><span class="o">.</span><span class="n">geotess</span>
+
+<span class="n">Generated</span> <span class="n">by</span><span class="p">:</span> <span class="n">PyGeoTess</span> <span class="n">v0</span><span class="mf">.1.1</span>  <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">15</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mf">20.303894</span>
+<span class="n">Model</span> <span class="n">Load</span> <span class="n">Time</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.000</span> <span class="n">sec</span>
+<span class="n">Memory</span> <span class="n">footprint</span><span class="p">:</span> <span class="mf">0.000646591</span> <span class="n">MB</span>
+
+<span class="n">Model</span> <span class="n">Description</span><span class="p">:</span> 
+<span class="n">My</span> <span class="n">awesome</span> <span class="n">model</span><span class="o">.</span>
+<span class="o">&lt;</span><span class="n">end</span> <span class="n">description</span><span class="o">&gt;</span>
+
+<span class="n">EarthShape</span><span class="p">:</span> <span class="n">WGS84</span>
+<span class="n">DataType</span><span class="p">:</span> <span class="n">FLOAT</span>
+<span class="n">Attributes</span><span class="p">:</span> 
+  <span class="mi">0</span><span class="p">:</span>  <span class="n">Vp</span>  <span class="p">(</span><span class="n">km</span><span class="o">/</span><span class="n">s</span><span class="p">)</span>
+  <span class="mi">1</span><span class="p">:</span>  <span class="n">Vs</span>  <span class="p">(</span><span class="n">km</span><span class="o">/</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">Layers</span><span class="p">:</span> 
+  <span class="n">Index</span>  <span class="n">TessId</span>    <span class="n">Name</span>
+   <span class="mi">1</span>       <span class="mi">0</span>     <span class="n">MANTLE</span>
+   <span class="mi">0</span>       <span class="mi">0</span>     <span class="n">CRUST</span>
+
+
+<span class="n">GeoTessGrid</span>
+<span class="n">gridID</span> <span class="o">=</span> <span class="mi">4</span><span class="n">FD3D72E55EFA8E13CA096B4C8795F03</span>
+<span class="n">memory</span> <span class="p">:</span> <span class="mf">0.11776</span> <span class="n">MB</span>
+<span class="nb">input</span> <span class="n">Grid</span> <span class="n">File</span> <span class="p">:</span> <span class="n">geotess</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">geotess_grid_16000</span><span class="o">.</span><span class="n">geotess</span>
+<span class="n">generated</span> <span class="n">by</span> <span class="n">software</span> <span class="n">version</span> <span class="p">:</span> <span class="n">GridBuilder</span> <span class="mf">0.0.0</span>  <span class="n">Fri</span> <span class="n">May</span> <span class="mi">25</span> <span class="mi">11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">59</span> <span class="n">MDT</span> <span class="mi">2012</span>
+
+<span class="n">nTessellations</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">nLevels</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">nVertices</span> <span class="o">=</span> <span class="mi">162</span>
+<span class="n">nTriangles</span> <span class="o">=</span> <span class="mi">420</span>
+
+    <span class="n">Tess</span>    <span class="n">Level</span>  <span class="n">LevelID</span>     <span class="n">NTri</span>    <span class="n">First</span>   <span class="n">Last</span><span class="o">+</span><span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>        <span class="mi">0</span>       <span class="mi">20</span>        <span class="mi">0</span>       <span class="mi">20</span>
+      <span class="mi">0</span>        <span class="mi">1</span>        <span class="mi">1</span>       <span class="mi">80</span>       <span class="mi">20</span>      <span class="mi">100</span>
+      <span class="mi">0</span>        <span class="mi">2</span>        <span class="mi">2</span>      <span class="mi">320</span>      <span class="mi">100</span>      <span class="mi">420</span>
+
+
+<span class="o">********************************************************************************</span>
+</pre></div>
+</div>
+<p>Now, let’s save it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># binary version</span>
+<span class="n">model</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;myawesome.geotess&#39;</span><span class="p">)</span>
+
+<span class="c1"># ascii version</span>
+<span class="n">model</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;myawesome.ascii&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="grids.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Grids</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="license.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">License</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-from-file">Load from file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-model-from-scratch">Create a Model from scratch</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Jonathan MacCarthy
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Jonathan MacCarthy.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,2165 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geotess.lib.libgeotess &#8212; PyGeoTess 0.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=83a61292"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/geotess.lib.libgeotess';</script>
+    <link rel="icon" href="../_static/LANL Logo Ultramarine globe.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="geotess.exc" href="geotess.exc.html" />
+    <link rel="prev" title="geotess.lib.geotessutils" href="geotess.lib.geotessutils.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LANL Logo Ultramarine.png" class="logo__image only-light" alt="PyGeoTess 0.3.0 documentation - Home"/>
+    <img src="../_static/LANL Logo White.png" class="logo__image only-dark pst-js-only" alt="PyGeoTess 0.3.0 documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    PyGeoTess
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">API Documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="geotess.html">geotess</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="geotess.data.html">geotess.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="geotess.data.grids.html">geotess.data.grids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="geotess.data.models.html">geotess.data.models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="geotess.lib.html">geotess.lib</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="geotess.lib.geotessgrid.html">geotess.lib.geotessgrid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="geotess.lib.geotessutils.html">geotess.lib.geotessutils</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">geotess.lib.libgeotess</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="geotess.exc.html">geotess.exc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="geotess.utils.html">geotess.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/LANL-seismoacoustics/pygeotess" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api/geotess.lib.libgeotess.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>geotess.lib.libgeotess</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.AK135Model"><code class="docutils literal notranslate"><span class="pre">AK135Model</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.AK135Model.getLayerProfile"><code class="docutils literal notranslate"><span class="pre">AK135Model.getLayerProfile()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape"><code class="docutils literal notranslate"><span class="pre">EarthShape</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape.getLatDegrees"><code class="docutils literal notranslate"><span class="pre">EarthShape.getLatDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape.getLonDegrees"><code class="docutils literal notranslate"><span class="pre">EarthShape.getLonDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape.getVectorDegrees"><code class="docutils literal notranslate"><span class="pre">EarthShape.getVectorDegrees()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getFirstTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getFirstTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getGridID"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getGridID()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getGridInputFile"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getGridInputFile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getLastTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getLastTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getMemory"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getMemory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNLevels"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNLevels()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNTessellations"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTessellations()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getTriangleVertexIndexes"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getTriangleVertexIndexes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertexIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertexTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.loadGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.loadGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.testGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.testGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.toString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.writeGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.writeGrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getAttributeNamesString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getAttributeNamesString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getAttributeUnitsString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getAttributeUnitsString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getDescription"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getDescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerName"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerName()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerNamesString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerNamesString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerTessIds"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerTessIds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getModelFileFormat"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getModelFileFormat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getModelSoftwareVersion"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getModelSoftwareVersion()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getNLayers"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getNLayers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setAttributes"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setAttributes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setDataType"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setDataType()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setDescription"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setDescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setEarthShape"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setEarthShape()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setLayerNames"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setLayerNames()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setLayerTessIds"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setLayerTessIds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelFileFormat"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setModelFileFormat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelGenerationDate"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setModelGenerationDate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelSoftwareVersion"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setModelSoftwareVersion()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.toString()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel"><code class="docutils literal notranslate"><span class="pre">GeoTessModel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.convertToNPArray"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.convertToNPArray()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getConnectedVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getConnectedVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getEarthShape"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getEarthShape()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getGeographicLocationAttribute"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getGeographicLocationAttribute()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getMetaData"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getMetaData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNAttributes"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNAttributes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNLayers"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNLayers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNPoints"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNPoints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNRadii"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNRadii()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNearestPointIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNearestPointIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointData"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointDepth"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointDepth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndexFirst"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointIndexFirst()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndexLast"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointIndexLast()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLatitude"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLatitude()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLayerIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLayerIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLocation"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLocation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLongitude"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLongitude()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointNodeIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointNodeIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointRadius"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointRadius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointTessId"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointTessId()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointVertexTessLayerNode"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointVertexTessLayerNode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointWeights"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointWeights()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointWeightsVector"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointWeightsVector()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getProfile"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getProfile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getValueFloat"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getValueFloat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getWeights"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getWeights()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.loadModel"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.loadModel()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.make1DProfile"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.make1DProfile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.makeDepthMap"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.makeDepthMap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetBorehole"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetBorehole()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetDepth"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetDepth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetIndexOfClosestVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertexLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetIndexOfClosestVertexLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadius"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetRadius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusBottomLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetRadiusBottomLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusTopLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetRadiusTopLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValue"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValue()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValueLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValueLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValues"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValues()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValuesLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValuesLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetVector"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetVector()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionToString"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionToString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionToStringLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionToStringLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.setPointData"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.setPointData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.setPointDataSingleAttribute"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.setPointDataSingleAttribute()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.setProfile"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.setProfile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.toString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.writeModel"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.writeModel()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModelAmplitude"><code class="docutils literal notranslate"><span class="pre">GeoTessModelAmplitude</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModelAmplitude.getSiteTrans"><code class="docutils literal notranslate"><span class="pre">GeoTessModelAmplitude.getSiteTrans()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-geotess.lib.libgeotess">
+<span id="geotess-lib-libgeotess"></span><h1>geotess.lib.libgeotess<a class="headerlink" href="#module-geotess.lib.libgeotess" title="Link to this heading">#</a></h1>
+<p>This module exposes Cython GeoTess functionality from the pxd file into Python.</p>
+<p>The class definitions here are Python-visible, and are simply wrappers that
+forward the Python-exposed methods directly down to their Cython-exposed C++
+counterparts, which have been exposed in the imported pxd file.</p>
+<p>This module is also responsible for converting between Python types and C++
+types, which sometimes involves annoying tricks.  For simple numerical types,
+this conversion can be done automatically in the calling signature of a “def”
+method if types are declared.  Complex C++ class types, for example, can’t be
+in a Python-visible “def” method because Python objects can’t be automatically
+cast to C++ types.  For these cases, sneaky factory functions that can accept
+the complex types must do the work.  Unfortunately, this means that any
+constructor or method that accepts complex C++ can’t be “directly” exposed to
+Python.</p>
+<p>Using both a pxd and a pyx file is done, partly, so that we can keep the
+exposed C++ GeoTess functionality together in one namespace using “cimport”,
+such that we can name the classes exposed to Python the same as those in the
+GeoTess C++.  This is sometimes confusing in error messages, however.</p>
+<p>GeoTess functionality is intentionally a one-to-one translation into Python
+here so that any modifications to the way models and grids are used can be
+developed and tested in other pure-Python modules.  This makes it easier to try
+different Pythonic approaches to working with the underlying GeoTess library.</p>
+<p>## Current conversion conventions</p>
+<ul class="simple">
+<li><p>NumPy vectors are generally used instead of lists or vectors, such as for
+GeoTess unit vectors and profiles.</p></li>
+<li><p>If a C++ method accepts an empty array/vector argument to be filled by
+the method, I leave that out of the calling signature.  It is instead
+initialized inside the method and simply returned by it.</p></li>
+</ul>
+<p>## Current headaches</p>
+<ul class="simple">
+<li><p>Deleting or garbage-collecting objects is dangerous.  Some objects are
+managed by other objects, so deleting them manually can crash the interpreter.
+I’m not sure how to fix this yet.</p></li>
+<li><p>There is very little/no type checking between Python arguments and when
+they’re forwarded to the C++ methods.  This is dangerous.</p></li>
+</ul>
+<p>## Original C++ documentation
+<a class="reference external" href="https://sandialabs.github.io/GeoTessCPP/GeoTessCPP/doc/html/annotated.html">https://sandialabs.github.io/GeoTessCPP/GeoTessCPP/doc/html/annotated.html</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.AK135Model">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.libgeotess.</span></span><span class="sig-name descname"><span class="pre">AK135Model</span></span><a class="headerlink" href="#geotess.lib.libgeotess.AK135Model" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.AK135Model.getLayerProfile">
+<span class="sig-name descname"><span class="pre">getLayerProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.AK135Model.getLayerProfile" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.EarthShape">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.libgeotess.</span></span><span class="sig-name descname"><span class="pre">EarthShape</span></span><a class="headerlink" href="#geotess.lib.libgeotess.EarthShape" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Defines the ellipsoid that is to be used to convert between geocentric and
+geographic latitude and between depth and radius.</p>
+<p>EarthShape defines the ellipsoid that is to be used to convert between geocentric
+and geographic latitude and between depth and radius. The default is WGS84.</p>
+<p>The following EarthShapes are defined:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>earthShape</strong> (<em>str</em>) – <p>Define the shape of the Earth that is to be used to convert between geocentric and
+geographic latitude and between depth and radius.</p>
+<dl class="simple">
+<dt>SPHERE - Geocentric and geographic latitudes are identical and</dt><dd><p>conversion between depth and radius assume the Earth is a sphere
+with constant radius of 6371 km.</p>
+</dd>
+<dt>GRS80 - Conversion between geographic and geocentric latitudes, and</dt><dd><p>between depth and radius are performed using the parameters of the
+GRS80 ellipsoid.</p>
+</dd>
+<dt>GRS80_RCONST - Conversion between geographic and geocentric latitudes</dt><dd><p>are performed using the parameters of the GRS80 ellipsoid.
+Conversions between depth and radius assume the Earth is a sphere
+with radius 6371.</p>
+</dd>
+<dt>WGS84 - Conversion between geographic and geocentric latitudes, and</dt><dd><p>between depth and radius are performed using the parameters of the
+WGS84 ellipsoid.</p>
+</dd>
+<dt>WGS84_RCONST - Conversion between geographic and geocentric latitudes</dt><dd><p>are performed using the parameters of the WGS84 ellipsoid.
+Conversions between depth and radius assume the Earth is a sphere
+with radius 6371.</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.EarthShape.getLatDegrees">
+<span class="sig-name descname"><span class="pre">getLatDegrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:]</span> <span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.EarthShape.getLatDegrees" title="Link to this definition">#</a></dt>
+<dd><p>Convert a 3-component unit vector to a latitude, in degrees.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.EarthShape.getLonDegrees">
+<span class="sig-name descname"><span class="pre">getLonDegrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:]</span> <span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.EarthShape.getLonDegrees" title="Link to this definition">#</a></dt>
+<dd><p>Convert a 3-component unit vector to a longitude, in degrees.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.EarthShape.getVectorDegrees">
+<span class="sig-name descname"><span class="pre">getVectorDegrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lon</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.EarthShape.getVectorDegrees" title="Link to this definition">#</a></dt>
+<dd><p>Convert geographic lat, lon into a geocentric unit vector.</p>
+<p>The x-component points toward lat,lon = 0, 0. The y-component points toward
+lat,lon = 0, 90. The z-component points toward north pole.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>)</p></li>
+<li><p><strong>lon</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray of floats</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.libgeotess.</span></span><span class="sig-name descname"><span class="pre">GeoTessGrid</span></span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages the geometry and topology of one or more multi-level triangular tessellations of a unit sphere.</p>
+<p>Has many functions to retrieve information about the grid but knows nothing about Data.</p>
+<p>Manages the geometry and topology of one or more multi-level triangular tessellations of a unit sphere.
+It knows:</p>
+<ul class="simple">
+<li><p>the positions of all the vertices,</p></li>
+<li><p>the connectivity information that defines how vertices are connected to form triangles,</p></li>
+<li><p>for each triangle it knows the indexes of the 3 neighboring triangles,</p></li>
+<li><p>for each triangle it knows the index of the triangle which is a descendant at the next higher
+tessellation level, if there is one.</p></li>
+<li><p>information about which triangles reside on which tessellation level</p></li>
+</ul>
+<p>GeoTessGrid is thread-safe in that its internal state is not modified after its data has been loaded
+into memory. The design intention is that single instances of a GeoTessGrid object and GeoTessData
+object can be shared among all the threads in a multi-threaded application and each thread will have
+it’s own instance of a GeoTessPosition object that references the common GeoTessGrid + GeoTessData
+combination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>raw</strong> (<em>bool</em>) – If True, return an “raw” (empty) instance (doesn’t initialize its own pointer).
+This is intended for use with c-level classmethods that instantiate an instance
+from an existing pointer.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getFirstTriangle">
+<span class="sig-name descname"><span class="pre">getFirstTriangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">tessellation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getFirstTriangle" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the index of the first triangle on the specified level of the
+specified tessellation of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tessellation</strong> (<em>int</em>)</p></li>
+<li><p><strong>level</strong> (<em>int</em>) – index of a level relative to the first level of the specified tessellation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a triangle index</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getGridID">
+<span class="sig-name descname"><span class="pre">getGridID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getGridID" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getGridInputFile">
+<span class="sig-name descname"><span class="pre">getGridInputFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getGridInputFile" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the name of the file from which the grid was loaded.</p>
+<p>This will be the name of a GeoTessModel file if the grid was stored in the same file as the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the name of the file from which the grid was loaded.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getLastTriangle">
+<span class="sig-name descname"><span class="pre">getLastTriangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">tessellation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getLastTriangle" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the index of the last triangle on the specified level of the specified
+tessellation of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tessellation</strong> (<em>int</em>)</p></li>
+<li><p><strong>level</strong> (<em>int</em>) – index of a level relative to the first level of the specified tessellation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a triangle index</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getMemory">
+<span class="sig-name descname"><span class="pre">getMemory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getMemory" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the amount of memory required by this GeoTessGrid object in bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the amount of memory required by this GeoTessGrid object in bytes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getNLevels">
+<span class="sig-name descname"><span class="pre">getNLevels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tessellation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getNLevels" title="Link to this definition">#</a></dt>
+<dd><p>Returns the number of tessellation levels defined for this grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tessellation</strong> (<em>int</em>) – Return only number of levels for the provided tessellation index, otherwise
+all levels are returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of tessellation levels defined for this grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getNTessellations">
+<span class="sig-name descname"><span class="pre">getNTessellations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getNTessellations" title="Link to this definition">#</a></dt>
+<dd><p>Returns the number of tessellations in the tessellations array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of multi-level tesseallations.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getNTriangles">
+<span class="sig-name descname"><span class="pre">getNTriangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tessellation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getNTriangles" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the number of triangles that define the specified level of the specified
+multi-level tessellation of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tessellation</strong> (<em>int</em>) – Specified tessellation index.</p></li>
+<li><p><strong>level</strong> (<em>int</em>) – index of a level relative to the first level of the specified tessellation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>number of triangles on specified tessellation and level.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getNVertices">
+<span class="sig-name descname"><span class="pre">getNVertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getNVertices" title="Link to this definition">#</a></dt>
+<dd><p>Returns the number of vertices in the vectices array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>number of vertices</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getTriangleVertexIndexes">
+<span class="sig-name descname"><span class="pre">getTriangleVertexIndexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">triangleIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getTriangleVertexIndexes" title="Link to this definition">#</a></dt>
+<dd><p>Supply an integer triangle index, get a 3-element numpy integer array, which
+are indices of the vertices that make this triangle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getVertex">
+<span class="sig-name descname"><span class="pre">getVertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">vertex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getVertex" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the unit vector that corresponds to the specified vertex.</p>
+<p>Returns a 3-element NumPy vector.  This array is still connected to the
+vertex in-memory, so don’t modify it unless you intend to!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getVertexIndex">
+<span class="sig-name descname"><span class="pre">getVertexIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">triangle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">corner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tessId=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getVertexIndex" title="Link to this definition">#</a></dt>
+<dd><p>Get the index of the vertex that occupies the specified position in the hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>triangle</strong> (<em>int</em>) – the i’th triangle in the grid</p></li>
+<li><p><strong>corner</strong> (<em>int</em>) – the i’th corner of the specified triangle</p></li>
+<li><p><strong>tessId</strong> (<em>int</em>) – tessellation index</p></li>
+<li><p><strong>level</strong> (<em>int</em>) – index of a level relative to the first level of the specified tessellation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>index of a vertex</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getVertexTriangles">
+<span class="sig-name descname"><span class="pre">getVertexTriangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">tessId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">vertex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getVertexTriangles" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve a list of the triangles a particular vertex is a member of,
+considering only triangles in the specified tessellation/level.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.getVertices">
+<span class="sig-name descname"><span class="pre">getVertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.getVertices" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve a reference to all of the vertices.</p>
+<p>Vertices consists of an nVertices x 3 array of doubles. The double[3] array associated
+with each vertex is the 3 component unit vector that defines the position of the vertex.</p>
+<p>Users should not modify the contents of the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>nVertices x 3 array of unit vectors.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.loadGrid">
+<span class="sig-name descname"><span class="pre">loadGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">inputFile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.loadGrid" title="Link to this definition">#</a></dt>
+<dd><p>Load GeoTessGrid object from a File.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputFile</strong> (<em>str</em>) – name of file from which to load grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pointer to a Grid object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.testGrid">
+<span class="sig-name descname"><span class="pre">testGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.testGrid" title="Link to this definition">#</a></dt>
+<dd><p>Tests the integrity of the grid.</p>
+<p>Visits every triangle T, and (1) checks to ensure that every neighbor of T includes T in its list of neighbors, and (2) checks that every neighbor of T shares exactly two nodes with T.</p>
+<section id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">#</a></h2>
+<p>GeoTessException if anything is amiss.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.toString">
+<span class="sig-name descname"><span class="pre">toString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.toString" title="Link to this definition">#</a></dt>
+<dd><p>Summary information about this GeoTessGrid object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Summary description string for current grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessGrid.writeGrid">
+<span class="sig-name descname"><span class="pre">writeGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">fileName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessGrid.writeGrid" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.libgeotess.</span></span><span class="sig-name descname"><span class="pre">GeoTessMetaData</span></span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Top level class that manages the GeoTessMetaData, GeoTessGrid and GeoTessData
+that comprise a 3D Earth model.</p>
+<p>GeoTessModel manages the grid and data that comprise a 3D Earth model.
+The Earth is assumed to be composed of a number of layers each of which spans the
+entire geographic extent of the Earth. It is assumed that layer boundaries do not
+fold back on themselves, i.e., along any radial profile through the model, each layer
+boundary is intersected exactly one time. Layers may have zero thickness over some
+or all of their geographic extent. Earth properties stored in the model are assumed
+to be continuous within a layer, both geographically and radially, but may be discontinuous
+across layer boundaries.</p>
+<p>A GeoTessModel is comprised of 3 major components:</p>
+<p>The model grid (geometry and topology) is managed by a GeoTessGrid object. The grid is made
+up of one or more 2D triangular tessellations of a unit sphere.</p>
+<p>The data are managed by a 2D array of Profile objects. A Profile is essentially a list of
+radii and Data objects distributed along a radial profile that spans a single layer at a
+single vertex of the 2D grid. The 2D Profile array has dimensions nVertices by nLayers.</p>
+<p>Important metadata about the model, such as the names of the major layers, the names of
+the data attributes stored in the model, etc., are managed by a GeoTessMetaData object.
+The term ‘vertex’ refers to a position in the 2D tessellation. They are 2D positions
+represented by unit vectors on a unit sphere. The term ‘node’ refers to a 1D position
+on a radial profile associated with a vertex and a layer in the model. Node indexes are
+unique only within a given profile (all profiles have a node with index 0 for example).
+The term ‘point’ refers to all the nodes in all the profiles of the model. There is only one
+‘point’ in the model with index 0. PointMap is introduced to manage all these different indexes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getAttributeNamesString">
+<span class="sig-name descname"><span class="pre">getAttributeNamesString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getAttributeNamesString" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the names of all the attributes assembled into a single, semi-colon separated string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the names of all the attributes assembled into a single, semi-colon separated string.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getAttributeUnitsString">
+<span class="sig-name descname"><span class="pre">getAttributeUnitsString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getAttributeUnitsString" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the units of all the attributes assembled into a single, semi-colon separated string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the units of all the attributes assembled into a single, semi-colon separated string.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getDescription">
+<span class="sig-name descname"><span class="pre">getDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getDescription" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the description of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the description of the model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getLayerIndex">
+<span class="sig-name descname"><span class="pre">getLayerIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">layerName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerIndex" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the index of the layer that has the specified name, or -1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layerName</strong> (<em>str</em>) – the name of the layer whose index is sought.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the index of the layer that has the specified name, or -1.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getLayerName">
+<span class="sig-name descname"><span class="pre">getLayerName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layerIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerName" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the name of one of the layers supported by the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layerIndex</strong> (<em>int</em>) – the index of the layer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the name of the layer</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getLayerNamesString">
+<span class="sig-name descname"><span class="pre">getLayerNamesString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerNamesString" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the names of all the layers assembled into a single, semi-colon separated string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the names of all the layers assembled into a single, semi-colon separated string.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getLayerTessIds">
+<span class="sig-name descname"><span class="pre">getLayerTessIds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerTessIds" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve a reference to layerTessIds</p>
+<p>An int[] with an entry for each layer specifying the index of the tessellation that supports that layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layerTessIds</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getModelFileFormat">
+<span class="sig-name descname"><span class="pre">getModelFileFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getModelFileFormat" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getModelSoftwareVersion">
+<span class="sig-name descname"><span class="pre">getModelSoftwareVersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getModelSoftwareVersion" title="Link to this definition">#</a></dt>
+<dd><p>Get the name and version of the software that generated the content of this model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the name and version of the software that generated this model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.getNLayers">
+<span class="sig-name descname"><span class="pre">getNLayers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.getNLayers" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the number of layers represented in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>number of layers represented in the model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setAttributes">
+<span class="sig-name descname"><span class="pre">setAttributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">nms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">unts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setAttributes" title="Link to this definition">#</a></dt>
+<dd><p>Specify the names and units of the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nms</strong> (<em>str</em>) – the names of the attributes, separated by a semicolon</p></li>
+<li><p><strong>unts</strong> (<em>str</em>) – the units of the attributes, separated by a semicolon</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setDataType">
+<span class="sig-name descname"><span class="pre">setDataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setDataType" title="Link to this definition">#</a></dt>
+<dd><p>Specify the type of the data that is stored in the model;</p>
+<p>Must be one of DOUBLE, FLOAT, LONG, INT, SHORTINT, BYTE.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<em>str</em>) – the dataType to set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setDescription">
+<span class="sig-name descname"><span class="pre">setDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">dscr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setDescription" title="Link to this definition">#</a></dt>
+<dd><p>Set the description of the model.</p>
+<p>Adds a newline as final character.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dscr</strong> (<em>str</em>) – the description of the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setEarthShape">
+<span class="sig-name descname"><span class="pre">setEarthShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">earthShapeName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setEarthShape" title="Link to this definition">#</a></dt>
+<dd><p>Specify the name of the ellipsoid that is to be used to convert between geocentric
+and geographic latitude and between depth and radius.</p>
+<p>This ellipsoid will be save in this GeoTessModel if it is written to file.
+The following EarthShapes are supported:</p>
+<dl class="simple">
+<dt>SPHERE - Geocentric and geographic latitudes are identical and conversion between depth and</dt><dd><p>radius assume the Earth is a sphere with constant radius of 6371 km.</p>
+</dd>
+<dt>GRS80 - Conversion between geographic and geocentric latitudes, and between depth and</dt><dd><p>radius are performed using the parameters of the GRS80 ellipsoid.</p>
+</dd>
+<dt>GRS80_RCONST - Conversion between geographic and geocentric latitudes are performed using</dt><dd><p>the parameters of the GRS80 ellipsoid. Conversions between depth and radius assume the
+Earth is a sphere with radius 6371.</p>
+</dd>
+<dt>WGS84 - Conversion between geographic and geocentric latitudes, and between depth and radius</dt><dd><p>are performed using the parameters of the WGS84 ellipsoid.</p>
+</dd>
+<dt>WGS84_RCONST - Conversion between geographic and geocentric latitudes are performed</dt><dd><p>using the parameters of the WGS84 ellipsoid. Conversions between depth and radius assume
+the Earth is a sphere with radius 6371.</p>
+</dd>
+<dt>IERS2003 - Conversion between geographic and geocentric latitudes, and between depth and</dt><dd><p>radius are performed using the parameters of the IERS2003 ellipsoid.</p>
+</dd>
+<dt>IERS2003_RCONST - Conversion between geographic and geocentric latitudes are performed</dt><dd><p>using the parameters of the IERS2003 ellipsoid. Conversions between depth and radius
+assume the Earth is a sphere with radius 6371.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>earthShapeName</strong> (<em>str</em>) – the name of the ellipsoid that is to be used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setLayerNames">
+<span class="sig-name descname"><span class="pre">setLayerNames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">lyrNms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setLayerNames" title="Link to this definition">#</a></dt>
+<dd><p>Specify the names of all the layers that comprise the model.</p>
+<p>This will determine the value of nLayers as well. The input lyrNms is a semicolon
+concatenation of all layer names (i.e. LAYERNAME1; LAYERNAME2; …).
+Whitespaces will be removed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lyrNms</strong> (<em>str</em>) – single string containing all the layer names separated by semi-colons</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setLayerTessIds">
+<span class="sig-name descname"><span class="pre">setLayerTessIds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector[int]</span> <span class="pre">layrTsIds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setLayerTessIds" title="Link to this definition">#</a></dt>
+<dd><p>LayerTessIds is a map from a layer index to a tessellation index.</p>
+<p>There is an element for each layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layrTsIds</strong> (<em>iterable</em><em> of </em><em>int</em>) – of length equal to the number of layers in the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setModelFileFormat">
+<span class="sig-name descname"><span class="pre">setModelFileFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelFileFormat" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setModelGenerationDate">
+<span class="sig-name descname"><span class="pre">setModelGenerationDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">genDate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelGenerationDate" title="Link to this definition">#</a></dt>
+<dd><p>Set the date when this model was generated.</p>
+<p>This is not necessarily the same as the date when the file was copied or translated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>genDate</strong> (<em>str</em><em> (</em><em>free-form text date field</em><em>)</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.setModelSoftwareVersion">
+<span class="sig-name descname"><span class="pre">setModelSoftwareVersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">swVersion</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelSoftwareVersion" title="Link to this definition">#</a></dt>
+<dd><p>Set the name and version number of the software that generated the contents of this model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>swVersion</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessMetaData.toString">
+<span class="sig-name descname"><span class="pre">toString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessMetaData.toString" title="Link to this definition">#</a></dt>
+<dd><p>Returns a string representation of this meta data object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.libgeotess.</span></span><span class="sig-name descname"><span class="pre">GeoTessModel</span></span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Top level class that manages the GeoTessMetaData, GeoTessGrid and GeoTessData
+that comprise a 3D Earth model.</p>
+<p>GeoTessModel manages the grid and data that comprise a 3D Earth model. The Earth is assumed
+to be composed of a number of layers each of which spans the entire geographic extent of the
+Earth. It is assumed that layer boundaries do not fold back on themselves, i.e., along any
+radial profile through the model, each layer boundary is intersected exactly one time.
+Layers may have zero thickness over some or all of their geographic extent. Earth properties
+stored in the model are assumed to be continuous within a layer, both geographically and radially,
+but may be discontinuous across layer boundaries.</p>
+<p>A GeoTessModel is comprised of 3 major components:</p>
+<p>The model grid (geometry and topology) is managed by a GeoTessGrid object. The grid is made up
+of one or more 2D triangular tessellations of a unit sphere.</p>
+<p>The data are managed by a 2D array of Profile objects. A Profile is essentially a list of
+radii and Data objects distributed along a radial profile that spans a single layer at a
+single vertex of the 2D grid. The 2D Profile array has dimensions nVertices by nLayers.</p>
+<p>Important metadata about the model, such as the names of the major layers, the names of the
+data attributes stored in the model, etc., are managed by a GeoTessMetaData object.
+The term ‘vertex’ refers to a position in the 2D tessellation. They are 2D positions
+represented by unit vectors on a unit sphere. The term ‘node’ refers to a 1D position on a
+radial profile associated with a vertex and a layer in the model. Node indexes are unique
+only within a given profile (all profiles have a node with index 0 for example).
+The term ‘point’ refers to all the nodes in all the profiles of the model. There is only one
+‘point’ in the model with index 0. PointMap is introduced to manage all these different indexes.</p>
+<p>Parameterized constructor, specifying the grid and metadata for the model.</p>
+<p>The grid is constructed and the data structures are initialized based on information supplied in metadata.
+The data structures are not populated with any information however (all Profiles are null).
+The application should populate the new model’s Profiles after this constructor completes.</p>
+<p>Before calling this constructor, the supplied MetaData object must be populated with required information
+by calling the following MetaData methods:</p>
+<p>setDescription()
+setLayerNames()
+setAttributes()
+setDataType()
+setLayerTessIds() (only required if grid has more than one multi-level tessellation)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gridFileName</strong> (<em>str</em>) – name of file from which to load the grid.</p></li>
+<li><p><strong>metaData</strong> (<em>geotess.lib.MetaData</em>) – See Notes.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>GeoTessModel accepts a grid file name and GeoTessMetaData instance.  The
+metadata is _copied_ into the GeoTessModel, so be warned that changes to
+it are _not_ reflected in the original instances.  This is done to
+simplify the life cycle of the underlying C++ memory, because GeoTessModel
+wants to assumes ownership of the provided C++ objects, including
+destruction.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.convertToNPArray">
+<span class="sig-name descname"><span class="pre">convertToNPArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.convertToNPArray" title="Link to this definition">#</a></dt>
+<dd><p>Extracts from geotess object to a set of 3 location vectors and an attribute matrix
+returns longitude vector, latitude vector, radius vector, and data matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getConnectedVertices">
+<span class="sig-name descname"><span class="pre">getConnectedVertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layerid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getConnectedVertices" title="Link to this definition">#</a></dt>
+<dd><p>Function fo find which vertices are connected</p>
+<p>If a vertex is not connected, then it won’t have a set profile.</p>
+<section id="paramters">
+<h2>Paramters<a class="headerlink" href="#paramters" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>layerID<span class="classifier">int</span></dt><dd><p>layer index</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>connected vertices at this layer</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getEarthShape">
+<span class="sig-name descname"><span class="pre">getEarthShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getEarthShape" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve a reference to the ellipsoid that is stored in this GeoTessModel.</p>
+<p>This EarthShape object can be used to convert between geographic and geocentric latitude,
+and between radius and depth in the Earth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The EarthShape currently in use.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Earthshape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getGeographicLocationAttribute">
+<span class="sig-name descname"><span class="pre">getGeographicLocationAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">dz=1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType='LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType='LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getGeographicLocationAttribute" title="Link to this definition">#</a></dt>
+<dd><p>Uses interpolation to lookup the value of an attribute at a point given latitude, longitude, radius, attribute index, and layer index
+Optionally give dz for depth search to check the layer
+Optionally give horizontalType and/or radialType interpolators
+On success, returns a single value.
+On failure, returns None object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getGrid">
+<span class="sig-name descname"><span class="pre">getGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getGrid" title="Link to this definition">#</a></dt>
+<dd><p>Return the current model’s grid object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current model’s grid object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#geotess.lib.libgeotess.GeoTessGrid" title="geotess.lib.libgeotess.GeoTessGrid">GeoTessGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getMetaData">
+<span class="sig-name descname"><span class="pre">getMetaData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getMetaData" title="Link to this definition">#</a></dt>
+<dd><p>Return a reference to the GeoTessMetaData object associated with this model.</p>
+<p>The metadata object stores information about the models such as a description of the model,
+the layer names, attribute names, attribute units, the data type, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The metadata object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#geotess.lib.libgeotess.GeoTessMetaData" title="geotess.lib.libgeotess.GeoTessMetaData">GeoTessMetaData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getNAttributes">
+<span class="sig-name descname"><span class="pre">getNAttributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getNAttributes" title="Link to this definition">#</a></dt>
+<dd><p>Return the number of attributes that are associated with each node in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of attributes that are associated with each node in the model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getNLayers">
+<span class="sig-name descname"><span class="pre">getNLayers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getNLayers" title="Link to this definition">#</a></dt>
+<dd><p>Return the number of layers that comprise the model as an integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getNPoints">
+<span class="sig-name descname"><span class="pre">getNPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getNPoints" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the number of points in the model, including all nodes along all profiles
+at all grid vertices, as an integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getNRadii">
+<span class="sig-name descname"><span class="pre">getNRadii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getNRadii" title="Link to this definition">#</a></dt>
+<dd><p>For a given vertex and layer, returns the number of radii (nodes)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getNVertices">
+<span class="sig-name descname"><span class="pre">getNVertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getNVertices" title="Link to this definition">#</a></dt>
+<dd><p>Return number of vertices in the 2D geographic grid as an integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getNearestPointIndex">
+<span class="sig-name descname"><span class="pre">getNearestPointIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">latitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">longitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getNearestPointIndex" title="Link to this definition">#</a></dt>
+<dd><p>Warning! This does not always work. Layer definitions need to be included before it will work properly!
+This is also quite slow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitude</strong> (<em>float</em>) – floating point from -90 to 90
+Defines the latitude of the lookup point</p></li>
+<li><p><strong>longitude</strong> (<em>float</em>) – floating point from -180 to 360
+Defines the longitude of the lookup point.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – floating point from 0 to ~6371 (earth’s radius out from center’)
+Defines the radius of the lookup point.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(int) pointIndex used to map the given location to the nearest point in the tesselation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointData">
+<span class="sig-name descname"><span class="pre">getPointData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointData" title="Link to this definition">#</a></dt>
+<dd><p>For a given point index, returns a vector of attribute values</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointDepth">
+<span class="sig-name descname"><span class="pre">getPointDepth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointDepth" title="Link to this definition">#</a></dt>
+<dd><p>Given a point index, return the depth</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointIndex">
+<span class="sig-name descname"><span class="pre">getPointIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndex" title="Link to this definition">#</a></dt>
+<dd><p>Given a vertex, layer, and node, returns the point index</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointIndexFirst">
+<span class="sig-name descname"><span class="pre">getPointIndexFirst</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndexFirst" title="Link to this definition">#</a></dt>
+<dd><p>Returns the point index of the deepest node in the profile defined by vertex and layer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointIndexLast">
+<span class="sig-name descname"><span class="pre">getPointIndexLast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndexLast" title="Link to this definition">#</a></dt>
+<dd><p>Returns the point index of the shallowest node in the profile defined by vertex and layer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointLatitude">
+<span class="sig-name descname"><span class="pre">getPointLatitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointLatitude" title="Link to this definition">#</a></dt>
+<dd><p>Use the pointMap object to find the latitude given a pointIndex value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointLayerIndex">
+<span class="sig-name descname"><span class="pre">getPointLayerIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointLayerIndex" title="Link to this definition">#</a></dt>
+<dd><p>Returns the layer index given a pointIndex</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointLocation">
+<span class="sig-name descname"><span class="pre">getPointLocation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointLocation" title="Link to this definition">#</a></dt>
+<dd><p>Returns the latitude, longitude, radius, and depth of a point in a model defined by the point index</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointLongitude">
+<span class="sig-name descname"><span class="pre">getPointLongitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointLongitude" title="Link to this definition">#</a></dt>
+<dd><p>Use the pointMap object to find the longitude given a pointIndex value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointNodeIndex">
+<span class="sig-name descname"><span class="pre">getPointNodeIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointNodeIndex" title="Link to this definition">#</a></dt>
+<dd><p>Returns the node index (in a profile) given a point index</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointRadius">
+<span class="sig-name descname"><span class="pre">getPointRadius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointRadius" title="Link to this definition">#</a></dt>
+<dd><p>Given a point index, return the radius</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointTessId">
+<span class="sig-name descname"><span class="pre">getPointTessId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointTessId" title="Link to this definition">#</a></dt>
+<dd><p>Returns the Tesselation ID given a pointIndex</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointVertex">
+<span class="sig-name descname"><span class="pre">getPointVertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointVertex" title="Link to this definition">#</a></dt>
+<dd><p>Returns the vertex given a point index</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointVertexTessLayerNode">
+<span class="sig-name descname"><span class="pre">getPointVertexTessLayerNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointVertexTessLayerNode" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pointIndex</strong> (<em>Integer from 0 to self.getNPoints</em><em>(</em><em>)</em><em>-1</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ints for</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>vertex, tessID, layerID, and Node</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointWeights">
+<span class="sig-name descname"><span class="pre">getPointWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">horizontalType='LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointWeights" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getPointWeightsVector">
+<span class="sig-name descname"><span class="pre">getPointWeightsVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:]</span> <span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">horizontalType='LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getPointWeightsVector" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getProfile">
+<span class="sig-name descname"><span class="pre">getProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getProfile" title="Link to this definition">#</a></dt>
+<dd><p>Get a reference to the Profile object for the specified vertex and layer.</p>
+<p>Gets values in a profile given the vertex and layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertex</strong> (<em>int</em>) – index of a vertex in the 2D grid</p></li>
+<li><p><strong>layer</strong> (<em>int</em>) – index of one of the layers that comprise the model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>radii</strong> (<em>numpy.ndarray of floats [nradius x 1]</em>) – Profile radius values for the profile.</p></li>
+<li><p><strong>attributes</strong> (<em>numpy.ndarray of floats [nradius x nattributes]</em>) – Profile attribute values corresponding to each radius.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getValueFloat">
+<span class="sig-name descname"><span class="pre">getValueFloat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">pointIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">attributeIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getValueFloat" title="Link to this definition">#</a></dt>
+<dd><p>Return the value of the attribute at the specified pointIndex, attributeIndex,
+cast to a float if necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pointIndex</strong> (<em>int</em>)</p></li>
+<li><p><strong>attributeIndex</strong> (<em>int</em>) – the attributeIndex</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the value of the specifed attribute, cast to float if necessary</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.getWeights">
+<span class="sig-name descname"><span class="pre">getWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span> <span class="pre">double[::1]</span> <span class="pre">pointA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span> <span class="pre">double[::1]</span> <span class="pre">pointB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">pointSpacing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">horizontalType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.getWeights" title="Link to this definition">#</a></dt>
+<dd><p>Compute the weights on each model point that results from interpolating positions along the specified ray path.</p>
+<p>This method is only applicable to 2D GeoTessModels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pointA</strong> (<em>array_like</em>) – The 3-element unit vector of floats defining the beginning, end of the great circle path
+C-contiguous layout of floats.</p></li>
+<li><p><strong>pointB</strong> (<em>array_like</em>) – The 3-element unit vector of floats defining the beginning, end of the great circle path
+C-contiguous layout of floats.</p></li>
+<li><p><strong>pointSpacing</strong> (<em>float</em>) – The maximum spacing between points, in radians. The actual spacing will generally be
+slightly less than the specified value in order for there to be an integral number of
+uniform intervals along the great circle path.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – The radius of the great circle path, in km. If the value is less than or equal to zero
+then the radius of the Earth determined by the current EarthShape is used.
+See getEarthShape() and setEarathShape() for more information about EarthShapes.</p></li>
+<li><p><strong>horizontalType</strong> (<em>str {'LINEAR'</em><em>, </em><em>'NATURAL_NEIGHBOR'}</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>weights</strong> – Integer keys to float values. (output) map from pointIndex to weight.
+The sum of the weights will equal the length of the ray path in km.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following procedure is implemented:
+1. divide the great circle path from pointA to pointB into nIntervals which each are of length less than or equal to pointSpacing.
+2.  multiply the length of each interval by the radius of the earth at the center of the interval, which converts the length of the interval into km.
+3. interpolate the value of the specified attribute at the center of the interval.
+4. sum the length of the interval times the attribute value, along the path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.loadModel">
+<span class="sig-name descname"><span class="pre">loadModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">inputFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relGridFilePath=b''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.loadModel" title="Link to this definition">#</a></dt>
+<dd><p>Read model data and grid from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputFile</strong> (<em>str</em>) – the path to the file that contains the model.</p></li>
+<li><p><strong>relGridFilePath</strong> (<em>str</em>) – if the grid is stored in a separate file then relGridFilePath
+is the relative path from the directory where the model located
+to the directory where the grid is located. The default value for
+relGridFilePath is “” which indicates that the grid file resides
+in the same directory as the model file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>returns a pointer to this</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.make1DProfile">
+<span class="sig-name descname"><span class="pre">make1DProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">mindepth=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">maxdepth=6371</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">dz=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType='LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType='LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.make1DProfile" title="Link to this definition">#</a></dt>
+<dd><p>Extracts values as a 1-dimensional array of depth and attribute
+Returns numpy arrays of depth and value
+optional parameters:</p>
+<blockquote>
+<div><p>mindepth: minimum depth (km)
+maxdepth: maximum depth (km)
+dz: sampling in depth (km)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.makeDepthMap">
+<span class="sig-name descname"><span class="pre">makeDepthMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">dLon=8.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">dLat=8.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">minlon=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">maxlon=360</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">minlat=-90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">maxlat=90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType='LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType='LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.makeDepthMap" title="Link to this definition">#</a></dt>
+<dd><p>Extracts values for a map at constant depth.
+The output from this can be used to make a map with other software, such as matplotlib
+Required positional arguments: depth, attribute index.
+Optional arguments:</p>
+<blockquote>
+<div><p>dLon: gridding step in longitude
+dLat: gridding step in latitude
+minlon: minimum longitude in degrees
+maxlon: maximum longitude in degrees
+minlat: minimum latitude in degrees
+maxlat: maximum latitude in degrees</p>
+</div></blockquote>
+<p>relies on numpy as np</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetBorehole">
+<span class="sig-name descname"><span class="pre">positionGetBorehole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span> <span class="pre">dz=10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">computeDepth=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType='LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType='LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetBorehole" title="Link to this definition">#</a></dt>
+<dd><p>Returns layerID vector, radii vector, and attribute matrix for the given latitude, longitude position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>dz</strong> (<em>float</em>) – regular depth sampling, km, for the borehole</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+<li><p><strong>depth</strong> (<em>set computeDepth=True to convert output from radii to</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>vector layers, vector radii, matrix attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetDepth">
+<span class="sig-name descname"><span class="pre">positionGetDepth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetDepth" title="Link to this definition">#</a></dt>
+<dd><p>Most position methods take depth. This method takes radius and converts to depth for the model’s ellipsoid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – radius from center of earth (km).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>depth from surface of the earth (km).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertex">
+<span class="sig-name descname"><span class="pre">positionGetIndexOfClosestVertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertex" title="Link to this definition">#</a></dt>
+<dd><p>Returns the closest vertex to the given location</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>integer vertex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertexLayer">
+<span class="sig-name descname"><span class="pre">positionGetIndexOfClosestVertexLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layerid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertexLayer" title="Link to this definition">#</a></dt>
+<dd><p>Returns the closest vertex to the given location and layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layerid</strong> (<em>integer</em>) – layer index</p></li>
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid. [km] I think.</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>integer vertex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetLayer">
+<span class="sig-name descname"><span class="pre">positionGetLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetLayer" title="Link to this definition">#</a></dt>
+<dd><p>returns the layerID as a function of latitude, longitude, and depth.
+Optionally, give position interpolation methods horizontalType and/or radialType</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetRadius">
+<span class="sig-name descname"><span class="pre">positionGetRadius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadius" title="Link to this definition">#</a></dt>
+<dd><p>determines radius from input depth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude (deg).</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude (deg).</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from ellipsoid surface (km).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>radius from center of earth (km).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetRadiusBottomLayer">
+<span class="sig-name descname"><span class="pre">positionGetRadiusBottomLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusBottomLayer" title="Link to this definition">#</a></dt>
+<dd><p>Finds the bottom radius (nearest the core) for a position object
+defined by location and layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>int</em>) – layer index.</p></li>
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>radius (km) at bottom of layer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetRadiusTopLayer">
+<span class="sig-name descname"><span class="pre">positionGetRadiusTopLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusTopLayer" title="Link to this definition">#</a></dt>
+<dd><p>Finds the top radius (nearest the surface) for a position object
+defined by location and layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>int</em>) – layer index.</p></li>
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>radius (km) at top of layer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetTriangle">
+<span class="sig-name descname"><span class="pre">positionGetTriangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetTriangle" title="Link to this definition">#</a></dt>
+<dd><p>Returns which triangle number the given location is located within.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Integer triangle where position is located</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetValue">
+<span class="sig-name descname"><span class="pre">positionGetValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValue" title="Link to this definition">#</a></dt>
+<dd><p>Returns the attribute at a position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>attribute</strong> (<em>int</em>) – attribute index</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>attribute value at position.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetValueLayer">
+<span class="sig-name descname"><span class="pre">positionGetValueLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValueLayer" title="Link to this definition">#</a></dt>
+<dd><p>Returns the attribute at a position, but forces it to be in layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>int</em>) – layer index</p></li>
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>attribute</strong> (<em>int</em>) – attribute index</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>attribute value at position.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetValues">
+<span class="sig-name descname"><span class="pre">positionGetValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValues" title="Link to this definition">#</a></dt>
+<dd><p>Returns the attribute values at a position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ndarray of attribute values at position</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetValuesLayer">
+<span class="sig-name descname"><span class="pre">positionGetValuesLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValuesLayer" title="Link to this definition">#</a></dt>
+<dd><p>Returns the attribute at a position, but forces it to be in layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>int</em>) – layer index</p></li>
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude.</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – depth from surface of ellipsoid.</p></li>
+<li><p><strong>Optionally</strong></p></li>
+<li><p><strong>interpolators</strong> (<em>give horizontalType and/or radialType</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ndarray of attribute values at position</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionGetVector">
+<span class="sig-name descname"><span class="pre">positionGetVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionGetVector" title="Link to this definition">#</a></dt>
+<dd><p>For a given latitude, longitude, and depth, get the position vector
+Optionally, give horizontalType and/or radialType interpolators</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionToString">
+<span class="sig-name descname"><span class="pre">positionToString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionToString" title="Link to this definition">#</a></dt>
+<dd><p>Returns a string for a position object given latitude, longitude, and depth
+optionally, give horizontalType and/or radialType interpolators</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.positionToStringLayer">
+<span class="sig-name descname"><span class="pre">positionToStringLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layerid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LINEAR'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.positionToStringLayer" title="Link to this definition">#</a></dt>
+<dd><p>Returns a string for a position object given layerid, latitude, longitude, and depth
+optionally, give horizontalType and/or radialType interpolators</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.setPointData">
+<span class="sig-name descname"><span class="pre">setPointData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.setPointData" title="Link to this definition">#</a></dt>
+<dd><p>For a given pointIndex, sets the values in the GeoTess Model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.setPointDataSingleAttribute">
+<span class="sig-name descname"><span class="pre">setPointDataSingleAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributeIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.setPointDataSingleAttribute" title="Link to this definition">#</a></dt>
+<dd><p>For a given point index and attribute index, sets the value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.setProfile">
+<span class="sig-name descname"><span class="pre">setProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector[float]</span> <span class="pre">radii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector[vector[float]]</span> <span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.setProfile" title="Link to this definition">#</a></dt>
+<dd><p>Set profile values at a vertex and layer.
+This version works with c++ style vector types.
+Use setProfileND to push ndarrays instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertex</strong> (<em>int</em>) – vertex and layer number of the profile.</p></li>
+<li><p><strong>layer</strong> (<em>int</em>) – vertex and layer number of the profile.</p></li>
+<li><p><strong>radii</strong> (<em>list</em>) – Radius values of profile data.</p></li>
+<li><p><strong>values</strong> (<em>list</em><em> of </em><em>lists</em>) – List of corresponding attribute values at the provided radii.</p></li>
+<li><p><strong>Returns</strong> – -1 on failure</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.toString">
+<span class="sig-name descname"><span class="pre">toString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.toString" title="Link to this definition">#</a></dt>
+<dd><p>Returns a string with information about this model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModel.writeModel">
+<span class="sig-name descname"><span class="pre">writeModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">outputFile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModel.writeModel" title="Link to this definition">#</a></dt>
+<dd><p>Write the model to file.</p>
+<p>The data (radii and attribute values) are written to outputFile.
+If gridFileName is ‘*’ or omitted then the grid information is written
+to the same file as the data. If gridFileName is something else, it should
+be the name of the file that contains the grid information (just the name;
+no path information). In the latter case, the gridFile referenced by
+gridFileName is not overwritten; all that happens is that the name of the
+grid file (with no path information) is stored in the data file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outputFile</strong> (<em>str</em>) – name of the file to receive the model</p></li>
+<li><p><strong>gridFileName</strong> (<em>str</em>) – name of file to receive the grid (no path info), or “*”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModelAmplitude">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.libgeotess.</span></span><span class="sig-name descname"><span class="pre">GeoTessModelAmplitude</span></span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModelAmplitude" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#geotess.lib.libgeotess.GeoTessModel" title="geotess.lib.libgeotess.GeoTessModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeoTessModel</span></code></a></p>
+<p>Amplitude extension class of GeoTessModel.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.libgeotess.GeoTessModelAmplitude.getSiteTrans">
+<span class="sig-name descname"><span class="pre">getSiteTrans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">band</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.libgeotess.GeoTessModelAmplitude.getSiteTrans" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the site term for the specified station/channel/band or NaN if not supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>station</strong> (<em>str</em>)</p></li>
+<li><p><strong>channel</strong> (<em>str</em>)</p></li>
+<li><p><strong>band</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Site term.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="geotess.lib.geotessutils.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">geotess.lib.geotessutils</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="geotess.exc.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">geotess.exc</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.AK135Model"><code class="docutils literal notranslate"><span class="pre">AK135Model</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.AK135Model.getLayerProfile"><code class="docutils literal notranslate"><span class="pre">AK135Model.getLayerProfile()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape"><code class="docutils literal notranslate"><span class="pre">EarthShape</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape.getLatDegrees"><code class="docutils literal notranslate"><span class="pre">EarthShape.getLatDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape.getLonDegrees"><code class="docutils literal notranslate"><span class="pre">EarthShape.getLonDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.EarthShape.getVectorDegrees"><code class="docutils literal notranslate"><span class="pre">EarthShape.getVectorDegrees()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getFirstTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getFirstTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getGridID"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getGridID()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getGridInputFile"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getGridInputFile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getLastTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getLastTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getMemory"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getMemory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNLevels"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNLevels()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNTessellations"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTessellations()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getNVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getTriangleVertexIndexes"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getTriangleVertexIndexes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertexIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertexTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.getVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.loadGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.loadGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.testGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.testGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.toString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessGrid.writeGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.writeGrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getAttributeNamesString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getAttributeNamesString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getAttributeUnitsString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getAttributeUnitsString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getDescription"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getDescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerName"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerName()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerNamesString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerNamesString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getLayerTessIds"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getLayerTessIds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getModelFileFormat"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getModelFileFormat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getModelSoftwareVersion"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getModelSoftwareVersion()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.getNLayers"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.getNLayers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setAttributes"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setAttributes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setDataType"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setDataType()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setDescription"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setDescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setEarthShape"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setEarthShape()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setLayerNames"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setLayerNames()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setLayerTessIds"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setLayerTessIds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelFileFormat"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setModelFileFormat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelGenerationDate"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setModelGenerationDate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.setModelSoftwareVersion"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.setModelSoftwareVersion()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessMetaData.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessMetaData.toString()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel"><code class="docutils literal notranslate"><span class="pre">GeoTessModel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.convertToNPArray"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.convertToNPArray()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getConnectedVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getConnectedVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getEarthShape"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getEarthShape()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getGeographicLocationAttribute"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getGeographicLocationAttribute()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getMetaData"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getMetaData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNAttributes"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNAttributes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNLayers"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNLayers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNPoints"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNPoints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNRadii"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNRadii()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getNearestPointIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getNearestPointIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointData"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointDepth"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointDepth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndexFirst"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointIndexFirst()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointIndexLast"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointIndexLast()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLatitude"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLatitude()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLayerIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLayerIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLocation"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLocation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointLongitude"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointLongitude()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointNodeIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointNodeIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointRadius"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointRadius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointTessId"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointTessId()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointVertexTessLayerNode"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointVertexTessLayerNode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointWeights"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointWeights()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getPointWeightsVector"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getPointWeightsVector()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getProfile"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getProfile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getValueFloat"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getValueFloat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.getWeights"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.getWeights()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.loadModel"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.loadModel()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.make1DProfile"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.make1DProfile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.makeDepthMap"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.makeDepthMap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetBorehole"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetBorehole()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetDepth"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetDepth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetIndexOfClosestVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetIndexOfClosestVertexLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetIndexOfClosestVertexLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadius"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetRadius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusBottomLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetRadiusBottomLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetRadiusTopLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetRadiusTopLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValue"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValue()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValueLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValueLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValues"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValues()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetValuesLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetValuesLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionGetVector"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionGetVector()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionToString"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionToString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.positionToStringLayer"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.positionToStringLayer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.setPointData"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.setPointData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.setPointDataSingleAttribute"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.setPointDataSingleAttribute()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.setProfile"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.setProfile()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.toString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModel.writeModel"><code class="docutils literal notranslate"><span class="pre">GeoTessModel.writeModel()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModelAmplitude"><code class="docutils literal notranslate"><span class="pre">GeoTessModelAmplitude</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.libgeotess.GeoTessModelAmplitude.getSiteTrans"><code class="docutils literal notranslate"><span class="pre">GeoTessModelAmplitude.getSiteTrans()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Jonathan MacCarthy
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Jonathan MacCarthy.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

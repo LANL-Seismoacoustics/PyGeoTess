@@ -1,0 +1,605 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geotess.lib.geotessutils &#8212; PyGeoTess 0.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=83a61292"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/geotess.lib.geotessutils';</script>
+    <link rel="icon" href="../_static/LANL Logo Ultramarine globe.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="geotess.lib.libgeotess" href="geotess.lib.libgeotess.html" />
+    <link rel="prev" title="geotess.lib.geotessgrid" href="geotess.lib.geotessgrid.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LANL Logo Ultramarine.png" class="logo__image only-light" alt="PyGeoTess 0.3.0 documentation - Home"/>
+    <img src="../_static/LANL Logo White.png" class="logo__image only-dark pst-js-only" alt="PyGeoTess 0.3.0 documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    PyGeoTess
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">API Documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="geotess.html">geotess</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="geotess.data.html">geotess.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="geotess.data.grids.html">geotess.data.grids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="geotess.data.models.html">geotess.data.models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="geotess.lib.html">geotess.lib</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="geotess.lib.geotessgrid.html">geotess.lib.geotessgrid</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">geotess.lib.geotessutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="geotess.lib.libgeotess.html">geotess.lib.libgeotess</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="geotess.exc.html">geotess.exc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="geotess.utils.html">geotess.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/LANL-seismoacoustics/pygeotess" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api/geotess.lib.geotessutils.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>geotess.lib.geotessutils</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getEarthRadius"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getEarthRadius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getGreatCircle"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getGreatCircle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getGreatCirclePoint"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getGreatCirclePoint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getLatDegrees"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getLatDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getLonDegrees"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getLonDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getVectorDegrees"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getVectorDegrees()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-geotess.lib.geotessutils">
+<span id="geotess-lib-geotessutils"></span><h1>geotess.lib.geotessutils<a class="headerlink" href="#module-geotess.lib.geotessutils" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.geotessutils.GeoTessUtils">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.geotessutils.</span></span><span class="sig-name descname"><span class="pre">GeoTessUtils</span></span><a class="headerlink" href="#geotess.lib.geotessutils.GeoTessUtils" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collection of static functions to manipulate geographic information.</p>
+<p>The Utils class provides basic static utility functions for GeoTess to manipulate geographic information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessutils.GeoTessUtils.getEarthRadius">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getEarthRadius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[:]</span> <span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessutils.GeoTessUtils.getEarthRadius" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the radius of the Earth in km at the position specified by an
+Earth-centered unit vector. Uses the WGS84 ellipsoid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em>) – 3-element unit vector</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Radius of the Earth in km at specified position.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessutils.GeoTessUtils.getGreatCircle">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getGreatCircle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[:]</span> <span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">azimuth</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessutils.GeoTessUtils.getGreatCircle" title="Link to this definition">#</a></dt>
+<dd><p>This method returns a great circle that is defined by an initial point and an azimuth.</p>
+<p>A great circle is defined by two unit vectors that are 90 degrees
+apart. A great circle is stored in a double[2][3] array, which is the
+structure returned by this method. A great circle can be passed to the
+method getGreatCirclePoint() to retrieve a unit vector that is on the
+great circle and located some distance from the first point of the
+great circle.</p>
+<p>This method returns a great circle that is defined by an initial point and an azimuth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v0</strong> (<em>3-element array</em><em> of </em><em>floats</em>) – a unit vector that will be the first point on the great circle.</p></li>
+<li><p><strong>azimuth</strong> (<em>float</em>) – a direction, in radians, in which to move relative to v in order to define the great circle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>gc</strong> – unit vector v0 passed as first argument to this method. The second is
+located 90 degrees away from v0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a 2 x 3 array specifying two unit vectors. The first one is a clone of</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>GeoTessException</strong> – if v is located at north or south pole.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessutils.GeoTessUtils.getGreatCirclePoint">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getGreatCirclePoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">:]</span> <span class="pre">greatCircle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessutils.GeoTessUtils.getGreatCirclePoint" title="Link to this definition">#</a></dt>
+<dd><p>A great circle is defined by two unit vectors that are 90 degrees apart.
+A great circle is stored in a double[2][3] array and one can be obtained
+by calling one of the getGreatCircle() methods.</p>
+<p>In this method, a great circle and a distance are specified and a point
+is returned which is on the great circle path and is the specified
+distance away from the first point of the great circle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>greatCircle</strong> (<em>array-like 2x3</em><em> of </em><em>floats</em>) – a great circle structure</p></li>
+<li><p><strong>distance</strong> (<em>float</em>) – distance in radians from first point of great circle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>unit vector of point which is on great circle and located specified</em></p></li>
+<li><p><em>distance away from first point of great circle.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessutils.GeoTessUtils.getLatDegrees">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getLatDegrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[:]</span> <span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessutils.GeoTessUtils.getLatDegrees" title="Link to this definition">#</a></dt>
+<dd><p>Convert a 3-component unit vector to geographic latitude, in degrees.
+Uses the WGS84 ellipsoid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em>) – 3-component unit vector of floats</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Geographic latitude in degrees.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Input arrays longer than length three ignore the remaining values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessutils.GeoTessUtils.getLonDegrees">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getLonDegrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[:]</span> <span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessutils.GeoTessUtils.getLonDegrees" title="Link to this definition">#</a></dt>
+<dd><p>Convert a 3-component unit vector to geographic longitude, in degrees.
+Uses the WGS84 ellipsoid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em>) – 3-component unit vector</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Geographic longitude in degrees.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Input arrays longer than length three ignore the remaining values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessutils.GeoTessUtils.getVectorDegrees">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getVectorDegrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">lon</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessutils.GeoTessUtils.getVectorDegrees" title="Link to this definition">#</a></dt>
+<dd><p>Convert geographic lat, lon into a geocentric unit vector.</p>
+<p>The x-component points toward lat,lon = 0, 0. The y-component points
+toward lat,lon = 0, 90. The z-component points toward north pole. Uses
+the WGS84 ellipsoid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>)</p></li>
+<li><p><strong>lon</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>x, y, z floats</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="geotess.lib.geotessgrid.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">geotess.lib.geotessgrid</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="geotess.lib.libgeotess.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">geotess.lib.libgeotess</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getEarthRadius"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getEarthRadius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getGreatCircle"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getGreatCircle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getGreatCirclePoint"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getGreatCirclePoint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getLatDegrees"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getLatDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getLonDegrees"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getLonDegrees()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessutils.GeoTessUtils.getVectorDegrees"><code class="docutils literal notranslate"><span class="pre">GeoTessUtils.getVectorDegrees()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Jonathan MacCarthy
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Jonathan MacCarthy.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

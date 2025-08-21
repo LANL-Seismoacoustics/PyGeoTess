@@ -1,0 +1,558 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geotess.lib.geotessgrid &#8212; PyGeoTess 0.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=83a61292"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/geotess.lib.geotessgrid';</script>
+    <link rel="icon" href="../_static/LANL Logo Ultramarine globe.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="geotess.lib.geotessutils" href="geotess.lib.geotessutils.html" />
+    <link rel="prev" title="geotess.lib" href="geotess.lib.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LANL Logo Ultramarine.png" class="logo__image only-light" alt="PyGeoTess 0.3.0 documentation - Home"/>
+    <img src="../_static/LANL Logo White.png" class="logo__image only-dark pst-js-only" alt="PyGeoTess 0.3.0 documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    PyGeoTess
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">API Documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="geotess.html">geotess</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="geotess.data.html">geotess.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="geotess.data.grids.html">geotess.data.grids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="geotess.data.models.html">geotess.data.models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="geotess.lib.html">geotess.lib</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">geotess.lib.geotessgrid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="geotess.lib.geotessutils.html">geotess.lib.geotessutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="geotess.lib.libgeotess.html">geotess.lib.libgeotess</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="geotess.exc.html">geotess.exc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="geotess.utils.html">geotess.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/LANL-seismoacoustics/pygeotess" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api/geotess.lib.geotessgrid.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>geotess.lib.geotessgrid</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getFirstTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getFirstTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getLastTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getLastTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNLevels"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNLevels()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNTessellations"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTessellations()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getTriangleVertexIndexes"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getTriangleVertexIndexes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertexIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertexTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.loadGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.loadGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.toString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.writeGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.writeGrid()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-geotess.lib.geotessgrid">
+<span id="geotess-lib-geotessgrid"></span><h1>geotess.lib.geotessgrid<a class="headerlink" href="#module-geotess.lib.geotessgrid" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geotess.lib.geotessgrid.</span></span><span class="sig-name descname"><span class="pre">GeoTessGrid</span></span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getFirstTriangle">
+<span class="sig-name descname"><span class="pre">getFirstTriangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">tessellation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getFirstTriangle" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getLastTriangle">
+<span class="sig-name descname"><span class="pre">getLastTriangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">tessellation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getLastTriangle" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getNLevels">
+<span class="sig-name descname"><span class="pre">getNLevels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getNLevels" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getNTessellations">
+<span class="sig-name descname"><span class="pre">getNTessellations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getNTessellations" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getNTriangles">
+<span class="sig-name descname"><span class="pre">getNTriangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tessellation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getNTriangles" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getNVertices">
+<span class="sig-name descname"><span class="pre">getNVertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getNVertices" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getTriangleVertexIndexes">
+<span class="sig-name descname"><span class="pre">getTriangleVertexIndexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">triangleIndex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getTriangleVertexIndexes" title="Link to this definition">#</a></dt>
+<dd><p>Supply an integer triangle index, get a 3-element integer array, which
+are indices of the vertices that make this triangle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getVertex">
+<span class="sig-name descname"><span class="pre">getVertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">vertex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertex" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the unit vector that corresponds to the specified vertex.</p>
+<p>Returns a 3-element NumPy vector.  This array is still connected to the
+vertex in-memory, so don’t modify it unless you intend to!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getVertexIndex">
+<span class="sig-name descname"><span class="pre">getVertexIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">triangle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">corner</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertexIndex" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getVertexTriangles">
+<span class="sig-name descname"><span class="pre">getVertexTriangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">tessId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">vertex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertexTriangles" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve a list of the triangles a particular vertex is a member of,
+considering only triangles in the specified tessellation/level.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.getVertices">
+<span class="sig-name descname"><span class="pre">getVertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertices" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.loadGrid">
+<span class="sig-name descname"><span class="pre">loadGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">inputFile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.loadGrid" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.toString">
+<span class="sig-name descname"><span class="pre">toString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.toString" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geotess.lib.geotessgrid.GeoTessGrid.writeGrid">
+<span class="sig-name descname"><span class="pre">writeGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">fileName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geotess.lib.geotessgrid.GeoTessGrid.writeGrid" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="geotess.lib.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">geotess.lib</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="geotess.lib.geotessutils.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">geotess.lib.geotessutils</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getFirstTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getFirstTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getLastTriangle"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getLastTriangle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNLevels"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNLevels()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNTessellations"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTessellations()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getNVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getNVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getTriangleVertexIndexes"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getTriangleVertexIndexes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertexIndex"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexIndex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertexTriangles"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertexTriangles()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.getVertices"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.getVertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.loadGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.loadGrid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.toString"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.toString()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geotess.lib.geotessgrid.GeoTessGrid.writeGrid"><code class="docutils literal notranslate"><span class="pre">GeoTessGrid.writeGrid()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Jonathan MacCarthy
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Jonathan MacCarthy.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
