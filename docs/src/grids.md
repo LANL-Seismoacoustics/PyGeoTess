@@ -1,3 +1,5 @@
+# Grids
+
 ## Load a grid
 
 Grids are made using a Java utility called `GeoTessBuilder`.  Loading them into

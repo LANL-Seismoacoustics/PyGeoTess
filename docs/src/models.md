@@ -1,3 +1,5 @@
+# Models
+
 Models can be loaded from file, or constructed from scratch (a grid file is still required).
 
 ## Load from file
@@ -350,10 +352,4 @@ model.write('myawesome.geotess')
 # ascii version
 model.write('myawesome.ascii')
 ```
-
-## Roadmap
-
-Make PyGeoTess work with both the standard CPython interpretor, using the GeoTess
-c++ library and Cython, and the [Jython](http://jython.org) Python interpeter,
-using the GeoTess Java library.
 

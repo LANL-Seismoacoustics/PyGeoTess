@@ -9,3 +9,22 @@ GeoTess library: a direct interface to the GeoTess C++ classes and methods,
 and a more Pythonic interface.
 
 ![global grid](data/output_9_1.png)
+
+
+```{toctree}
+:hidden: true
+:caption: Tutorial
+:maxdepth: 2
+
+grids.md
+models.md
+```
+
+```{toctree}
+:hidden: true
+:maxdepth: 2
+:caption: Reference
+
+license.md
+API Documentation <api/modules.rst>
+```

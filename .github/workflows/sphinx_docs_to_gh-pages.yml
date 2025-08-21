@@ -1,0 +1,35 @@
+name: Sphinx docs to GitHub Pages
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+jobs:
+  sphinx_docs_to_gh-pages:
+    runs-on: ubuntu-latest
+    name: Sphinx docs to gh-pages
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Make conda environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment-dev.yml
+          channels: conda-forge
+          channel-priority: strict
+      - name: Build the docs
+        shell: bash -l {0}
+        run: |
+          cd docs
+          make clean 
+          make apidocs && make html
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ github.ref == 'refs/heads/master' }} # must be publishing master/main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build/html
