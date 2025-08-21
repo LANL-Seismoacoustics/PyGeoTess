@@ -8,5 +8,10 @@ dependencies:
 - numpy
 - cython=3
 - pytest
+- make
+- pydata-sphinx-theme
+- sphinx >= 5.0
+- sphinx-book-theme
+- sphinx-autobuild
 - pip
 # - cxx-compiler
