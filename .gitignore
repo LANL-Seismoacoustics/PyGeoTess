@@ -1,5 +1,6 @@
 build/
-docs/site/
+docs/build/
+docs/src/api/
 .DS_Store
 pygeotess.egg-info/
 *.cpp
