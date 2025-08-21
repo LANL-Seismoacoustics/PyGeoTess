@@ -15,5 +15,6 @@ dependencies:
 - sphinx-book-theme
 - sphinx-autobuild
 - pip
+- pip:
   - -e .
 # - cxx-compiler
