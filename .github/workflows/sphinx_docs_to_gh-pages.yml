@@ -24,7 +24,6 @@ jobs:
       - name: Build the docs
         shell: bash -l {0}
         run: |
-          pip install .
           cd docs
           make clean 
           make apidocs && make html

@@ -9,9 +9,11 @@ dependencies:
 - cython=3
 - pytest
 - make
+- myst-parser
 - pydata-sphinx-theme
 - sphinx >= 5.0
 - sphinx-book-theme
 - sphinx-autobuild
 - pip
+  - -e .
 # - cxx-compiler
