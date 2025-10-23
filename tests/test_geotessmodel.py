@@ -131,11 +131,14 @@ def test_getNPoints(unified):
 def test_getNRadii(unified):
     assert unified.getNRadii(340, 4) == 4
 
-@pytest.mark.skip(reason="GeoTessCPP failure.  Need to investigate.")
+# @pytest.mark.skip(reason="GeoTessCPP failure.  Problem with the method or the test?.")
 def test_getWeights(unified):
+    # XXX: fails with RuntimeError: Uknown exception, for getWeights
+    # Might be due to a bad implementation of the CPP test rather than with getWeights.
+
     # get the origin of the ray path
     u = gtutil.GeoTessUtils.getVectorDegrees(20, 90)
-    # get end of the ray path (90 deg away)
+    # get end of the ray path (90 epicentral degrees away)
     gc = gtutil.GeoTessUtils.getGreatCircle(u, np.pi/2)
     angle = np.pi/6
     radius = 5350 # km
@@ -145,6 +148,6 @@ def test_getWeights(unified):
     weights = unified.getWeights(gc[0], gc[1], spacing, radius, 'LINEAR')
 
     # the sum of the weights along the raypath should be roughly equal to its
-    # arclength along the great circle 
+    # arclength along the great circle
     sum = np.sum(weights.values())
     assert sum == pytest.approx(angle*radius, 0.01)

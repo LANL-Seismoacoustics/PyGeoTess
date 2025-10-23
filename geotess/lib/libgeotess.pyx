@@ -1,7 +1,7 @@
 """
 This module exposes Cython GeoTess functionality from the pxd file into Python.
 
-The class definitions here are Python-visible, and are simply wrappers that 
+The class definitions here are Python-visible, and are simply wrappers that
 forward the Python-exposed methods directly down to their Cython-exposed C++
 counterparts, which have been exposed in the imported pxd file.
 
@@ -41,7 +41,7 @@ different Pythonic approaches to working with the underlying GeoTess library.
 * Deleting or garbage-collecting objects is dangerous.  Some objects are
   managed by other objects, so deleting them manually can crash the interpreter.
   I'm not sure how to fix this yet.
- 
+
 * There is very little/no type checking between Python arguments and when
   they're forwarded to the C++ methods.  This is dangerous.
 
@@ -96,7 +96,7 @@ cdef class GeoTessGrid:
 
     GeoTessGrid is thread-safe in that its internal state is not modified after its data has been loaded
     into memory. The design intention is that single instances of a GeoTessGrid object and GeoTessData
-    object can be shared among all the threads in a multi-threaded application and each thread will have 
+    object can be shared among all the threads in a multi-threaded application and each thread will have
     it's own instance of a GeoTessPosition object that references the common GeoTessGrid + GeoTessData
     combination.
 
@@ -165,7 +165,7 @@ cdef class GeoTessGrid:
 
         """
         # TODO: I think this needs to become a staticmethod: grid = GeoTessGrid.loadGrid(gridfilename)
-        # I honestly don't know how this works as written.  CPP returns a pointer to a GeoTessGrid, but 
+        # I honestly don't know how this works as written.  CPP returns a pointer to a GeoTessGrid, but
         # I don't capture it here.  Somehow it still gets assigned to .thisptr.
         if os.path.exists(inputFile):
             self.thisptr.loadGrid(bytes(inputFile, encoding='utf-8')) # bytes implicitly coerces to std::string
@@ -199,7 +199,7 @@ cdef class GeoTessGrid:
 
         """
         self.thisptr.testGrid()
-    
+
     def getMemory(self):
         """ Retrieve the amount of memory required by this GeoTessGrid object in bytes.
 
@@ -213,7 +213,7 @@ cdef class GeoTessGrid:
 
     def getNLevels(self, tessellation=None):
         """ Returns the number of tessellation levels defined for this grid.
-        
+
         Parameters
         ----------
         tessellation : int
@@ -232,7 +232,7 @@ cdef class GeoTessGrid:
             nlevels = self.thisptr.getNLevels(tessellation)
 
         return nlevels
- 
+
     def getNTriangles(self, tessellation=None, level=None):
         """ Retrieve the number of triangles that define the specified level of the specified
         multi-level tessellation of the model.
@@ -241,7 +241,7 @@ cdef class GeoTessGrid:
         ----------
         tessellation : int
             Specified tessellation index.
-        level : int 
+        level : int
             index of a level relative to the first level of the specified tessellation
 
         Returns
@@ -253,7 +253,7 @@ cdef class GeoTessGrid:
         if tessellation is None and level is None:
             NTriangles = self.thisptr.getNTriangles()
         else:
-            Nlevels = self.thisptr.getNLevels() 
+            Nlevels = self.thisptr.getNLevels()
             NTess = self.getNTessellations()
             # TODO: doesn't GeoTessCPP already do this kind of checking?
             if level > Nlevels or tessellation > NTess:
@@ -370,7 +370,7 @@ cdef class GeoTessGrid:
         # http://stackoverflow.com/questions/19204098/c-code-within-python-and-copying-arrays-in-c-code
 
         # XXX: this seems to contradict the docstring that memory is shared.
-        # I must've done it just to be safe, even though it doesn't follow the 
+        # I must've done it just to be safe, even though it doesn't follow the
         # original API.
         return arr.copy()
 
@@ -462,7 +462,7 @@ cdef class GeoTessGrid:
             index of a vertex
 
         """
-        # XXX: the order of these method arguments doesn't match CPP, but used here for 
+        # XXX: the order of these method arguments doesn't match CPP, but used here for
         # backwards PyGeoTess compatibility.  Supplying them in the wrong order can crash
         # the interpreter :-(
         if tessId is not None and level is not None:
@@ -480,7 +480,7 @@ cdef class GeoTessMetaData:
 
     GeoTessModel manages the grid and data that comprise a 3D Earth model.
     The Earth is assumed to be composed of a number of layers each of which spans the
-    entire geographic extent of the Earth. It is assumed that layer boundaries do not 
+    entire geographic extent of the Earth. It is assumed that layer boundaries do not
     fold back on themselves, i.e., along any radial profile through the model, each layer
     boundary is intersected exactly one time. Layers may have zero thickness over some
     or all of their geographic extent. Earth properties stored in the model are assumed
@@ -501,8 +501,8 @@ cdef class GeoTessMetaData:
     The term 'vertex' refers to a position in the 2D tessellation. They are 2D positions
     represented by unit vectors on a unit sphere. The term 'node' refers to a 1D position
     on a radial profile associated with a vertex and a layer in the model. Node indexes are
-    unique only within a given profile (all profiles have a node with index 0 for example). 
-    The term 'point' refers to all the nodes in all the profiles of the model. There is only one 
+    unique only within a given profile (all profiles have a node with index 0 for example).
+    The term 'point' refers to all the nodes in all the profiles of the model. There is only one
     'point' in the model with index 0. PointMap is introduced to manage all these different indexes.
 
     """
@@ -521,7 +521,7 @@ cdef class GeoTessMetaData:
     @staticmethod
     cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
         """ Wrap a C++ pointer with a pointer-less Python class.
-        
+
         Deprecated.  Use `from_pointer` instead.
         """
         cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
@@ -549,9 +549,9 @@ cdef class GeoTessMetaData:
         This ellipsoid will be save in this GeoTessModel if it is written to file.
         The following EarthShapes are supported:
 
-        SPHERE - Geocentric and geographic latitudes are identical and conversion between depth and 
+        SPHERE - Geocentric and geographic latitudes are identical and conversion between depth and
             radius assume the Earth is a sphere with constant radius of 6371 km.
-        GRS80 - Conversion between geographic and geocentric latitudes, and between depth and 
+        GRS80 - Conversion between geographic and geocentric latitudes, and between depth and
             radius are performed using the parameters of the GRS80 ellipsoid.
         GRS80_RCONST - Conversion between geographic and geocentric latitudes are performed using
             the parameters of the GRS80 ellipsoid. Conversions between depth and radius assume the
@@ -605,7 +605,7 @@ cdef class GeoTessMetaData:
     def setLayerNames(self, str lyrNms):
         """ Specify the names of all the layers that comprise the model.
 
-        This will determine the value of nLayers as well. The input lyrNms is a semicolon 
+        This will determine the value of nLayers as well. The input lyrNms is a semicolon
         concatenation of all layer names (i.e. LAYERNAME1; LAYERNAME2; ...).
         Whitespaces will be removed.
 
@@ -644,8 +644,8 @@ cdef class GeoTessMetaData:
         self.thisptr.setAttributes(nms, unts)
 
     def setDataType(self, dt):
-        """ Specify the type of the data that is stored in the model; 
-        
+        """ Specify the type of the data that is stored in the model;
+
         Must be one of DOUBLE, FLOAT, LONG, INT, SHORTINT, BYTE.
 
         Parameters
@@ -800,14 +800,14 @@ cdef class GeoTessMetaData:
     # def getEulerRotationAngles(self):
     #     """
     #     Retrieve the Euler Rotation Angles that are being used to rotate unit
-    #     vectors from grid to model coordinates, in degrees. Returns null if no 
+    #     vectors from grid to model coordinates, in degrees. Returns null if no
     #     grid rotations are being applied. There are possibly two geographic coordinate
     #     systems at play:
 
     #     * Grid coordinates, where grid vertex 0 points to the north pole.
     #     * Model coordinates, where grid vertex 0 points to some other location,
     #       typically a station location.
-    #     
+    #
     #     Returns
     #     -------
     #     float
@@ -893,7 +893,7 @@ cdef class EarthShape:
     def getVectorDegrees(self, double lat, double lon):
         """
         Convert geographic lat, lon into a geocentric unit vector.
-        
+
         The x-component points toward lat,lon = 0, 0. The y-component points toward
         lat,lon = 0, 90. The z-component points toward north pole.
 
@@ -907,7 +907,7 @@ cdef class EarthShape:
 
         """
         # thisptr.getVectorDegrees wants two doubles and a pointer to an array
-        # that will be filled in c++. we must create a Python object here 
+        # that will be filled in c++. we must create a Python object here
         # that can be returned, and whos memory can be managed by Python, that
         # can be filled in c++ by passing its pointer, following
         # http://docs.cython.org/src/tutorial/array.html#zero-overhead-unsafe-access-to-raw-c-pointer
@@ -948,33 +948,33 @@ cdef class GeoTessModel:
     GeoTessModel manages the grid and data that comprise a 3D Earth model. The Earth is assumed
     to be composed of a number of layers each of which spans the entire geographic extent of the
     Earth. It is assumed that layer boundaries do not fold back on themselves, i.e., along any
-    radial profile through the model, each layer boundary is intersected exactly one time. 
-    Layers may have zero thickness over some or all of their geographic extent. Earth properties 
-    stored in the model are assumed to be continuous within a layer, both geographically and radially, 
+    radial profile through the model, each layer boundary is intersected exactly one time.
+    Layers may have zero thickness over some or all of their geographic extent. Earth properties
+    stored in the model are assumed to be continuous within a layer, both geographically and radially,
     but may be discontinuous across layer boundaries.
 
     A GeoTessModel is comprised of 3 major components:
 
-    The model grid (geometry and topology) is managed by a GeoTessGrid object. The grid is made up 
+    The model grid (geometry and topology) is managed by a GeoTessGrid object. The grid is made up
     of one or more 2D triangular tessellations of a unit sphere.
 
-    The data are managed by a 2D array of Profile objects. A Profile is essentially a list of 
-    radii and Data objects distributed along a radial profile that spans a single layer at a 
+    The data are managed by a 2D array of Profile objects. A Profile is essentially a list of
+    radii and Data objects distributed along a radial profile that spans a single layer at a
     single vertex of the 2D grid. The 2D Profile array has dimensions nVertices by nLayers.
 
-    Important metadata about the model, such as the names of the major layers, the names of the 
+    Important metadata about the model, such as the names of the major layers, the names of the
     data attributes stored in the model, etc., are managed by a GeoTessMetaData object.
-    The term 'vertex' refers to a position in the 2D tessellation. They are 2D positions 
-    represented by unit vectors on a unit sphere. The term 'node' refers to a 1D position on a 
-    radial profile associated with a vertex and a layer in the model. Node indexes are unique 
-    only within a given profile (all profiles have a node with index 0 for example). 
-    The term 'point' refers to all the nodes in all the profiles of the model. There is only one 
+    The term 'vertex' refers to a position in the 2D tessellation. They are 2D positions
+    represented by unit vectors on a unit sphere. The term 'node' refers to a 1D position on a
+    radial profile associated with a vertex and a layer in the model. Node indexes are unique
+    only within a given profile (all profiles have a node with index 0 for example).
+    The term 'point' refers to all the nodes in all the profiles of the model. There is only one
     'point' in the model with index 0. PointMap is introduced to manage all these different indexes.
 
     Parameterized constructor, specifying the grid and metadata for the model.
 
     The grid is constructed and the data structures are initialized based on information supplied in metadata.
-    The data structures are not populated with any information however (all Profiles are null). 
+    The data structures are not populated with any information however (all Profiles are null).
     The application should populate the new model's Profiles after this constructor completes.
 
     Before calling this constructor, the supplied MetaData object must be populated with required information
@@ -1059,12 +1059,12 @@ cdef class GeoTessModel:
     def writeModel(self, const string& outputFile):
         """ Write the model to file.
 
-        The data (radii and attribute values) are written to outputFile. 
-        If gridFileName is '*' or omitted then the grid information is written 
-        to the same file as the data. If gridFileName is something else, it should 
-        be the name of the file that contains the grid information (just the name; 
-        no path information). In the latter case, the gridFile referenced by 
-        gridFileName is not overwritten; all that happens is that the name of the 
+        The data (radii and attribute values) are written to outputFile.
+        If gridFileName is '*' or omitted then the grid information is written
+        to the same file as the data. If gridFileName is something else, it should
+        be the name of the file that contains the grid information (just the name;
+        no path information). In the latter case, the gridFile referenced by
+        gridFileName is not overwritten; all that happens is that the name of the
         grid file (with no path information) is stored in the data file.
 
         Parameters
@@ -1084,12 +1084,12 @@ cdef class GeoTessModel:
 
         Paramters
         ---------
-        layerID : int 
+        layerID : int
             layer index
 
         Returns
         -------
-        numpy.ndarray 
+        numpy.ndarray
             connected vertices at this layer
 
         """
@@ -1371,7 +1371,7 @@ cdef class GeoTessModel:
             Current model's grid object.
 
         """
-        # XXX: I don't think this works.  It crashes the interpreter when the grid is deleted or 
+        # XXX: I don't think this works.  It crashes the interpreter when the grid is deleted or
         # garbage collected. I need to fix pointer ownership or something.
 
         # cdef clib.GeoTessGrid *ptr = &self.thisptr.getGrid()
@@ -1566,7 +1566,7 @@ cdef class GeoTessModel:
             uniform intervals along the great circle path.
         radius : float
             The radius of the great circle path, in km. If the value is less than or equal to zero
-            then the radius of the Earth determined by the current EarthShape is used. 
+            then the radius of the Earth determined by the current EarthShape is used.
             See getEarthShape() and setEarathShape() for more information about EarthShapes.
         horizontalType : str {'LINEAR', 'NATURAL_NEIGHBOR'}
 
@@ -1597,11 +1597,20 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* interpolator
         cdef cmap[int, double] weights
 
-        if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
-        else:
+        #
+        if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
+
+        # trouble with bytes vs str:
+        # http://docs.cython.org/en/latest/src/tutorial/strings.html#accepting-strings-from-python-code
+        # interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+        interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode('utf-8'))
+        # cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(bytes(horizontalType, encoding='utf-8'))
+
+        #void getWeights(const double *pointA, const double *pointB, const double &pointSpacing,
+        #                const double &radius, const GeoTessInterpolatorType &horizontalType, cmap[int, double]
+        #                &weights) except +
 
         self.thisptr.getWeights(&pointA[0], &pointB[0], pointSpacing, radius,
                                 deref(interpolator),
@@ -1614,11 +1623,12 @@ cdef class GeoTessModel:
         if horizontalType not in ('LINEAR', 'NATURAL_NEIGHBOR'):
             raise ValueError("horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'.")
 
+        # cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode('utf-8'))
         cdef const clib.GeoTessInterpolatorType* interpolator = clib.GeoTessInterpolatorType.valueOf(bytes(horizontalType, encoding='utf-8'))
         pos = self.thisptr.getPosition(deref(interpolator))
         pos.set(lat, lon, radius)
 
-        cdef cmap[int, double] weights 
+        cdef cmap[int, double] weights
 
         pos.getWeights(weights,radius)
         return weights
@@ -1632,7 +1642,7 @@ cdef class GeoTessModel:
         pos = self.thisptr.getPosition(deref(interpolator))
         pos.set(&v[0], radius)
 
-        cdef cmap[int, double] weights 
+        cdef cmap[int, double] weights
 
         pos.getWeights(weights,1.)
         return weights
@@ -1830,7 +1840,7 @@ cdef class GeoTessModel:
         return pt
 
     def getValueFloat(self, int pointIndex, int attributeIndex):
-        """ Return the value of the attribute at the specified pointIndex, attributeIndex, 
+        """ Return the value of the attribute at the specified pointIndex, attributeIndex,
         cast to a float if necessary.
 
         Parameters
@@ -1867,6 +1877,7 @@ cdef class GeoTessModel:
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
+        # GeoTessPosition* getPosition(const GeoTessInterpolatorType& horizontalType, const GeoTessInterpolatorType& radialType)
         pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
         pos.set(lat, lon, depth)
         return str(pos.toString())
@@ -2635,7 +2646,7 @@ cdef class GeoTessModelAmplitude(GeoTessModel):
             self.thisampptr = new clib.GeoTessModelAmplitude()
         else:
             self.thisampptr = new clib.GeoTessModelAmplitude(modelInputFile)
-    
+
     def __dealloc__(self):
         if self.thisampptr != NULL:
             del self.thisampptr
