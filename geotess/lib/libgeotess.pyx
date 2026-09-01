@@ -1867,13 +1867,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1891,13 +1891,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1905,7 +1905,7 @@ cdef class GeoTessModel:
         pos.set(layerid, lat, lon, depth)
         return str(pos.toString())
 
-    def positionGetLayer(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetLayer(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         returns the layerID as a function of latitude, longitude, and depth.
         Optionally, give position interpolation methods horizontalType and/or radialType
@@ -1914,13 +1914,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1931,7 +1931,7 @@ cdef class GeoTessModel:
         layid = pos.getLayerId(radius)
         return layid
 
-    def positionGetVector(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetVector(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         For a given latitude, longitude, and depth, get the position vector
         Optionally, give horizontalType and/or radialType interpolators
@@ -1940,13 +1940,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1985,13 +1985,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2027,13 +2027,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2066,13 +2066,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2107,13 +2107,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2122,7 +2122,7 @@ cdef class GeoTessModel:
         val = pos.getValue(attribute)
         return val
 
-    def positionGetValues(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetValues(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         Returns the attribute values at a position
 
@@ -2144,13 +2144,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2186,13 +2186,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2204,7 +2204,7 @@ cdef class GeoTessModel:
             values[iatt] = pos.getValue(iatt)
         return values
 
-    def positionGetTriangle(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetTriangle(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         Returns which triangle number the given location is located within.
 
@@ -2226,13 +2226,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2241,7 +2241,7 @@ cdef class GeoTessModel:
         tri = pos.getTriangle()
         return tri
 
-    def positionGetIndexOfClosestVertex(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetIndexOfClosestVertex(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         Returns the closest vertex to the given location
 
@@ -2263,13 +2263,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2302,13 +2302,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2339,13 +2339,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2378,13 +2378,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2427,13 +2427,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2470,13 +2470,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
