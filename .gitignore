@@ -9,3 +9,6 @@ pygeotess.egg-info/
 .vscode
 *.egg-info
 .session.vim
+# pixi environments
+.pixi/*
+!.pixi/config.toml
