@@ -13,34 +13,37 @@ and a more Pythonic interface.
 
 ## Installation
 
-PyGeoTess currently requires a C++ compiler.  In the future, binary wheels may be available on PyPI.
+PyGeoTess requires a C++ compiler and GeoTessCPP >= 2.7.
 
-### GeoTessCPP
+### With Pixi (recommended for development)
 
-First, install GeoTessCPP >= 2.7, the underlying C++ library powering PyGeoTess,
-available from Conda-Forge or directly from the [SNL repository](https://github.com/sandialabs/GeoTessCPP):
+[Pixi](https://pixi.sh) handles all dependencies including compilers and GeoTessCPP:
 
-> [!WARNING]
-> Using PyGeoTess with GeoTessCPP installed from the main SNL repository does not currently work.
-> For PyGeoTess to work, the header files need to be put into a `geotesscpp` directory in the standard system include path,
-> and the shared object libraries need to be put into the standard library search path 
-> (e.g. `/usr/local/lib` and `/usr/local/include/geotesscpp`, or `$CONDA_PREFIX/lib` and `$CONDA_PREFIX/include/geotesscpp`).
-> The SNL Makefile, however, compiles the shared objects to look for the header files in `../lib` instead
-> of the search paths mentioned above.
+```bash
+pixi install
+pixi run build  # Build Cython extensions
+pixi run test   # Run tests
+```
 
-With conda:
+### Manual Installation
+
+First, install GeoTessCPP >= 2.7 from Conda-Forge:
 
 ```bash
 conda install -c conda-forge geotesscpp
 ```
 
+> [!WARNING]
+> Using PyGeoTess with GeoTessCPP installed from the main SNL repository does not currently work.
+> The header files need to be in a `geotesscpp` directory in the standard system include path,
+> and libraries in the standard library search path (e.g. `$CONDA_PREFIX/lib` and `$CONDA_PREFIX/include/geotesscpp`).
 
+Then install PyGeoTess:
 
-### PyGeoTess
-
-To install centrally from this repo: `pip install .`
-
-To install an "editable" local installation from this repo: `pip install -e .`
+```bash
+pip install .              # Standard install
+pip install -e .           # Editable install for development
+```
 
 
 ## Roadmap
@@ -48,6 +51,7 @@ To install an "editable" local installation from this repo: `pip install -e .`
 1. Reorganize package, following outline below.  The idea is to have CPP/Python mirrored naming, distinguished only by import statements.
 2. Add tests, initially mirroring those from GeoTessCPP.
 3. Clean up API, due to expedient merging of work from contributors.
+4. Move from setuptools to scikit-build-core for the build-backend.
 ```
 geotess\
     __init__.py
