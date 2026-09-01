@@ -2,6 +2,7 @@
 Test GeoTessModel methods.
 
 """
+import gc
 from pathlib import Path
 
 import numpy as np
@@ -28,6 +29,48 @@ def unified() -> dict:
     model.loadModel(inputfile)
 
     return model
+
+
+# Helper functions for pointer ownership tests
+
+def create_model_and_return_grid():
+    """Helper that creates a model and returns its grid.
+    
+    The model goes out of scope, testing if grid keeps it alive.
+    """
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    grid = model.getGrid()
+    
+    # Model goes out of scope here when function returns
+    # If grid doesn't hold a reference, model will be GC'd
+    return grid
+
+
+def create_model_and_return_metadata():
+    """Helper that creates a model and returns its metadata.
+    
+    The model goes out of scope, testing if metadata keeps it alive.
+    """
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    metadata = model.getMetaData()
+    
+    # Model goes out of scope here
+    return metadata
+
+
+def create_model_and_return_earthshape():
+    """Helper that creates a model and returns its earthshape.
+    
+    The model goes out of scope, testing if earthshape keeps it alive.
+    """
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    earthshape = model.getEarthShape()
+    
+    # Model goes out of scope here
+    return earthshape
 
 # @pytest.fixture
 # def small_grid():
@@ -82,6 +125,53 @@ def test_getGrid(crust20):
     # assert grid.toString() == expected
     assert grid.getGridID() == '808785948EB2350DD44E6C29BDEA6CAE'
 
+@pytest.mark.xfail(reason="getGrid() doesn't keep parent model alive - dangling pointer bug", strict=True)
+def test_getGrid_keeps_model_alive():
+    """Test that grid returned by getGrid() keeps the parent model alive.
+    
+    If the grid doesn't keep a reference to its parent model, the model can be
+    garbage collected while we still have the grid, leading to use-after-free.
+    
+    This test creates a model in a helper function that goes out of scope.
+    The model gets GC'd if grid doesn't hold a reference, causing corruption.
+    """
+    grid = create_model_and_return_grid()
+    
+    # Force garbage collection - model will be freed if grid doesn't hold reference
+    gc.collect()
+    
+    # Accessing grid.getGridID() after model is freed causes UnicodeDecodeError
+    # because the C++ string data has been freed and overwritten
+    grid_id = grid.getGridID()
+    assert grid_id is not None, "Grid should still return valid grid ID"
+
+
+def test_grid_with_model_reference_stays_valid(crust20):
+    """Test that grid remains valid as long as we keep the model reference.
+    
+    This is the CORRECT behavior - when we keep the model alive ourselves,
+    the grid should continue to work. This test should pass.
+    """
+    model = crust20
+    grid = model.getGrid()
+    
+    # Force garbage collection
+    gc.collect()
+    
+    # Grid should work (we're keeping model reference)
+    nverts = grid.getNVertices()
+    assert nverts > 0
+    
+    # Even after repeated access
+    for _ in range(10):
+        gc.collect()
+        assert grid.getNVertices() == nverts
+        
+    # As long as we hold the model reference, grid should work
+    grid_id = grid.getGridID()
+    assert grid_id is not None
+
+
 def test_getPointWeights(crust20):
     # randomly chose a lat/lon/depth.
     lat, lon, depth = 30.5, 110.5, 1.0
@@ -92,6 +182,16 @@ def test_getPointWeights(crust20):
         }
     weights = crust20.getPointWeights(lat, lon, depth)
     assert weights == pytest.approx(expected)
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getPointWeights_no_leak(crust20):
+    """Test that getPointWeights doesn't leak memory over many calls.
+    
+    Each call to getPointWeights creates a GeoTessPosition* in C++.
+    If not properly freed, this will leak memory.
+    """
+    for _ in range(1000):
+        weights = crust20.getPointWeights(30.5, 110.5, 6371.0)
 
 # pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
 # def test_EulerInterpolator(euler):
@@ -104,10 +204,150 @@ def test_getMetaData(crust20):
     # make sure GeoTess is on the first line in toString.  weird but ok.
     assert md.toString().find('GeoTess') == 1
 
+
+@pytest.mark.xfail(reason="getMetaData() doesn't keep parent model alive - causes segfault in __dealloc__", strict=True)
+def test_getMetaData_keeps_model_alive():
+    """Test that metadata returned by getMetaData() keeps the parent model alive.
+    
+    This test demonstrates an even WORSE bug than getGrid() - not only does metadata
+    not keep the parent alive, but the __dealloc__ logic causes segfaults.
+    
+    Uses subprocess to isolate the crash so it doesn't kill pytest.
+    """
+    import subprocess
+    import sys
+    import os
+    
+    test_file_dir = os.path.dirname(os.path.abspath(__file__))
+    testdata_dir = os.path.join(test_file_dir, 'testdata')
+    
+    test_code = f"""
+import sys
+import gc
+
+import geotess.lib as lib
+from pathlib import Path
+
+testdata = Path('{testdata_dir}')
+
+def create_model_and_return_metadata():
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    return model.getMetaData()
+
+try:
+    metadata = create_model_and_return_metadata()
+    gc.collect()  # This should segfault if metadata doesn't keep parent alive
+    
+    # If we get here, try to use metadata (should work if parent kept alive)
+    nlayers = metadata.getNLayers()
+    print(f"SUCCESS: nlayers={{nlayers}}")
+    sys.exit(0)
+except Exception as e:
+    print(f"EXCEPTION: {{e}}")
+    sys.exit(1)
+"""
+    
+    result = subprocess.run(
+        [sys.executable, '-c', test_code],
+        capture_output=True,
+        text=True,
+        timeout=5
+    )
+    
+    output = result.stdout + result.stderr
+    
+    # Check for success (would mean bug is fixed)
+    if result.returncode == 0 and "SUCCESS" in output:
+        return  # Test passes if bug is fixed
+    
+    # Expect segfault or other crash
+    if result.returncode != 0:
+        pytest.fail(
+            f"Metadata access crashed (rc={result.returncode}), indicating parent not kept alive. "
+            f"Output: {output}"
+        )
+
+
+@pytest.mark.xfail(reason="metadata with model ref crashes due to broken __dealloc__ logic", strict=True)  
+def test_metadata_with_model_reference_stays_valid():
+    """Test that metadata remains valid as long as we keep the model reference.
+    
+    This test SHOULD pass but currently segfaults due to __dealloc__ bugs.
+    Even when we keep the model reference, gc.collect() causes crashes.
+    This indicates the __dealloc__ logic is fundamentally broken.
+    
+    Uses subprocess to isolate the crash.
+    """
+    import subprocess
+    import sys
+    import os
+    
+    test_file_dir = os.path.dirname(os.path.abspath(__file__))
+    testdata_dir = os.path.join(test_file_dir, 'testdata')
+    
+    test_code = f"""
+import sys
+import gc
+
+import geotess.lib as lib
+from pathlib import Path
+
+testdata = Path('{testdata_dir}')
+
+try:
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    metadata = model.getMetaData()
+    
+    # We keep model reference - this SHOULD work but crashes
+    gc.collect()
+    
+    nlayers = metadata.getNLayers()
+    for _ in range(10):
+        gc.collect()
+        assert metadata.getNLayers() == nlayers
+    
+    nattrs = metadata.getNAttributes()
+    print(f"SUCCESS: nlayers={{nlayers}} nattrs={{nattrs}}")
+    sys.exit(0)
+except Exception as e:
+    print(f"EXCEPTION: {{e}}")
+    sys.exit(1)
+"""
+    
+    result = subprocess.run(
+        [sys.executable, '-c', test_code],
+        capture_output=True,
+        text=True,
+        timeout=5
+    )
+    
+    output = result.stdout + result.stderr
+    
+    # This SHOULD pass (we keep model ref), but currently crashes
+    if result.returncode == 0 and "SUCCESS" in output:
+        return  # Test passes if bug is fixed
+    
+    # Crash indicates __dealloc__ is broken
+    pytest.fail(
+        f"Metadata crashed even with model reference kept (rc={result.returncode}), "
+        f"indicating __dealloc__ logic is broken. Output: {output}"
+    )
+
 def test_getProfile(unified):
     expected = np.array([5964.7847, 6086.9287, 6209.0728, 6331.217])
     radii, attributes = unified.getProfile(340, 4)
     np.testing.assert_allclose(radii, expected, atol=0.001)
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getProfile_no_leak(unified):
+    """Test that getProfile doesn't leak memory over many calls.
+    
+    GeoTessProfile* pointers may be managed by GeoTessModel or may leak.
+    """
+    for _ in range(1000):
+        radii, attributes = unified.getProfile(340, 4)
 
 def test_setProfile(unified):
     radii, attributes = unified.getProfile(340, 4)
@@ -160,3 +400,227 @@ def test_getNRadii(unified):
 #     # arclength along the great circle
 #     sum = np.sum(weights.values())
 #     assert sum == pytest.approx(angle*radius, 0.01)
+
+
+# Memory leak tests for GeoTessPosition-based methods
+
+@pytest.mark.limit_leaks("10 MB")
+def test_position_methods_no_leak(unified):
+    """Test multiple position methods for memory leaks.
+    
+    All positionGet* methods create GeoTessPosition* objects internally.
+    This test exercises several of them repeatedly to detect leaks.
+    """
+    for _ in range(500):
+        unified.getPointWeights(30.5, 110.5, 6371.0)
+        unified.positionGetValues(30.5, 110.5, 1.0)
+        unified.positionGetTriangle(30.5, 110.5, 1.0)
+        unified.positionGetVector(30.5, 110.5, 1.0)
+
+@pytest.mark.parametrize("method,args", [
+    ("positionGetValues", (30.5, 110.5, 1.0)),
+    ("positionGetTriangle", (30.5, 110.5, 1.0)),
+    ("positionGetVector", (30.5, 110.5, 1.0)),
+    ("positionGetLayer", (30.5, 110.5, 1.0)),
+    ("positionGetIndexOfClosestVertex", (30.5, 110.5, 1.0)),
+])
+@pytest.mark.limit_leaks("5 MB")
+def test_individual_position_method_leaks(unified, method, args):
+    """Parametrized leak test for individual position methods.
+    
+    Tests each position method independently to isolate which methods
+    may have memory leaks.
+    """
+    func = getattr(unified, method)
+    for _ in range(500):
+        result = func(*args)
+
+
+
+
+# Additional leak tests for other C++ object returns
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getGrid_no_leak(unified):
+    """Test getGrid() for memory leaks."""
+    for _ in range(1000):
+        grid = unified.getGrid()
+        nverts = grid.getNVertices()
+
+@pytest.mark.limit_leaks("5 MB")  
+def test_getMetaData_no_leak(unified):
+    """Test getMetaData() for memory leaks."""
+    for _ in range(1000):
+        md = unified.getMetaData()
+        nlayers = md.getNLayers()
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getEarthShape_no_leak(unified):
+    """Test getEarthShape() for memory leaks."""
+    for _ in range(1000):
+        es = unified.getEarthShape()
+
+
+@pytest.mark.xfail(reason="getEarthShape() doesn't keep parent model alive - causes segfault in __dealloc__", strict=True)
+def test_getEarthShape_keeps_model_alive():
+    """Test that earthshape returned by getEarthShape() keeps the parent model alive.
+    
+    Same critical bug as getMetaData() - crashes with segfault during gc.collect().
+    
+    Uses subprocess to isolate the crash.
+    """
+    import subprocess
+    import sys
+    import os
+    
+    test_file_dir = os.path.dirname(os.path.abspath(__file__))
+    testdata_dir = os.path.join(test_file_dir, 'testdata')
+    
+    test_code = f"""
+import sys
+import gc
+import numpy as np
+
+import geotess.lib as lib
+from pathlib import Path
+
+testdata = Path('{testdata_dir}')
+
+def create_model_and_return_earthshape():
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    return model.getEarthShape()
+
+try:
+    earthshape = create_model_and_return_earthshape()
+    gc.collect()  # This should segfault if earthshape doesn't keep parent alive
+    
+    # If we get here, try to use earthshape
+    lat = earthshape.getLatDegrees(np.array([1.0, 0.0, 0.0]))
+    print(f"SUCCESS: lat={{lat}}")
+    sys.exit(0)
+except Exception as e:
+    print(f"EXCEPTION: {{e}}")
+    sys.exit(1)
+"""
+    
+    result = subprocess.run(
+        [sys.executable, '-c', test_code],
+        capture_output=True,
+        text=True,
+        timeout=5
+    )
+    
+    output = result.stdout + result.stderr
+    
+    # Check for success (would mean bug is fixed)
+    if result.returncode == 0 and "SUCCESS" in output:
+        return  # Test passes if bug is fixed
+    
+    # Expect segfault or other crash
+    if result.returncode != 0:
+        pytest.fail(
+            f"EarthShape access crashed (rc={result.returncode}), indicating parent not kept alive. "
+            f"Output: {output}"
+        )
+
+
+@pytest.mark.xfail(reason="earthshape with model ref crashes due to broken __dealloc__ logic", strict=True)
+def test_earthshape_with_model_reference_stays_valid():
+    """Test that earthshape remains valid as long as we keep the model reference.
+    
+    This test SHOULD pass but currently segfaults due to __dealloc__ bugs.
+    
+    Uses subprocess to isolate the crash.
+    """
+    import subprocess
+    import sys
+    import os
+    
+    test_file_dir = os.path.dirname(os.path.abspath(__file__))
+    testdata_dir = os.path.join(test_file_dir, 'testdata')
+    
+    test_code = f"""
+import sys
+import gc
+import numpy as np
+
+import geotess.lib as lib
+from pathlib import Path
+
+testdata = Path('{testdata_dir}')
+
+try:
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    earthshape = model.getEarthShape()
+    
+    # We keep model reference - this SHOULD work but crashes
+    gc.collect()
+    
+    vec = np.array([1.0, 0.0, 0.0])
+    lat1 = earthshape.getLatDegrees(vec)
+    
+    for _ in range(10):
+        gc.collect()
+        lat2 = earthshape.getLatDegrees(vec)
+        assert lat1 == lat2
+    
+    lon = earthshape.getLonDegrees(vec)
+    print(f"SUCCESS: lat={{lat1}} lon={{lon}}")
+    sys.exit(0)
+except Exception as e:
+    print(f"EXCEPTION: {{e}}")
+    sys.exit(1)
+"""
+    
+    result = subprocess.run(
+        [sys.executable, '-c', test_code],
+        capture_output=True,
+        text=True,
+        timeout=5
+    )
+    
+    output = result.stdout + result.stderr
+    
+    # This SHOULD pass (we keep model ref), but currently crashes
+    if result.returncode == 0 and "SUCCESS" in output:
+        return  # Test passes if bug is fixed
+    
+    # Crash indicates __dealloc__ is broken
+    pytest.fail(
+        f"EarthShape crashed even with model reference kept (rc={result.returncode}), "
+        f"indicating __dealloc__ logic is broken. Output: {output}"
+    )
+
+@pytest.mark.limit_leaks("100 MB")
+def test_loadModel_no_leak():
+    """Test repeated model loading for leaks.
+    
+    Each iteration creates a new model and loads data from disk.
+    Should not accumulate leaked model objects.
+    """
+    inputfile = str(testdata / 'crust20.geotess')
+    # Reduced iterations to avoid filling memory before GC runs
+    for _ in range(10):
+        model = lib.GeoTessModel()
+        model.loadModel(inputfile)
+        # Model and its resources should be cleaned up when going out of scope
+    # Force final GC to ensure cleanup happened
+    gc.collect()
+
+@pytest.mark.limit_leaks("200 MB")
+def test_loadGrid_no_leak():
+    """Test repeated grid loading for leaks.
+    
+    Each iteration creates a new grid and loads geometry from disk.
+    Should not accumulate leaked grid objects.
+    """
+    inputfile = str(testdata / 'geotess_grid_01000.geotess')
+    # Reduced iterations to avoid filling memory before GC runs  
+    for _ in range(10):
+        grid = lib.GeoTessGrid()
+        grid.loadGrid(inputfile)
+        # Grid and its resources should be cleaned up when going out of scope
+    # Force final GC to ensure cleanup happened
+    gc.collect()

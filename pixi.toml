@@ -15,6 +15,7 @@ python = "*"
 [environments.dev.pypi-dependencies]
 setuptools = ">=84.0.0, <85"
 pytest = ">=9.1.1, <10"
+pytest-memray = ">=1.10.0, <2"
 make = ">=0.1.6.post2, <0.2"
 myst-parser = ">=5.1.0, <6"
 pydata-sphinx-theme = ">=0.21.0, <0.22"
