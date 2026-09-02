@@ -125,7 +125,6 @@ def test_getGrid(crust20):
     # assert grid.toString() == expected
     assert grid.getGridID() == '808785948EB2350DD44E6C29BDEA6CAE'
 
-@pytest.mark.xfail(reason="getGrid() doesn't keep parent model alive - dangling pointer bug", strict=True)
 def test_getGrid_keeps_model_alive():
     """Test that grid returned by getGrid() keeps the parent model alive.
     
@@ -205,135 +204,46 @@ def test_getMetaData(crust20):
     assert md.toString().find('GeoTess') == 1
 
 
-@pytest.mark.xfail(reason="getMetaData() doesn't keep parent model alive - causes segfault in __dealloc__", strict=True)
 def test_getMetaData_keeps_model_alive():
     """Test that metadata returned by getMetaData() keeps the parent model alive.
     
-    This test demonstrates an even WORSE bug than getGrid() - not only does metadata
-    not keep the parent alive, but the __dealloc__ logic causes segfaults.
+    If the metadata doesn't keep a reference to its parent model, the model can be
+    garbage collected while we still have the metadata, leading to use-after-free.
     
-    Uses subprocess to isolate the crash so it doesn't kill pytest.
+    This test creates a model in a helper function that goes out of scope.
+    The model gets GC'd if metadata doesn't hold a reference, causing data access issues.
     """
-    import subprocess
-    import sys
-    import os
-    
-    test_file_dir = os.path.dirname(os.path.abspath(__file__))
-    testdata_dir = os.path.join(test_file_dir, 'testdata')
-    
-    test_code = f"""
-import sys
-import gc
-
-import geotess.lib as lib
-from pathlib import Path
-
-testdata = Path('{testdata_dir}')
-
-def create_model_and_return_metadata():
-    model = lib.GeoTessModel()
-    model.loadModel(str(testdata / 'crust20.geotess'))
-    return model.getMetaData()
-
-try:
     metadata = create_model_and_return_metadata()
-    gc.collect()  # This should segfault if metadata doesn't keep parent alive
     
-    # If we get here, try to use metadata (should work if parent kept alive)
-    nlayers = metadata.getNLayers()
-    print(f"SUCCESS: nlayers={{nlayers}}")
-    sys.exit(0)
-except Exception as e:
-    print(f"EXCEPTION: {{e}}")
-    sys.exit(1)
-"""
-    
-    result = subprocess.run(
-        [sys.executable, '-c', test_code],
-        capture_output=True,
-        text=True,
-        timeout=5
-    )
-    
-    output = result.stdout + result.stderr
-    
-    # Check for success (would mean bug is fixed)
-    if result.returncode == 0 and "SUCCESS" in output:
-        return  # Test passes if bug is fixed
-    
-    # Expect segfault or other crash
-    if result.returncode != 0:
-        pytest.fail(
-            f"Metadata access crashed (rc={result.returncode}), indicating parent not kept alive. "
-            f"Output: {output}"
-        )
-
-
-@pytest.mark.xfail(reason="metadata with model ref crashes due to broken __dealloc__ logic", strict=True)  
-def test_metadata_with_model_reference_stays_valid():
-    """Test that metadata remains valid as long as we keep the model reference.
-    
-    This test SHOULD pass but currently segfaults due to __dealloc__ bugs.
-    Even when we keep the model reference, gc.collect() causes crashes.
-    This indicates the __dealloc__ logic is fundamentally broken.
-    
-    Uses subprocess to isolate the crash.
-    """
-    import subprocess
-    import sys
-    import os
-    
-    test_file_dir = os.path.dirname(os.path.abspath(__file__))
-    testdata_dir = os.path.join(test_file_dir, 'testdata')
-    
-    test_code = f"""
-import sys
-import gc
-
-import geotess.lib as lib
-from pathlib import Path
-
-testdata = Path('{testdata_dir}')
-
-try:
-    model = lib.GeoTessModel()
-    model.loadModel(str(testdata / 'crust20.geotess'))
-    metadata = model.getMetaData()
-    
-    # We keep model reference - this SHOULD work but crashes
+    # Force garbage collection - model will be freed if metadata doesn't hold reference
     gc.collect()
     
+    # Accessing metadata after model is freed should work if parent kept alive
     nlayers = metadata.getNLayers()
+    assert nlayers > 0, "Metadata should still return valid layer count"
+    assert nlayers == 7, f"Expected 7 layers, got {nlayers}"
+
+
+def test_metadata_with_model_reference_stays_valid(crust20):
+    """Test that metadata remains valid as long as we keep the model reference.
+    
+    This is the CORRECT behavior - when we keep the model alive ourselves,
+    the metadata should continue to work. This test should pass.
+    """
+    model = crust20
+    metadata = model.getMetaData()
+    
+    # Force garbage collection
+    gc.collect()
+    
+    # Should work fine - we're keeping model alive
+    nlayers = metadata.getNLayers()
+    assert nlayers == 7
+    
+    # Multiple GC cycles shouldn't break anything
     for _ in range(10):
         gc.collect()
         assert metadata.getNLayers() == nlayers
-    
-    nattrs = metadata.getNAttributes()
-    print(f"SUCCESS: nlayers={{nlayers}} nattrs={{nattrs}}")
-    sys.exit(0)
-except Exception as e:
-    print(f"EXCEPTION: {{e}}")
-    sys.exit(1)
-"""
-    
-    result = subprocess.run(
-        [sys.executable, '-c', test_code],
-        capture_output=True,
-        text=True,
-        timeout=5
-    )
-    
-    output = result.stdout + result.stderr
-    
-    # This SHOULD pass (we keep model ref), but currently crashes
-    if result.returncode == 0 and "SUCCESS" in output:
-        return  # Test passes if bug is fixed
-    
-    # Crash indicates __dealloc__ is broken
-    pytest.fail(
-        f"Metadata crashed even with model reference kept (rc={result.returncode}), "
-        f"indicating __dealloc__ logic is broken. Output: {output}"
-    )
 
 def test_getProfile(unified):
     expected = np.array([5964.7847, 6086.9287, 6209.0728, 6331.217])
@@ -482,137 +392,50 @@ def test_getEarthShape_no_leak(unified):
         es = unified.getEarthShape()
 
 
-@pytest.mark.xfail(reason="getEarthShape() doesn't keep parent model alive - causes segfault in __dealloc__", strict=True)
 def test_getEarthShape_keeps_model_alive():
     """Test that earthshape returned by getEarthShape() keeps the parent model alive.
     
-    Same critical bug as getMetaData() - crashes with segfault during gc.collect().
+    If the earthshape doesn't keep a reference to its parent model, the model can be
+    garbage collected while we still have the earthshape, leading to use-after-free.
     
-    Uses subprocess to isolate the crash.
+    This test creates a model in a helper function that goes out of scope.
+    The model gets GC'd if earthshape doesn't hold a reference, causing data access issues.
     """
-    import subprocess
-    import sys
-    import os
-    
-    test_file_dir = os.path.dirname(os.path.abspath(__file__))
-    testdata_dir = os.path.join(test_file_dir, 'testdata')
-    
-    test_code = f"""
-import sys
-import gc
-import numpy as np
-
-import geotess.lib as lib
-from pathlib import Path
-
-testdata = Path('{testdata_dir}')
-
-def create_model_and_return_earthshape():
-    model = lib.GeoTessModel()
-    model.loadModel(str(testdata / 'crust20.geotess'))
-    return model.getEarthShape()
-
-try:
     earthshape = create_model_and_return_earthshape()
-    gc.collect()  # This should segfault if earthshape doesn't keep parent alive
     
-    # If we get here, try to use earthshape
-    lat = earthshape.getLatDegrees(np.array([1.0, 0.0, 0.0]))
-    print(f"SUCCESS: lat={{lat}}")
-    sys.exit(0)
-except Exception as e:
-    print(f"EXCEPTION: {{e}}")
-    sys.exit(1)
-"""
-    
-    result = subprocess.run(
-        [sys.executable, '-c', test_code],
-        capture_output=True,
-        text=True,
-        timeout=5
-    )
-    
-    output = result.stdout + result.stderr
-    
-    # Check for success (would mean bug is fixed)
-    if result.returncode == 0 and "SUCCESS" in output:
-        return  # Test passes if bug is fixed
-    
-    # Expect segfault or other crash
-    if result.returncode != 0:
-        pytest.fail(
-            f"EarthShape access crashed (rc={result.returncode}), indicating parent not kept alive. "
-            f"Output: {output}"
-        )
-
-
-@pytest.mark.xfail(reason="earthshape with model ref crashes due to broken __dealloc__ logic", strict=True)
-def test_earthshape_with_model_reference_stays_valid():
-    """Test that earthshape remains valid as long as we keep the model reference.
-    
-    This test SHOULD pass but currently segfaults due to __dealloc__ bugs.
-    
-    Uses subprocess to isolate the crash.
-    """
-    import subprocess
-    import sys
-    import os
-    
-    test_file_dir = os.path.dirname(os.path.abspath(__file__))
-    testdata_dir = os.path.join(test_file_dir, 'testdata')
-    
-    test_code = f"""
-import sys
-import gc
-import numpy as np
-
-import geotess.lib as lib
-from pathlib import Path
-
-testdata = Path('{testdata_dir}')
-
-try:
-    model = lib.GeoTessModel()
-    model.loadModel(str(testdata / 'crust20.geotess'))
-    earthshape = model.getEarthShape()
-    
-    # We keep model reference - this SHOULD work but crashes
+    # Force garbage collection - model will be freed if earthshape doesn't hold reference
     gc.collect()
     
+    # Accessing earthshape after model is freed should work if parent kept alive
+    vec = np.array([1.0, 0.0, 0.0])
+    lat = earthshape.getLatDegrees(vec)
+    assert lat == 0.0, "EarthShape should still return valid latitude"
+
+
+def test_earthshape_with_model_reference_stays_valid(crust20):
+    """Test that earthshape remains valid as long as we keep the model reference.
+    
+    This is the CORRECT behavior - when we keep the model alive ourselves,
+    the earthshape should continue to work. This test should pass.
+    """
+    model = crust20
+    earthshape = model.getEarthShape()
+    
+    # Force garbage collection
+    gc.collect()
+    
+    # Should work fine - we're keeping model alive
     vec = np.array([1.0, 0.0, 0.0])
     lat1 = earthshape.getLatDegrees(vec)
     
+    # Multiple GC cycles shouldn't break anything
     for _ in range(10):
         gc.collect()
         lat2 = earthshape.getLatDegrees(vec)
         assert lat1 == lat2
     
     lon = earthshape.getLonDegrees(vec)
-    print(f"SUCCESS: lat={{lat1}} lon={{lon}}")
-    sys.exit(0)
-except Exception as e:
-    print(f"EXCEPTION: {{e}}")
-    sys.exit(1)
-"""
-    
-    result = subprocess.run(
-        [sys.executable, '-c', test_code],
-        capture_output=True,
-        text=True,
-        timeout=5
-    )
-    
-    output = result.stdout + result.stderr
-    
-    # This SHOULD pass (we keep model ref), but currently crashes
-    if result.returncode == 0 and "SUCCESS" in output:
-        return  # Test passes if bug is fixed
-    
-    # Crash indicates __dealloc__ is broken
-    pytest.fail(
-        f"EarthShape crashed even with model reference kept (rc={result.returncode}), "
-        f"indicating __dealloc__ logic is broken. Output: {output}"
-    )
+    assert lon == 0.0
 
 @pytest.mark.limit_leaks("100 MB")
 def test_loadModel_no_leak():
