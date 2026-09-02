@@ -523,39 +523,61 @@ cdef class GeoTessMetaData:
 
     """
     cdef clib.GeoTessMetaData *thisptr
-    cdef object owner
-    cdef bint owns_ptr
+    cdef readonly object parent  # Parent object that owns the memory, or None if we own it
 
     def __cinit__(self, raw=False):
+        self.thisptr = NULL
+        self.parent = None
         if not raw:
             self.thisptr = new clib.GeoTessMetaData()
 
     def __dealloc__(self):
-        if self.thisptr != NULL and not self.owner:
-            del self.thisptr #XXX: I think this just deletes Python objects, need to do more c "free" stuff here
+        # If parent is None, we own the pointer and must delete it
+        if self.thisptr != NULL and self.parent is None:
+            del self.thisptr
+            self.thisptr = NULL  # Safety: prevent double-free
 
     @staticmethod
-    cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
-        """ Wrap a C++ pointer with a pointer-less Python class.
-
-        Deprecated.  Use `from_pointer` instead.
+    cdef GeoTessMetaData from_pointer(clib.GeoTessMetaData *ptr, object owner=None):
+        """Wrap a C++ GeoTessMetaData pointer with optional owner.
+        
+        Parameters
+        ----------
+        ptr : GeoTessMetaData*
+            C++ pointer to wrap. Must not be NULL.
+        owner : object, optional
+            Parent object that owns the pointed-to memory. If provided, the wrapper
+            will keep a reference to the owner, preventing it from being garbage
+            collected. This ensures the C++ pointer remains valid for the lifetime
+            of this wrapper. The wrapper will NOT delete the pointer in __dealloc__.
+            
+            If owner is None (default), the wrapper assumes ownership of the pointer
+            and WILL delete it in __dealloc__.
+        
+        Returns
+        -------
+        GeoTessMetaData
+            Python wrapper around the C++ pointer.
+            
+        Notes
+        -----
+        The owner parameter ensures memory safety when wrapping pointers to objects
+        owned by other Python objects. For example, when getting metadata reference
+        from a model:
+        
+            metadata = GeoTessMetaData.from_pointer(&model.thisptr.getMetaData(), owner=model)
+        
+        The metadata wrapper keeps `model` alive via the `parent` attribute, ensuring
+        the C++ GeoTessMetaData object is not deleted while the metadata wrapper exists.
+        When the metadata wrapper is garbage collected, the parent reference is released,
+        allowing the model to be garbage collected if no other references exist.
         """
-        cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
-
-    @staticmethod
-    cdef GeoTessMetaData from_pointer(clib.GeoTessMetaData *cptr, owner=None):
-        """ Initialize from a C++ GeoTessMetaData pointer.
-        """
+        if ptr == NULL:
+            raise ValueError("Cannot wrap NULL pointer")
+        
         cdef GeoTessMetaData wrapper = GeoTessMetaData.__new__(GeoTessMetaData, raw=True)
-        wrapper.thisptr = cptr
-        if owner:
-            wrapper.owns_ptr = False
-
+        wrapper.thisptr = ptr
+        wrapper.parent = owner  # None = we own it, not None = borrowed from owner
         return wrapper
 
     def setEarthShape(self, str earthShapeName):
@@ -1357,13 +1379,10 @@ cdef class GeoTessModel:
         Returns
         -------
         GeoTessMetaData
-            The metadata object.
-
+            The metadata object. The returned metadata keeps a reference to this
+            model to prevent premature garbage collection.
         """
-        md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
-        md.owner = self
-
-        return md
+        return GeoTessMetaData.from_pointer(&self.thisptr.getMetaData(), owner=self)
 
     def getNAttributes(self):
         """ Return the number of attributes that are associated with each node in the model.
