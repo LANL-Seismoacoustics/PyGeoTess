@@ -436,6 +436,27 @@ def test_individual_position_method_leaks(unified, method, args):
         result = func(*args)
 
 
+@pytest.mark.limit_leaks("10 MB")
+def test_position_pointer_leak(unified):
+    """Test for GeoTessPosition* memory leak from getPosition().
+    
+    All position methods call model.getPosition() which returns a NEW pointer:
+        GeoTessPosition* getPosition(...)
+    
+    The C++ documentation states: "It is the caller's responsibility to delete 
+    this object when it is no longer needed."
+    
+    The Python wrapper should delete these pointers. This test verifies that
+    memory doesn't grow excessively with repeated calls.
+    
+    NOTE: If this test fails with high memory usage, it indicates the 
+    GeoTessPosition* pointers are leaking.
+    """
+    # Call position method many times - should not accumulate memory
+    for _ in range(5000):
+        result = unified.positionGetValues(30.5, 110.5, 1.0)
+
+
 
 
 # Additional leak tests for other C++ object returns
