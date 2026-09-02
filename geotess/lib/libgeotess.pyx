@@ -893,18 +893,65 @@ cdef class EarthShape:
 
     """
     cdef clib.EarthShape *thisptr
-    cdef object owner
+    cdef readonly object parent  # Parent object that owns the memory, or None if we own it
 
     def __cinit__(self, earthShape="WGS84", raw=False):
+        self.thisptr = NULL
+        self.parent = None
         # raw=True means "just give me the Python wrapper class, I don't want
         # it to initialize a c++ pointer".  This is useful when you'll be using
-        # the "wrap" method to capture a pointer something else generated.
+        # the "from_pointer" method to capture a pointer something else generated.
         if not raw:
             self.thisptr = new clib.EarthShape(earthShape)
 
     def __dealloc__(self):
-        if self.thisptr != NULL and not self.owner:
+        # If parent is None, we own the pointer and must delete it
+        if self.thisptr != NULL and self.parent is None:
             del self.thisptr
+            self.thisptr = NULL  # Safety: prevent double-free
+
+    @staticmethod
+    cdef EarthShape from_pointer(clib.EarthShape *ptr, object owner=None):
+        """Wrap a C++ EarthShape pointer with optional owner.
+        
+        Parameters
+        ----------
+        ptr : EarthShape*
+            C++ pointer to wrap. Must not be NULL.
+        owner : object, optional
+            Parent object that owns the pointed-to memory. If provided, the wrapper
+            will keep a reference to the owner, preventing it from being garbage
+            collected. This ensures the C++ pointer remains valid for the lifetime
+            of this wrapper. The wrapper will NOT delete the pointer in __dealloc__.
+            
+            If owner is None (default), the wrapper assumes ownership of the pointer
+            and WILL delete it in __dealloc__.
+        
+        Returns
+        -------
+        EarthShape
+            Python wrapper around the C++ pointer.
+            
+        Notes
+        -----
+        The owner parameter ensures memory safety when wrapping pointers to objects
+        owned by other Python objects. For example, when getting earthshape reference
+        from a model:
+        
+            earthshape = EarthShape.from_pointer(&model.thisptr.getEarthShape(), owner=model)
+        
+        The earthshape wrapper keeps `model` alive via the `parent` attribute, ensuring
+        the C++ EarthShape object is not deleted while the earthshape wrapper exists.
+        When the earthshape wrapper is garbage collected, the parent reference is released,
+        allowing the model to be garbage collected if no other references exist.
+        """
+        if ptr == NULL:
+            raise ValueError("Cannot wrap NULL pointer")
+        
+        cdef EarthShape wrapper = EarthShape.__new__(EarthShape, raw=True)
+        wrapper.thisptr = ptr
+        wrapper.parent = owner  # None = we own it, not None = borrowed from owner
+        return wrapper
 
     def getLonDegrees(self, double[:] v):
         """
@@ -964,19 +1011,6 @@ cdef class EarthShape:
         self.thisptr.getVectorDegrees(lat, lon, <double*> v.data)
 
         return v
-
-    @staticmethod
-    cdef EarthShape wrap(clib.EarthShape *cptr, owner=None):
-        """
-        Wrap a C++ pointer with a pointer-less Python EarthShape class.
-
-        """
-        cdef EarthShape inst = EarthShape(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
 
 
 cdef class GeoTessModel:
@@ -1041,9 +1075,6 @@ cdef class GeoTessModel:
     destruction.
 
     """
-    # XXX: pointer ownership is an issue here.
-    #   May have fixed some/all of it in the new .from_pointer staticmethod.
-    # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
     def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
@@ -1363,12 +1394,11 @@ cdef class GeoTessModel:
 
         Returns
         -------
-        Earthshape
-            The EarthShape currently in use.
+        EarthShape
+            The EarthShape currently in use. The returned earthshape keeps a reference
+            to this model to prevent premature garbage collection.
         """
-        shp = EarthShape.wrap(&self.thisptr.getEarthShape(), owner=self)
-
-        return shp
+        return EarthShape.from_pointer(&self.thisptr.getEarthShape(), owner=self)
 
     def getMetaData(self):
         """ Return a reference to the GeoTessMetaData object associated with this model.
