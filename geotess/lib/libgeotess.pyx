@@ -109,46 +109,62 @@ cdef class GeoTessGrid:
 
     """
     cdef clib.GeoTessGrid *thisptr
-    cdef object owner
-    cdef bint owns_ptr # True if the instance owns its pointer, otherwise likely came from model.getGrid()
+    cdef readonly object parent  # Parent object that owns the memory, or None if we own it
 
     def __cinit__(self, raw=False):
+        self.thisptr = NULL
+        self.parent = None
         # XXX: lots of things evaluate to True or False. A file name, for example.
         if not raw:
             self.thisptr = new clib.GeoTessGrid()
 
     def __dealloc__(self):
-        # if self.thisptr != NULL and not self.owner:
-        if self.thisptr is not NULL and self.owns_ptr:
+        # If parent is None, we own the pointer and must delete it
+        if self.thisptr is not NULL and self.parent is None:
             del self.thisptr
+            self.thisptr = NULL  # Safety: prevent double-free
 
     @staticmethod
-    cdef GeoTessGrid wrap(clib.GeoTessGrid *cptr, owner=None):
+    cdef GeoTessGrid from_pointer(clib.GeoTessGrid *ptr, object owner=None):
+        """Wrap a C++ GeoTessGrid pointer with optional owner.
+        
+        Parameters
+        ----------
+        ptr : GeoTessGrid*
+            C++ pointer to wrap. Must not be NULL.
+        owner : object, optional
+            Parent object that owns the pointed-to memory. If provided, the wrapper
+            will keep a reference to the owner, preventing it from being garbage
+            collected. This ensures the C++ pointer remains valid for the lifetime
+            of this wrapper. The wrapper will NOT delete the pointer in __dealloc__.
+            
+            If owner is None (default), the wrapper assumes ownership of the pointer
+            and WILL delete it in __dealloc__.
+        
+        Returns
+        -------
+        GeoTessGrid
+            Python wrapper around the C++ pointer.
+            
+        Notes
+        -----
+        The owner parameter ensures memory safety when wrapping pointers to objects
+        owned by other Python objects. For example, when getting a grid reference
+        from a model:
+        
+            grid = GeoTessGrid.from_pointer(&model.thisptr.getGrid(), owner=model)
+        
+        The grid wrapper keeps `model` alive via the `parent` attribute, ensuring
+        the C++ GeoTessGrid object is not deleted while the grid wrapper exists.
+        When the grid wrapper is garbage collected, the parent reference is released,
+        allowing the model to be garbage collected if no other references exist.
         """
-        Wrap a C++ pointer with a pointer-less Python GeoTessGrid class.
-
-        Deprecated.  Use `from_pointer` instead.
-        """
-        cdef GeoTessGrid inst = GeoTessGrid(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
-
-    @staticmethod
-    cdef GeoTessGrid from_pointer(clib.GeoTessGrid *cptr):
-        """ Initialize GeoTessGrid from a C++ GeoTessGrid pointer.
-
-        The resulting grid instance doesn't own the pointer and won't free its memory
-        when deleted or garbage collected.
-
-        """
-        # from "Instantiation from existing C/C++ pointers" in Cython docs
+        if ptr == NULL:
+            raise ValueError("Cannot wrap NULL pointer")
+        
         cdef GeoTessGrid wrapper = GeoTessGrid.__new__(GeoTessGrid, raw=True)
-        wrapper.thisptr = cptr
-        wrapper.owns_ptr = False
-
+        wrapper.thisptr = ptr
+        wrapper.parent = owner  # None = we own it, not None = borrowed from owner
         return wrapper
 
     def loadGrid(self, str inputFile):
@@ -507,39 +523,61 @@ cdef class GeoTessMetaData:
 
     """
     cdef clib.GeoTessMetaData *thisptr
-    cdef object owner
-    cdef bint owns_ptr
+    cdef readonly object parent  # Parent object that owns the memory, or None if we own it
 
     def __cinit__(self, raw=False):
+        self.thisptr = NULL
+        self.parent = None
         if not raw:
             self.thisptr = new clib.GeoTessMetaData()
 
     def __dealloc__(self):
-        if self.thisptr != NULL and not self.owner:
-            del self.thisptr #XXX: I think this just deletes Python objects, need to do more c "free" stuff here
+        # If parent is None, we own the pointer and must delete it
+        if self.thisptr != NULL and self.parent is None:
+            del self.thisptr
+            self.thisptr = NULL  # Safety: prevent double-free
 
     @staticmethod
-    cdef GeoTessMetaData wrap(clib.GeoTessMetaData *cptr, owner=None):
-        """ Wrap a C++ pointer with a pointer-less Python class.
-
-        Deprecated.  Use `from_pointer` instead.
+    cdef GeoTessMetaData from_pointer(clib.GeoTessMetaData *ptr, object owner=None):
+        """Wrap a C++ GeoTessMetaData pointer with optional owner.
+        
+        Parameters
+        ----------
+        ptr : GeoTessMetaData*
+            C++ pointer to wrap. Must not be NULL.
+        owner : object, optional
+            Parent object that owns the pointed-to memory. If provided, the wrapper
+            will keep a reference to the owner, preventing it from being garbage
+            collected. This ensures the C++ pointer remains valid for the lifetime
+            of this wrapper. The wrapper will NOT delete the pointer in __dealloc__.
+            
+            If owner is None (default), the wrapper assumes ownership of the pointer
+            and WILL delete it in __dealloc__.
+        
+        Returns
+        -------
+        GeoTessMetaData
+            Python wrapper around the C++ pointer.
+            
+        Notes
+        -----
+        The owner parameter ensures memory safety when wrapping pointers to objects
+        owned by other Python objects. For example, when getting metadata reference
+        from a model:
+        
+            metadata = GeoTessMetaData.from_pointer(&model.thisptr.getMetaData(), owner=model)
+        
+        The metadata wrapper keeps `model` alive via the `parent` attribute, ensuring
+        the C++ GeoTessMetaData object is not deleted while the metadata wrapper exists.
+        When the metadata wrapper is garbage collected, the parent reference is released,
+        allowing the model to be garbage collected if no other references exist.
         """
-        cdef GeoTessMetaData inst = GeoTessMetaData(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
-
-    @staticmethod
-    cdef GeoTessMetaData from_pointer(clib.GeoTessMetaData *cptr, owner=None):
-        """ Initialize from a C++ GeoTessMetaData pointer.
-        """
+        if ptr == NULL:
+            raise ValueError("Cannot wrap NULL pointer")
+        
         cdef GeoTessMetaData wrapper = GeoTessMetaData.__new__(GeoTessMetaData, raw=True)
-        wrapper.thisptr = cptr
-        if owner:
-            wrapper.owns_ptr = False
-
+        wrapper.thisptr = ptr
+        wrapper.parent = owner  # None = we own it, not None = borrowed from owner
         return wrapper
 
     def setEarthShape(self, str earthShapeName):
@@ -855,18 +893,65 @@ cdef class EarthShape:
 
     """
     cdef clib.EarthShape *thisptr
-    cdef object owner
+    cdef readonly object parent  # Parent object that owns the memory, or None if we own it
 
     def __cinit__(self, earthShape="WGS84", raw=False):
+        self.thisptr = NULL
+        self.parent = None
         # raw=True means "just give me the Python wrapper class, I don't want
         # it to initialize a c++ pointer".  This is useful when you'll be using
-        # the "wrap" method to capture a pointer something else generated.
+        # the "from_pointer" method to capture a pointer something else generated.
         if not raw:
             self.thisptr = new clib.EarthShape(earthShape)
 
     def __dealloc__(self):
-        if self.thisptr != NULL and not self.owner:
+        # If parent is None, we own the pointer and must delete it
+        if self.thisptr != NULL and self.parent is None:
             del self.thisptr
+            self.thisptr = NULL  # Safety: prevent double-free
+
+    @staticmethod
+    cdef EarthShape from_pointer(clib.EarthShape *ptr, object owner=None):
+        """Wrap a C++ EarthShape pointer with optional owner.
+        
+        Parameters
+        ----------
+        ptr : EarthShape*
+            C++ pointer to wrap. Must not be NULL.
+        owner : object, optional
+            Parent object that owns the pointed-to memory. If provided, the wrapper
+            will keep a reference to the owner, preventing it from being garbage
+            collected. This ensures the C++ pointer remains valid for the lifetime
+            of this wrapper. The wrapper will NOT delete the pointer in __dealloc__.
+            
+            If owner is None (default), the wrapper assumes ownership of the pointer
+            and WILL delete it in __dealloc__.
+        
+        Returns
+        -------
+        EarthShape
+            Python wrapper around the C++ pointer.
+            
+        Notes
+        -----
+        The owner parameter ensures memory safety when wrapping pointers to objects
+        owned by other Python objects. For example, when getting earthshape reference
+        from a model:
+        
+            earthshape = EarthShape.from_pointer(&model.thisptr.getEarthShape(), owner=model)
+        
+        The earthshape wrapper keeps `model` alive via the `parent` attribute, ensuring
+        the C++ EarthShape object is not deleted while the earthshape wrapper exists.
+        When the earthshape wrapper is garbage collected, the parent reference is released,
+        allowing the model to be garbage collected if no other references exist.
+        """
+        if ptr == NULL:
+            raise ValueError("Cannot wrap NULL pointer")
+        
+        cdef EarthShape wrapper = EarthShape.__new__(EarthShape, raw=True)
+        wrapper.thisptr = ptr
+        wrapper.parent = owner  # None = we own it, not None = borrowed from owner
+        return wrapper
 
     def getLonDegrees(self, double[:] v):
         """
@@ -926,19 +1011,6 @@ cdef class EarthShape:
         self.thisptr.getVectorDegrees(lat, lon, <double*> v.data)
 
         return v
-
-    @staticmethod
-    cdef EarthShape wrap(clib.EarthShape *cptr, owner=None):
-        """
-        Wrap a C++ pointer with a pointer-less Python EarthShape class.
-
-        """
-        cdef EarthShape inst = EarthShape(raw=True)
-        inst.thisptr = cptr
-        if owner:
-            inst.owner = owner
-
-        return inst
 
 
 cdef class GeoTessModel:
@@ -1003,9 +1075,6 @@ cdef class GeoTessModel:
     destruction.
 
     """
-    # XXX: pointer ownership is an issue here.
-    #   May have fixed some/all of it in the new .from_pointer staticmethod.
-    # https://groups.google.com/forum/#!searchin/cython-users/$20$20ownership/cython-users/2zSAfkTgduI/wEtAKS_KHa0J
     cdef clib.GeoTessModel *thisptr
 
     def __cinit__(self, gridFileName=None, GeoTessMetaData metaData=None):
@@ -1325,12 +1394,11 @@ cdef class GeoTessModel:
 
         Returns
         -------
-        Earthshape
-            The EarthShape currently in use.
+        EarthShape
+            The EarthShape currently in use. The returned earthshape keeps a reference
+            to this model to prevent premature garbage collection.
         """
-        shp = EarthShape.wrap(&self.thisptr.getEarthShape(), owner=self)
-
-        return shp
+        return EarthShape.from_pointer(&self.thisptr.getEarthShape(), owner=self)
 
     def getMetaData(self):
         """ Return a reference to the GeoTessMetaData object associated with this model.
@@ -1341,13 +1409,10 @@ cdef class GeoTessModel:
         Returns
         -------
         GeoTessMetaData
-            The metadata object.
-
+            The metadata object. The returned metadata keeps a reference to this
+            model to prevent premature garbage collection.
         """
-        md = GeoTessMetaData.wrap(&self.thisptr.getMetaData())
-        md.owner = self
-
-        return md
+        return GeoTessMetaData.from_pointer(&self.thisptr.getMetaData(), owner=self)
 
     def getNAttributes(self):
         """ Return the number of attributes that are associated with each node in the model.
@@ -1368,20 +1433,11 @@ cdef class GeoTessModel:
         Returns
         -------
         GeoTessGrid
-            Current model's grid object.
+            Current model's grid object. The returned grid keeps a reference to this
+            model to prevent premature garbage collection.
 
         """
-        # XXX: I don't think this works.  It crashes the interpreter when the grid is deleted or
-        # garbage collected. I need to fix pointer ownership or something.
-
-        # cdef clib.GeoTessGrid *ptr = &self.thisptr.getGrid()
-        # grid = lib.GeoTessGrid.from_pointer(ptr)
-
-        # cdef GeoTessGrid grid = GeoTessGrid.wrap(&self.thisptr.getGrid())
-        cdef GeoTessGrid grid = GeoTessGrid.from_pointer(&self.thisptr.getGrid())
-        # grid.owner = self
-
-        return grid
+        return GeoTessGrid.from_pointer(&self.thisptr.getGrid(), owner=self)
 
     def setProfile(self, int vertex, int layer, vector[float] &radii, vector[vector[float]] &values):
         # setProfile (int vertex, int layer, vector< float > &radii, vector< vector< T > > &values)
@@ -1867,13 +1923,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1891,13 +1947,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1905,7 +1961,7 @@ cdef class GeoTessModel:
         pos.set(layerid, lat, lon, depth)
         return str(pos.toString())
 
-    def positionGetLayer(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetLayer(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         returns the layerID as a function of latitude, longitude, and depth.
         Optionally, give position interpolation methods horizontalType and/or radialType
@@ -1914,13 +1970,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1931,7 +1987,7 @@ cdef class GeoTessModel:
         layid = pos.getLayerId(radius)
         return layid
 
-    def positionGetVector(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetVector(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         For a given latitude, longitude, and depth, get the position vector
         Optionally, give horizontalType and/or radialType interpolators
@@ -1940,13 +1996,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -1985,13 +2041,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2027,13 +2083,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2066,13 +2122,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2107,13 +2163,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2122,7 +2178,7 @@ cdef class GeoTessModel:
         val = pos.getValue(attribute)
         return val
 
-    def positionGetValues(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetValues(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         Returns the attribute values at a position
 
@@ -2144,13 +2200,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2186,13 +2242,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2204,7 +2260,7 @@ cdef class GeoTessModel:
             values[iatt] = pos.getValue(iatt)
         return values
 
-    def positionGetTriangle(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetTriangle(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         Returns which triangle number the given location is located within.
 
@@ -2226,13 +2282,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2241,7 +2297,7 @@ cdef class GeoTessModel:
         tri = pos.getTriangle()
         return tri
 
-    def positionGetIndexOfClosestVertex(self, lat, lon, depth, horizontalType="LINEAR", radialType="LINEAR"):
+    def positionGetIndexOfClosestVertex(self, lat, lon, depth, str horizontalType="LINEAR", str radialType="LINEAR"):
         """
         Returns the closest vertex to the given location
 
@@ -2263,13 +2319,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2302,13 +2358,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2339,13 +2395,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2378,13 +2434,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2427,13 +2483,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)
@@ -2470,13 +2526,13 @@ cdef class GeoTessModel:
         cdef const clib.GeoTessInterpolatorType* radialInterpolator
 
         if horizontalType in ('LINEAR', 'NATURAL_NEIGHBOR'):
-            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType)
+            horizontalInterpolator = clib.GeoTessInterpolatorType.valueOf(horizontalType.encode("utf-8"))
         else:
             msg = "horizontalType must be either 'LINEAR' or 'NATURAL_NEIGHBOR'."
             raise ValueError(msg)
 
         if radialType in ('LINEAR', 'CUBIC_SPLINE'):
-            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType)
+            radialInterpolator = clib.GeoTessInterpolatorType.valueOf(radialType.encode("utf-8"))
         else:
             msg = "radialType must be either 'LINEAR' or 'CUBIC_SPLINE'."
             raise ValueError(msg)

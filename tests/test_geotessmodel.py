@@ -2,6 +2,7 @@
 Test GeoTessModel methods.
 
 """
+import gc
 from pathlib import Path
 
 import numpy as np
@@ -28,6 +29,48 @@ def unified() -> dict:
     model.loadModel(inputfile)
 
     return model
+
+
+# Helper functions for pointer ownership tests
+
+def create_model_and_return_grid():
+    """Helper that creates a model and returns its grid.
+    
+    The model goes out of scope, testing if grid keeps it alive.
+    """
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    grid = model.getGrid()
+    
+    # Model goes out of scope here when function returns
+    # If grid doesn't hold a reference, model will be GC'd
+    return grid
+
+
+def create_model_and_return_metadata():
+    """Helper that creates a model and returns its metadata.
+    
+    The model goes out of scope, testing if metadata keeps it alive.
+    """
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    metadata = model.getMetaData()
+    
+    # Model goes out of scope here
+    return metadata
+
+
+def create_model_and_return_earthshape():
+    """Helper that creates a model and returns its earthshape.
+    
+    The model goes out of scope, testing if earthshape keeps it alive.
+    """
+    model = lib.GeoTessModel()
+    model.loadModel(str(testdata / 'crust20.geotess'))
+    earthshape = model.getEarthShape()
+    
+    # Model goes out of scope here
+    return earthshape
 
 # @pytest.fixture
 # def small_grid():
@@ -82,6 +125,52 @@ def test_getGrid(crust20):
     # assert grid.toString() == expected
     assert grid.getGridID() == '808785948EB2350DD44E6C29BDEA6CAE'
 
+def test_getGrid_keeps_model_alive():
+    """Test that grid returned by getGrid() keeps the parent model alive.
+    
+    If the grid doesn't keep a reference to its parent model, the model can be
+    garbage collected while we still have the grid, leading to use-after-free.
+    
+    This test creates a model in a helper function that goes out of scope.
+    The model gets GC'd if grid doesn't hold a reference, causing corruption.
+    """
+    grid = create_model_and_return_grid()
+    
+    # Force garbage collection - model will be freed if grid doesn't hold reference
+    gc.collect()
+    
+    # Accessing grid.getGridID() after model is freed causes UnicodeDecodeError
+    # because the C++ string data has been freed and overwritten
+    grid_id = grid.getGridID()
+    assert grid_id is not None, "Grid should still return valid grid ID"
+
+
+def test_grid_with_model_reference_stays_valid(crust20):
+    """Test that grid remains valid as long as we keep the model reference.
+    
+    This is the CORRECT behavior - when we keep the model alive ourselves,
+    the grid should continue to work. This test should pass.
+    """
+    model = crust20
+    grid = model.getGrid()
+    
+    # Force garbage collection
+    gc.collect()
+    
+    # Grid should work (we're keeping model reference)
+    nverts = grid.getNVertices()
+    assert nverts > 0
+    
+    # Even after repeated access
+    for _ in range(10):
+        gc.collect()
+        assert grid.getNVertices() == nverts
+        
+    # As long as we hold the model reference, grid should work
+    grid_id = grid.getGridID()
+    assert grid_id is not None
+
+
 def test_getPointWeights(crust20):
     # randomly chose a lat/lon/depth.
     lat, lon, depth = 30.5, 110.5, 1.0
@@ -92,6 +181,16 @@ def test_getPointWeights(crust20):
         }
     weights = crust20.getPointWeights(lat, lon, depth)
     assert weights == pytest.approx(expected)
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getPointWeights_no_leak(crust20):
+    """Test that getPointWeights doesn't leak memory over many calls.
+    
+    Each call to getPointWeights creates a GeoTessPosition* in C++.
+    If not properly freed, this will leak memory.
+    """
+    for _ in range(1000):
+        weights = crust20.getPointWeights(30.5, 110.5, 6371.0)
 
 # pos = self.thisptr.getPosition(deref(horizontalInterpolator), deref(radialInterpolator))
 # def test_EulerInterpolator(euler):
@@ -104,10 +203,61 @@ def test_getMetaData(crust20):
     # make sure GeoTess is on the first line in toString.  weird but ok.
     assert md.toString().find('GeoTess') == 1
 
+
+def test_getMetaData_keeps_model_alive():
+    """Test that metadata returned by getMetaData() keeps the parent model alive.
+    
+    If the metadata doesn't keep a reference to its parent model, the model can be
+    garbage collected while we still have the metadata, leading to use-after-free.
+    
+    This test creates a model in a helper function that goes out of scope.
+    The model gets GC'd if metadata doesn't hold a reference, causing data access issues.
+    """
+    metadata = create_model_and_return_metadata()
+    
+    # Force garbage collection - model will be freed if metadata doesn't hold reference
+    gc.collect()
+    
+    # Accessing metadata after model is freed should work if parent kept alive
+    nlayers = metadata.getNLayers()
+    assert nlayers > 0, "Metadata should still return valid layer count"
+    assert nlayers == 7, f"Expected 7 layers, got {nlayers}"
+
+
+def test_metadata_with_model_reference_stays_valid(crust20):
+    """Test that metadata remains valid as long as we keep the model reference.
+    
+    This is the CORRECT behavior - when we keep the model alive ourselves,
+    the metadata should continue to work. This test should pass.
+    """
+    model = crust20
+    metadata = model.getMetaData()
+    
+    # Force garbage collection
+    gc.collect()
+    
+    # Should work fine - we're keeping model alive
+    nlayers = metadata.getNLayers()
+    assert nlayers == 7
+    
+    # Multiple GC cycles shouldn't break anything
+    for _ in range(10):
+        gc.collect()
+        assert metadata.getNLayers() == nlayers
+
 def test_getProfile(unified):
     expected = np.array([5964.7847, 6086.9287, 6209.0728, 6331.217])
     radii, attributes = unified.getProfile(340, 4)
     np.testing.assert_allclose(radii, expected, atol=0.001)
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getProfile_no_leak(unified):
+    """Test that getProfile doesn't leak memory over many calls.
+    
+    GeoTessProfile* pointers may be managed by GeoTessModel or may leak.
+    """
+    for _ in range(1000):
+        radii, attributes = unified.getProfile(340, 4)
 
 def test_setProfile(unified):
     radii, attributes = unified.getProfile(340, 4)
@@ -160,3 +310,161 @@ def test_getNRadii(unified):
 #     # arclength along the great circle
 #     sum = np.sum(weights.values())
 #     assert sum == pytest.approx(angle*radius, 0.01)
+
+
+# Memory leak tests for GeoTessPosition-based methods
+
+@pytest.mark.limit_leaks("10 MB")
+def test_position_methods_no_leak(unified):
+    """Test multiple position methods for memory leaks.
+    
+    All positionGet* methods create GeoTessPosition* objects internally.
+    This test exercises several of them repeatedly to detect leaks.
+    """
+    for _ in range(500):
+        unified.getPointWeights(30.5, 110.5, 6371.0)
+        unified.positionGetValues(30.5, 110.5, 1.0)
+        unified.positionGetTriangle(30.5, 110.5, 1.0)
+        unified.positionGetVector(30.5, 110.5, 1.0)
+
+@pytest.mark.parametrize("method,args", [
+    ("positionGetValues", (30.5, 110.5, 1.0)),
+    ("positionGetTriangle", (30.5, 110.5, 1.0)),
+    ("positionGetVector", (30.5, 110.5, 1.0)),
+    ("positionGetLayer", (30.5, 110.5, 1.0)),
+    ("positionGetIndexOfClosestVertex", (30.5, 110.5, 1.0)),
+])
+@pytest.mark.limit_leaks("5 MB")
+def test_individual_position_method_leaks(unified, method, args):
+    """Parametrized leak test for individual position methods.
+    
+    Tests each position method independently to isolate which methods
+    may have memory leaks.
+    """
+    func = getattr(unified, method)
+    for _ in range(500):
+        result = func(*args)
+
+
+@pytest.mark.limit_leaks("10 MB")
+def test_position_pointer_leak(unified):
+    """Test for GeoTessPosition* memory leak from getPosition().
+    
+    All position methods call model.getPosition() which returns a NEW pointer:
+        GeoTessPosition* getPosition(...)
+    
+    The C++ documentation states: "It is the caller's responsibility to delete 
+    this object when it is no longer needed."
+    
+    The Python wrapper should delete these pointers. This test verifies that
+    memory doesn't grow excessively with repeated calls.
+    
+    NOTE: If this test fails with high memory usage, it indicates the 
+    GeoTessPosition* pointers are leaking.
+    """
+    # Call position method many times - should not accumulate memory
+    for _ in range(5000):
+        result = unified.positionGetValues(30.5, 110.5, 1.0)
+
+
+
+
+# Additional leak tests for other C++ object returns
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getGrid_no_leak(unified):
+    """Test getGrid() for memory leaks."""
+    for _ in range(1000):
+        grid = unified.getGrid()
+        nverts = grid.getNVertices()
+
+@pytest.mark.limit_leaks("5 MB")  
+def test_getMetaData_no_leak(unified):
+    """Test getMetaData() for memory leaks."""
+    for _ in range(1000):
+        md = unified.getMetaData()
+        nlayers = md.getNLayers()
+
+@pytest.mark.limit_leaks("5 MB")
+def test_getEarthShape_no_leak(unified):
+    """Test getEarthShape() for memory leaks."""
+    for _ in range(1000):
+        es = unified.getEarthShape()
+
+
+def test_getEarthShape_keeps_model_alive():
+    """Test that earthshape returned by getEarthShape() keeps the parent model alive.
+    
+    If the earthshape doesn't keep a reference to its parent model, the model can be
+    garbage collected while we still have the earthshape, leading to use-after-free.
+    
+    This test creates a model in a helper function that goes out of scope.
+    The model gets GC'd if earthshape doesn't hold a reference, causing data access issues.
+    """
+    earthshape = create_model_and_return_earthshape()
+    
+    # Force garbage collection - model will be freed if earthshape doesn't hold reference
+    gc.collect()
+    
+    # Accessing earthshape after model is freed should work if parent kept alive
+    vec = np.array([1.0, 0.0, 0.0])
+    lat = earthshape.getLatDegrees(vec)
+    assert lat == 0.0, "EarthShape should still return valid latitude"
+
+
+def test_earthshape_with_model_reference_stays_valid(crust20):
+    """Test that earthshape remains valid as long as we keep the model reference.
+    
+    This is the CORRECT behavior - when we keep the model alive ourselves,
+    the earthshape should continue to work. This test should pass.
+    """
+    model = crust20
+    earthshape = model.getEarthShape()
+    
+    # Force garbage collection
+    gc.collect()
+    
+    # Should work fine - we're keeping model alive
+    vec = np.array([1.0, 0.0, 0.0])
+    lat1 = earthshape.getLatDegrees(vec)
+    
+    # Multiple GC cycles shouldn't break anything
+    for _ in range(10):
+        gc.collect()
+        lat2 = earthshape.getLatDegrees(vec)
+        assert lat1 == lat2
+    
+    lon = earthshape.getLonDegrees(vec)
+    assert lon == 0.0
+
+@pytest.mark.limit_leaks("100 MB")
+def test_loadModel_no_leak():
+    """Test repeated model loading for leaks.
+    
+    Each iteration creates a new model and loads data from disk.
+    Should not accumulate leaked model objects.
+    """
+    inputfile = str(testdata / 'crust20.geotess')
+    # Reduced iterations to avoid filling memory before GC runs
+    for _ in range(10):
+        model = lib.GeoTessModel()
+        model.loadModel(inputfile)
+        # Model and its resources should be cleaned up when going out of scope
+    # Force final GC to ensure cleanup happened
+    gc.collect()
+
+@pytest.mark.limit_leaks("200 MB")
+def test_loadGrid_no_leak():
+    """Test repeated grid loading for leaks.
+    
+    Each iteration creates a new grid and loads geometry from disk.
+    Should not accumulate leaked grid objects.
+    """
+    inputfile = str(testdata / 'geotess_grid_01000.geotess')
+    # Reduced iterations to avoid filling memory before GC runs  
+    for _ in range(10):
+        grid = lib.GeoTessGrid()
+        grid.loadGrid(inputfile)
+        # Grid and its resources should be cleaned up when going out of scope
+    # Force final GC to ensure cleanup happened
+    gc.collect()
